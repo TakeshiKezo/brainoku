@@ -1,0 +1,13 @@
+{
+  "appId": "de.brainoku.app",
+  "appName": "Brainoku",
+  "webDir": "www",
+  "ios": {
+    "scheme": "Brainoku",
+    "contentInset": "always",
+    "backgroundColor": "#F2F3F9"
+  },
+  "server": {
+    "iosScheme": "brainoku"
+  }
+}

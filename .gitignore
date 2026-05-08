@@ -1,0 +1,30 @@
+node_modules/
+www/
+
+# Design-Mockups (lokale Referenz, nicht ins Repo)
+WhatsApp Image*.jpeg
+WhatsApp Image*.jpg
+*.psd
+
+
+# Capacitor-generierte Plattform-Folders (werden im CI frisch erzeugt)
+ios/
+android/
+
+# Builds
+*.ipa
+*.apk
+*.xcarchive
+
+# Editor
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sensitives
+.env
+.env.*

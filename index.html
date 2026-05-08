@@ -1,0 +1,3519 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#F2F3F9" />
+<title>Brainoku Sudoku</title>
+<meta name="description" content="Brainoku Sudoku — tägliches Hirntraining mit Streak-System, Levels und Errungenschaften." />
+<meta name="apple-mobile-web-app-title" content="Brainoku" />
+<meta name="application-name" content="Brainoku" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="icon" href="/icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/icon.svg" />
+<style>
+  :root {
+    --bg: #F2F3F9;
+    --card: #E8EAF4;
+    --card-strong: #DCDFEE;
+    --primary: #5C5CF0;
+    --primary-soft: #EAEAFD;
+    --primary-light: #A5A8E8;
+    --text: #1E2A4A;
+    --text-mute: #8A91B0;
+    --text-faint: #C4C8DC;
+    --heart: #FF6B7A;
+    --heart-empty: #DDE0EE;
+    --success: #4ED387;
+    --error: #FF6B7A;
+    --shadow-sm: 0 2px 6px rgba(30, 42, 74, 0.06);
+    --shadow-md: 0 6px 20px rgba(30, 42, 74, 0.08);
+    --shadow-lg: 0 12px 36px rgba(30, 42, 74, 0.18);
+    --cell-bg: #fff;
+    --cell-peer: #EEF0FA;
+    --cell-same: #DEDFFB;
+    --cell-selected: #C8C9FA;
+    --cell-user: var(--primary);
+    --cell-given: var(--text);
+    --radius: 14px;
+    --radius-lg: 22px;
+    --radius-pill: 999px;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 600;
+    overscroll-behavior: none;
+    user-select: none;
+    -webkit-user-select: none;
+    overflow-x: hidden;
+  }
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+  }
+  #app {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-top: env(safe-area-inset-top);
+  }
+  /* compact spacing on phones up to iPhone-SE-class */
+  @media (max-width: 380px) {
+    .stats-pill { padding: 6px 10px; font-size: 13px; gap: 6px; }
+    .stats-pill .stat-emoji { font-size: 12px; }
+    .splash { font-size: 13px; max-width: 50%; }
+    .booster-card { padding: 12px 8px 10px; }
+    .booster-icon { font-size: 28px; margin-bottom: 4px; }
+    .booster-name { font-size: 12px; }
+    .booster-desc { font-size: 10px; min-height: 26px; }
+    .booster-buy { font-size: 11px; padding: 5px 10px; }
+    .login-day { padding: 8px 4px; }
+    .login-day .day-coins { font-size: 13px; }
+    .theme-preview { height: 60px; }
+    .theme-preview .pv-cell-given,
+    .theme-preview .pv-cell-user { font-size: 16px; }
+    .shop-balance { padding: 8px 14px; font-size: 14px; margin: 6px auto 14px; }
+  }
+  @media (max-width: 360px) {
+    .screen { padding: 14px 14px 0; }
+    .home-logo { font-size: 44px !important; }
+    .home-sub { font-size: 14px; }
+    .play-btn { padding: 18px; font-size: 18px; }
+    .num { font-size: 18px; }
+    .game-header { gap: 6px; }
+    .icon-btn { width: 40px; height: 40px; }
+    .tipp-btn { padding: 8px 14px 8px 12px; font-size: 14px; }
+    .status .difficulty-label { font-size: 15px; }
+    .status .game-meta { font-size: 10px; }
+    .records-grid, .ach-grid { gap: 8px; }
+    .record-icon { width: 40px; height: 40px; font-size: 20px; }
+    .record-num { font-size: 18px; }
+    .resume-card { padding: 12px 14px; }
+    .resume-title { font-size: 14px; }
+    .level-card { padding: 10px 14px 12px; }
+    .shop-section-title { font-size: 14px; }
+    .booster-grid { gap: 8px; }
+    .theme-grid { gap: 8px; }
+  }
+  @media (max-width: 330px) {
+    /* very tight: hide splash to save space, simplify stats */
+    .splash { display: none; }
+    .stats-pill .stat-sep { display: none; }
+    .stats-pill { gap: 10px; }
+  }
+  /* large screens: keep design canvas, don't blow up */
+  @media (min-width: 600px) {
+    #app {
+      box-shadow: 0 0 60px rgba(30, 42, 74, 0.08);
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+    body.dark #app { box-shadow: 0 0 60px rgba(0, 0, 0, 0.5); }
+  }
+
+  .screen {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    padding: 18px 20px 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    min-height: 0;
+  }
+  .screen.active { display: flex; }
+
+  /* ---------- HOME ---------- */
+  .home-top { display: flex; justify-content: flex-end; padding: 6px 0 0; }
+  .streak {
+    background: var(--card);
+    border-radius: var(--radius-pill);
+    padding: 8px 16px 8px 14px;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 16px; color: var(--text);
+  }
+  .home-hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 14px;
+  }
+  .home-logo {
+    font-size: 56px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -2px;
+    margin: 0;
+    display: flex; align-items: center; gap: 2px;
+    line-height: 1;
+  }
+  .home-logo .dot { color: var(--primary); }
+  .home-sub {
+    color: var(--primary);
+    font-size: 16px;
+    margin: 6px 0 0;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .play-btn {
+    display: block;
+    width: 100%;
+    max-width: 360px;
+    background: var(--primary);
+    color: #fff;
+    border: 0;
+    border-radius: var(--radius-pill);
+    padding: 22px;
+    font-size: 22px;
+    font-weight: 700;
+    box-shadow: 0 8px 18px rgba(92, 92, 240, 0.32);
+    cursor: pointer;
+    transition: transform .08s ease;
+    margin: 16px auto 48px;
+  }
+  .play-btn:active { transform: scale(0.97); }
+
+  .difficulty-card {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 18px 22px 20px;
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .difficulty-card h3 { margin: 0 0 14px; font-size: 18px; }
+  .difficulty-options { display: flex; flex-direction: column; gap: 10px; }
+  .difficulty-option {
+    background: #fff;
+    border: 0;
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .difficulty-option .lvl-stars { color: var(--primary); letter-spacing: 2px; }
+
+  /* ---------- GAME HEADER ---------- */
+  .game-header {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 0 14px;
+  }
+  .icon-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text);
+    transition: transform .08s ease, background .15s ease;
+  }
+  .icon-btn:active { transform: scale(0.94); }
+  .icon-btn:disabled { color: var(--text-faint); cursor: default; }
+  .icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+  .status {
+    text-align: center;
+    line-height: 1.05;
+  }
+  .status .game-meta {
+    font-size: 11px;
+    color: var(--text-mute);
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .status .difficulty-label {
+    color: var(--primary);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .hearts { display: inline-flex; gap: 3px; margin-top: 4px; }
+  .hearts svg { width: 22px; height: 22px; }
+
+  .tipp-btn {
+    background: var(--primary);
+    color: #fff;
+    border: 0;
+    border-radius: var(--radius-pill);
+    padding: 10px 18px 10px 14px;
+    font-size: 15px;
+    font-weight: 700;
+    display: inline-flex; align-items: center; gap: 6px;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(92, 92, 240, 0.30);
+    transition: transform .15s ease, box-shadow .15s ease;
+    transform: translateX(110%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .tipp-btn.visible {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+    animation: tipp-pulse 1.6s ease-in-out infinite;
+  }
+  .tipp-btn:active { transform: scale(0.96); }
+  .tipp-btn svg { width: 16px; height: 16px; fill: currentColor; }
+  @keyframes tipp-pulse {
+    0%,100% { box-shadow: 0 6px 14px rgba(92, 92, 240, 0.30); }
+    50%     { box-shadow: 0 6px 22px rgba(92, 92, 240, 0.55); }
+  }
+
+  /* ---------- PROGRESS ---------- */
+  .progress {
+    height: 6px;
+    background: var(--card);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .progress > div {
+    height: 100%;
+    background: var(--primary);
+    width: 0%;
+    border-radius: var(--radius-pill);
+    transition: width .3s ease;
+  }
+
+  /* ---------- BOARD ---------- */
+  .board-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+  .board {
+    --gap: 1px;
+    width: min(100%, 420px);
+    aspect-ratio: 1 / 1;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    background: var(--card-strong);
+    border-radius: var(--radius);
+    overflow: hidden;
+    gap: var(--gap);
+    padding: 2px;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+  }
+  .cell {
+    background: var(--cell-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(18px, 4.6vw, 26px);
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    position: relative;
+    transition: background .12s ease;
+  }
+  /* thicker box borders */
+  .cell.br-r { box-shadow: inset -2px 0 0 var(--card-strong); }
+  .cell.br-b { box-shadow: inset 0 -2px 0 var(--card-strong); }
+  .cell.br-r.br-b { box-shadow: inset -2px 0 0 var(--card-strong), inset 0 -2px 0 var(--card-strong); }
+
+  .cell.given { color: var(--cell-given); }
+  .cell.user { color: var(--cell-user); }
+  .cell.error { color: var(--error); animation: shake .25s; }
+  .cell.peer { background: var(--cell-peer); }
+  .cell.same { background: var(--cell-same); }
+  .cell.selected { background: var(--cell-selected); }
+  .cell.hint-flash { animation: hint-flash 1.2s ease; }
+
+  .notes {
+    width: 100%; height: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    font-size: 9px;
+    color: var(--text-mute);
+    font-weight: 600;
+    padding: 2px;
+  }
+  .notes span { display: flex; align-items: center; justify-content: center; }
+
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-3px)}
+    75%{transform:translateX(3px)}
+  }
+  @keyframes hint-flash {
+    0%   { background: #FFF5BC; }
+    100% { background: #fff; }
+  }
+
+  /* ---------- NUMBERS / ACTIONS ---------- */
+  .actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .action {
+    background: var(--card);
+    border: 0;
+    border-radius: var(--radius);
+    padding: 12px 6px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text);
+    cursor: pointer;
+    transition: transform .08s ease;
+  }
+  .action:active { transform: scale(0.95); }
+  .action svg { width: 22px; height: 22px; fill: var(--text); }
+  .action.active { background: var(--primary-soft); }
+  .action.active svg { fill: var(--primary); }
+  .action.active span { color: var(--primary); }
+
+  .numpad {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 6px;
+  }
+  .num {
+    background: var(--card);
+    border: 0;
+    border-radius: var(--radius);
+    aspect-ratio: 1 / 1.05;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    transition: transform .08s ease, background .12s ease;
+    position: relative;
+  }
+  .num:active { transform: scale(0.93); }
+  .num.depleted { color: var(--text-faint); background: #EFF1F8; }
+  .num small {
+    position: absolute;
+    bottom: 4px; right: 6px;
+    font-size: 10px;
+    color: var(--text-mute);
+    font-weight: 600;
+  }
+
+  /* ---------- SETTINGS ---------- */
+  .settings-list { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; padding-bottom: 16px; }
+  .settings-group {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 4px 16px;
+  }
+  .settings-row {
+    display: flex; align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(30,42,74,0.06);
+    gap: 14px;
+    font-size: 15px;
+  }
+  .settings-row:last-child { border-bottom: 0; }
+  .settings-row .ico {
+    width: 26px; display: flex; justify-content: center;
+    color: var(--text);
+  }
+  .settings-row .ico svg { width: 20px; height: 20px; fill: currentColor; }
+  .settings-row .label { flex: 1; min-width: 0; }
+  .settings-row .label-sub {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-mute);
+    margin-top: 2px;
+    line-height: 1.3;
+  }
+  .settings-row .val {
+    color: var(--text-mute);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .toggle {
+    width: 44px; height: 26px;
+    background: #C7CADD;
+    border-radius: var(--radius-pill);
+    position: relative;
+    cursor: pointer;
+    transition: background .15s ease;
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: "";
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 20px; height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    transition: left .15s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .toggle.on { background: var(--primary); }
+  .toggle.on::after { left: 21px; }
+
+  .settings-back {
+    background: var(--card);
+    border: 0;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text);
+  }
+  .settings-back svg { width: 18px; height: 18px; fill: currentColor; }
+  .settings-title { font-size: 22px; margin: 14px 0 6px; }
+
+  /* ---------- BOTTOM NAV ---------- */
+  .nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--card);
+    padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+    margin-top: auto;
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    border-radius: 16px 16px 0 0;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 8px;
+    border-radius: var(--radius);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 13px;
+    gap: 2px;
+  }
+  .nav-item.active { background: #DCDFEE; color: var(--text); }
+  .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
+
+  /* ---------- OVERLAYS ---------- */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 26, 50, 0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 22px;
+    backdrop-filter: blur(2px);
+  }
+  .overlay.active { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    padding: 26px 22px 22px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    animation: pop .25s ease;
+  }
+  @keyframes pop {
+    from { transform: scale(0.9); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+  .modal h2 { margin: 0 0 8px; font-size: 22px; }
+  .modal p  { margin: 0 0 18px; color: var(--text-mute); font-weight: 500; line-height: 1.4; }
+  .modal-buttons { display: flex; flex-direction: column; gap: 10px; }
+  .btn-primary, .btn-secondary {
+    border: 0;
+    border-radius: var(--radius-pill);
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background: var(--primary); color: #fff;
+    box-shadow: 0 6px 14px rgba(92,92,240,.3);
+  }
+  .btn-secondary {
+    background: var(--card); color: var(--text);
+  }
+
+  /* Ad overlay */
+  .ad-screen {
+    background: #11162B;
+    color: #fff;
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 9 / 16;
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+  .ad-tag {
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    align-self: flex-start;
+    margin: 14px 0 0 14px;
+    letter-spacing: 1px;
+  }
+  .ad-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+    gap: 14px;
+  }
+  .ad-body .brand {
+    width: 90px; height: 90px;
+    background: linear-gradient(135deg, #6366F1, #A855F7);
+    border-radius: 26px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 42px;
+    box-shadow: 0 8px 26px rgba(99,102,241,.5);
+  }
+  .ad-body h3 { margin: 0; font-size: 26px; }
+  .ad-body p  { margin: 0; opacity: .8; font-weight: 500; }
+  .ad-cta {
+    background: #fff; color: #11162B;
+    border: 0;
+    padding: 14px 28px;
+    border-radius: var(--radius-pill);
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .ad-skip {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: rgba(0,0,0,0.4);
+    color: #fff;
+    border: 0;
+    padding: 8px 14px;
+    border-radius: var(--radius-pill);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .ad-skip:disabled { opacity: .5; cursor: default; }
+
+  /* Tipp video overlay */
+  .video-screen {
+    background: #11162B;
+    color: #fff;
+    width: 100%; max-width: 420px;
+    aspect-ratio: 9 / 16;
+    border-radius: var(--radius-lg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 18px;
+    padding: 26px;
+    text-align: center;
+    position: relative;
+  }
+  .video-spinner {
+    width: 56px; height: 56px;
+    border: 4px solid rgba(255,255,255,0.2);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .hidden { display: none !important; }
+  .pop { animation: pop .25s ease; }
+
+  /* ---------- DARK MODE ---------- */
+  body.dark {
+    --bg:           #10142A;
+    --card:         #1A2042;
+    --card-strong:  #242B55;
+    --primary:      #7C7CFF;
+    --primary-soft: #2A2D5C;
+    --primary-light:#5A5FA8;
+    --text:         #E6E9F5;
+    --text-mute:    #8990B5;
+    --text-faint:   #4A5276;
+    --heart-empty:  #2E3457;
+    --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
+    --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.55);
+  }
+  body.dark .cell                  { background: #1F2548; color: var(--text); }
+  body.dark .cell.peer             { background: #262C55; }
+  body.dark .cell.same             { background: #353C7C; }
+  body.dark .cell.selected         { background: #4A52A5; }
+  body.dark .cell.user             { color: #A6AEFF; }
+  body.dark .cell.error            { color: #FF7E8C; }
+  body.dark .cell.hint-flash       { animation: hint-flash-dark 1.2s ease; }
+  @keyframes hint-flash-dark {
+    0%   { background: #5A5430; }
+    100% { background: #1F2548; }
+  }
+  body.dark .modal                 { background: #1A2042; }
+  body.dark .difficulty-option     { background: #232A55; color: var(--text); }
+  body.dark .num                   { color: var(--text); }
+  body.dark .num.depleted          { background: #161B36; color: var(--text-faint); }
+  body.dark .toggle                { background: #353C66; }
+  body.dark .toggle.on             { background: var(--primary); }
+  body.dark .reminder-banner       { background: #3D3320; color: #FFD487; }
+  body.dark .time-input            { background: rgba(255,255,255,0.06); color: var(--text); color-scheme: dark; }
+  body.dark .splash                { color: #FFD24D; text-shadow: 1px 1px 0 rgba(0,0,0,0.4); }
+  body.dark .nav-item.active       { background: #2A3160; }
+  body.dark .toast                 { background: #1A2042; }
+  body.dark .ad-screen,
+  body.dark .video-screen          { background: #060920; }
+  body.dark .ach-card              { background: #1A2042; }
+  body.dark .record-card           { background: #1A2042; }
+  body.dark .level-card            { background: #1A2042; }
+  body.dark .level-bar             { background: #2A3160; }
+  body.dark .progress              { background: #2A3160; }
+  body.dark .settings-row          { border-bottom-color: rgba(255,255,255,0.06); }
+  body.dark .board                 { background: #2A3160; }
+
+  /* ---------- AUTH ---------- */
+  .auth-hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    padding: 8px 4px 18px;
+  }
+  .auth-hero .home-logo { margin-top: 12px; }
+  .auth-hero .home-sub { margin-bottom: 20px; }
+
+  .auth-buttons {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .auth-btn {
+    background: #fff;
+    color: #1F2A44;
+    border: 1px solid #DDE0EE;
+    border-radius: var(--radius-pill);
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform .08s ease;
+  }
+  .auth-btn:active { transform: scale(0.98); }
+  .auth-btn .auth-ico { width: 20px; height: 20px; flex-shrink: 0; }
+  .auth-btn.apple { background: #1F2A44; color: #fff; border-color: #1F2A44; }
+  .auth-btn.facebook { background: #1877F2; color: #fff; border-color: #1877F2; }
+  body.dark .auth-btn { background: #1A2042; color: var(--text); border-color: #2A3160; }
+  body.dark .auth-btn.apple { background: #fff; color: #1F2A44; border-color: #fff; }
+
+  .auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0;
+    color: var(--text-mute);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .auth-divider::before,
+  .auth-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--card-strong);
+  }
+  .auth-skip {
+    background: transparent;
+    border: 0;
+    color: var(--text-mute);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px;
+    cursor: pointer;
+    margin-top: 4px;
+  }
+  .auth-skip:active { color: var(--primary); }
+  .auth-legal {
+    font-size: 11px;
+    color: var(--text-mute);
+    font-weight: 500;
+    line-height: 1.4;
+    text-align: center;
+    margin: 14px auto 18px;
+    max-width: 320px;
+  }
+  .auth-legal a { color: var(--primary); text-decoration: none; }
+
+  .email-input {
+    background: rgba(30, 42, 74, 0.06);
+    border: 0;
+    border-radius: var(--radius-pill);
+    padding: 14px 18px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text);
+    width: 100%;
+    box-sizing: border-box;
+  }
+  body.dark .email-input { background: rgba(255,255,255,0.06); color-scheme: dark; }
+
+  .account-pill {
+    background: var(--card);
+    border-radius: var(--radius-pill);
+    padding: 6px 14px 6px 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .account-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  /* ---------- HOME EXTRAS ---------- */
+  .home-top-row {
+    justify-content: space-between !important;
+    align-items: flex-start;
+    gap: 12px;
+    min-height: 36px;
+  }
+  .splash {
+    color: #FFB400;
+    font-style: italic;
+    font-weight: 800;
+    font-size: 15px;
+    text-align: right;
+    transform: rotate(-14deg);
+    transform-origin: right center;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.08);
+    max-width: 60%;
+    min-width: 0;
+    line-height: 1.15;
+    animation: splash-pulse 1.05s ease-in-out infinite;
+    cursor: pointer;
+    word-break: break-word;
+    flex-shrink: 1;
+  }
+  @keyframes splash-pulse {
+    0%, 100% { transform: rotate(-14deg) scale(1); }
+    50%      { transform: rotate(-14deg) scale(1.08); }
+  }
+
+  .level-card {
+    width: 100%;
+    max-width: 320px;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 12px 16px 14px;
+    margin-top: 8px;
+    box-shadow: var(--shadow-sm);
+  }
+  .level-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 14px; margin-bottom: 8px;
+  }
+  .level-row .level-name { color: var(--primary); font-weight: 700; font-size: 15px; }
+  .level-row .level-xp { color: var(--text-mute); font-weight: 600; font-size: 12px; }
+  .level-bar {
+    height: 8px; background: #DDDFEE;
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+  }
+  .level-bar > div {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #8B6CF6);
+    width: 0%;
+    border-radius: var(--radius-pill);
+    transition: width .5s ease;
+  }
+
+  .reminder-banner {
+    background: #FFF4D6;
+    color: #8A5A00;
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    font-size: 13px;
+    text-align: center;
+    margin: 12px auto 0;
+    line-height: 1.4;
+    font-weight: 600;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .nav.nav-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .nav.nav-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .nav.nav-4 .nav-item { font-size: 12px; padding: 8px 4px; }
+  @media (max-width: 380px) {
+    .nav.nav-4 .nav-item { font-size: 11px; padding: 8px 2px; letter-spacing: -0.2px; }
+  }
+
+  .streak small {
+    font-size: 11px;
+    color: var(--text-mute);
+    font-weight: 600;
+    margin-left: 2px;
+  }
+
+  .stats-pill {
+    background: var(--card);
+    border-radius: var(--radius-pill);
+    padding: 8px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 700;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .stats-pill .stat-item { display: inline-flex; align-items: center; gap: 4px; }
+  .stats-pill .stat-item.clickable { cursor: pointer; }
+  .stats-pill .stat-item.clickable:active { transform: scale(0.94); }
+  .stats-pill .stat-emoji { font-size: 14px; line-height: 1; }
+  .stats-pill .stat-sep {
+    width: 1px; height: 14px;
+    background: var(--card-strong);
+  }
+
+  .resume-card {
+    width: 100%;
+    max-width: 320px;
+    margin-top: 12px;
+    background: var(--primary);
+    color: #fff;
+    border: 0;
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(92, 92, 240, 0.30);
+    transition: transform .08s ease;
+    text-align: left;
+  }
+  .resume-card:active { transform: scale(0.98); }
+  .resume-title { font-size: 15px; font-weight: 700; }
+  .resume-sub { font-size: 12px; opacity: .85; margin-top: 2px; }
+  .resume-arrow { font-size: 28px; line-height: 1; }
+
+  /* Login-Bonus 7-Day Calendar */
+  .login-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 8px 0 18px;
+  }
+  .login-day {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 10px 6px;
+    text-align: center;
+    position: relative;
+    transition: transform .15s ease;
+  }
+  .login-day.claimed { opacity: .45; }
+  .login-day.today {
+    background: var(--primary-soft);
+    box-shadow: 0 0 0 2px var(--primary);
+    transform: scale(1.04);
+  }
+  .login-day.today.bigday {
+    background: linear-gradient(135deg, #FFE9A5, #FFC857);
+    box-shadow: 0 0 0 2px #FFB400;
+    color: #5C3A00;
+  }
+  .login-day .day-num   { font-size: 11px; color: var(--text-mute); font-weight: 700; margin-bottom: 2px; }
+  .login-day .day-coins { font-size: 14px; font-weight: 800; }
+  .login-day.day7 { grid-column: span 4; padding: 14px; }
+  .login-day.day7 .day-coins { font-size: 18px; }
+  .login-check {
+    position: absolute; top: 4px; right: 4px;
+    width: 14px; height: 14px;
+    background: var(--success);
+    border-radius: 50%;
+    color: white;
+    font-size: 9px;
+    line-height: 14px;
+    text-align: center;
+  }
+
+  /* Revive modal */
+  .revive-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--primary-soft);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+
+  /* SHOP */
+  .shop-balance {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--card);
+    border-radius: var(--radius-pill);
+    padding: 10px 18px;
+    margin: 8px auto 18px;
+    width: max-content;
+    font-weight: 800;
+    font-size: 16px;
+  }
+  .shop-balance .coin-emoji { font-size: 18px; }
+
+  .shop-section { margin-bottom: 22px; }
+  .shop-section-title {
+    color: var(--primary);
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .booster-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .booster-card {
+    background: var(--card);
+    border: 0;
+    border-radius: var(--radius);
+    padding: 14px 12px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform .1s ease;
+    position: relative;
+    color: var(--text);
+    font-family: inherit;
+    font-weight: 600;
+    width: 100%;
+  }
+  .booster-card:active { transform: scale(0.97); }
+  .booster-card.disabled { opacity: 0.5; cursor: default; }
+  .booster-icon { font-size: 32px; line-height: 1; margin-bottom: 6px; }
+  .booster-name { font-size: 13px; font-weight: 700; color: var(--text); }
+  .booster-desc { font-size: 11px; color: var(--text-mute); margin: 2px 0 8px; line-height: 1.3; }
+  .booster-buy {
+    background: var(--primary-soft);
+    color: var(--primary);
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .booster-card.disabled .booster-buy { background: var(--card-strong); color: var(--text-faint); }
+
+  /* Theme picker */
+  .theme-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 10px 0 18px;
+  }
+  .theme-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 10px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform .1s ease, border-color .15s ease;
+    position: relative;
+    text-align: left;
+    color: var(--text);
+    font-family: inherit;
+    width: 100%;
+  }
+  .theme-card:active { transform: scale(0.97); }
+  .theme-card.active { border-color: var(--primary); }
+  .theme-preview {
+    height: 70px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .theme-preview .pv-cell-given,
+  .theme-preview .pv-cell-user {
+    position: absolute;
+    font-size: 18px;
+    font-weight: 800;
+  }
+  .theme-preview .pv-cell-given { top: 14px; left: 14px; }
+  .theme-preview .pv-cell-user  { bottom: 14px; right: 14px; }
+  .theme-preview .pv-pill {
+    position: absolute;
+    bottom: 8px; left: 8px;
+    width: 28px; height: 6px;
+    border-radius: 3px;
+  }
+  .theme-name { font-size: 13px; font-weight: 700; color: var(--text); }
+  .theme-price {
+    font-size: 11px;
+    color: var(--text-mute);
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .theme-price.owned { color: var(--success); }
+  .theme-card .lock {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+  .theme-card.active .lock {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  /* Cost button (combined ad + coin option) */
+  .btn-with-cost {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .btn-with-cost .cost-tag {
+    background: rgba(255,255,255,0.22);
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .btn-secondary .cost-tag {
+    background: rgba(30,42,74,0.10);
+    color: var(--text);
+  }
+
+  /* ---------- SAMMLUNG ---------- */
+  .sammlung-title { margin-top: 6px; }
+  .section-h {
+    color: var(--primary);
+    font-size: 16px;
+    margin: 18px 0 10px;
+    font-weight: 700;
+  }
+  .records-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .record-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 14px 8px 12px;
+    text-align: center;
+  }
+  .record-icon {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+  .record-num { font-size: 22px; font-weight: 800; line-height: 1; }
+  .record-label { font-size: 11px; color: var(--text-mute); margin-top: 4px; font-weight: 600; }
+
+  .ach-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding-bottom: 16px;
+  }
+  .ach-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 12px 6px;
+    text-align: center;
+    opacity: .55;
+    transition: transform .15s ease, opacity .15s ease;
+    cursor: pointer;
+  }
+  .ach-card.unlocked { opacity: 1; }
+  .ach-card:active { transform: scale(0.97); }
+  .ach-icon {
+    font-size: 32px;
+    filter: grayscale(0.8);
+    transition: filter .2s ease;
+    line-height: 1;
+  }
+  .ach-card.unlocked .ach-icon { filter: none; }
+  .ach-title { font-size: 11px; margin-top: 6px; line-height: 1.2; color: var(--text); font-weight: 700; }
+  .ach-desc { font-size: 10px; margin-top: 2px; color: var(--text-mute); font-weight: 500; line-height: 1.2; }
+
+  /* ---------- TIME INPUT ---------- */
+  .time-input {
+    background: rgba(30, 42, 74, 0.06);
+    border: 0;
+    border-radius: 10px;
+    padding: 6px 10px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 700;
+    flex-shrink: 0;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* ---------- TOAST ---------- */
+  .toast-wrap {
+    position: fixed;
+    top: max(20px, env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 70;
+    display: flex; flex-direction: column; gap: 10px;
+    pointer-events: none;
+    width: 92%;
+    max-width: 360px;
+  }
+  .toast {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 12px 14px;
+    display: flex; align-items: center; gap: 12px;
+    animation: toast-in .35s cubic-bezier(.2,.9,.3,1.4);
+    pointer-events: auto;
+  }
+  .toast.fading { animation: toast-out .3s ease forwards; }
+  .toast-icon {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    background: var(--primary-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .toast-text { flex: 1; line-height: 1.25; min-width: 0; }
+  .toast-title { font-size: 13px; color: var(--primary); font-weight: 800; }
+  .toast-sub   { font-size: 14px; color: var(--text); font-weight: 700; margin-top: 1px; }
+  @keyframes toast-in  { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes toast-out { to { transform: translateY(-30px); opacity: 0; } }
+
+  /* ---------- TUTORIAL ---------- */
+  .tutorial-modal {
+    max-width: 380px;
+    padding: 30px 22px 22px;
+    position: relative;
+  }
+  .tutorial-back {
+    position: absolute;
+    top: 12px; left: 12px;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 0 0 3px 0;
+  }
+  .tutorial-back:active { transform: scale(0.94); }
+
+  .tutorial-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    min-height: 240px;
+    padding: 4px 0 8px;
+  }
+  .tutorial-slide .icon-bubble {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--primary-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+  }
+  .tutorial-slide h2 {
+    margin: 4px 0 0;
+    font-size: 22px;
+  }
+  .tutorial-slide p {
+    margin: 0;
+    color: var(--text-mute);
+    font-weight: 500;
+    line-height: 1.45;
+    font-size: 15px;
+    text-align: center;
+  }
+  .tutorial-slide p strong { color: var(--text); font-weight: 700; }
+
+  .mini-grid {
+    width: 132px; height: 132px;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    background: var(--card-strong);
+    border-radius: 8px;
+    overflow: hidden;
+    gap: 1px;
+    padding: 2px;
+  }
+  .mini-grid .mc {
+    background: #fff;
+  }
+  .mini-grid .mc.row-hl { background: #FFD8DC; }
+  .mini-grid .mc.col-hl { background: #DCE3FF; }
+  .mini-grid .mc.box-hl { background: #DDF5E5; }
+  .mini-grid .mc.cross  { background: #C8B6F2; }
+
+  .tutorial-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin: 10px 0 16px;
+  }
+  .tutorial-dots span {
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: var(--card-strong);
+    transition: width .2s ease, background .2s ease;
+  }
+  .tutorial-dots span.active {
+    width: 22px;
+    background: var(--primary);
+  }
+  .tutorial-footer {
+    flex-direction: row !important;
+    gap: 10px !important;
+  }
+  .tutorial-footer .btn-secondary { flex: 1; }
+  .tutorial-footer .btn-primary   { flex: 1.4; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============================ HOME ============================ -->
+  <section id="screen-home" class="screen">
+    <div class="home-top home-top-row">
+      <div class="stats-pill">
+        <span class="stat-item" id="stat-streak"><span class="stat-emoji">🔥</span><span id="streak">0</span></span>
+        <span class="stat-sep"></span>
+        <span class="stat-item clickable" id="stat-shield"><span class="stat-emoji">🛡</span><span id="shields">0</span></span>
+        <span class="stat-sep"></span>
+        <span class="stat-item"><span class="stat-emoji">🪙</span><span id="coins">0</span></span>
+      </div>
+      <div class="splash" id="splash">Trainiert dein Gehirn!</div>
+    </div>
+    <div class="home-hero">
+      <h1 class="home-logo">Brain<span class="dot">o</span>ku</h1>
+      <p class="home-sub">Sudoku · Täglich knobeln</p>
+      <div class="level-card">
+        <div class="level-row">
+          <span class="level-name">Level <span id="lvl-num">1</span></span>
+          <span class="level-xp"><span id="lvl-cur">0</span>/<span id="lvl-max">100</span> XP</span>
+        </div>
+        <div class="level-bar"><div id="lvl-fill"></div></div>
+      </div>
+      <button class="resume-card hidden" id="resume-card">
+        <div class="resume-info">
+          <div class="resume-title">Spielstand fortsetzen</div>
+          <div class="resume-sub" id="resume-sub">Schwer · 64 %</div>
+        </div>
+        <span class="resume-arrow">›</span>
+      </button>
+    </div>
+    <div id="reminder-banner" class="reminder-banner hidden">
+      ⏰ Heute schon Sudoku gespielt? Ein Spiel hält die Streak am Leben.
+    </div>
+    <button class="play-btn" id="btn-home-play">Spielen</button>
+    <div class="nav nav-4">
+      <div class="nav-item active" data-tab="home">
+        <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3z"/></svg>
+        Startseite
+      </div>
+      <div class="nav-item" data-tab="sammlung">
+        <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7L12 16l-6.3 4.3 2.3-7L2 8.9h7.6z"/></svg>
+        Sammlung
+      </div>
+      <div class="nav-item" data-tab="shop">
+        <svg viewBox="0 0 24 24"><path d="M5 9h14l-1.5 11h-11zM8 8a4 4 0 118 0h-2a2 2 0 10-4 0z"/></svg>
+        Shop
+      </div>
+      <div class="nav-item" data-tab="settings">
+        <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.4 4l1.5-2.4-2-3.4-2.8.6c-.5-.4-1-.7-1.6-.9L15.6 3h-4l-.9 2.9c-.6.2-1.1.5-1.6.9l-2.8-.6-2 3.4L5.8 12l-1.5 2.4 2 3.4 2.8-.6c.5.4 1 .7 1.6.9l.9 2.9h4l.9-2.9c.6-.2 1.1-.5 1.6-.9l2.8.6 2-3.4L21.4 12z"/></svg>
+        Einstellungen
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ AUTH ============================ -->
+  <section id="screen-auth" class="screen">
+    <div class="auth-hero">
+      <h1 class="home-logo">Brain<span class="dot">o</span>ku</h1>
+      <p class="home-sub">Sudoku · Täglich knobeln</p>
+      <div class="auth-buttons">
+        <button class="auth-btn" id="auth-google">
+          <svg class="auth-ico" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3a12 12 0 01-11.3 8 12 12 0 010-24c3 0 5.8 1.1 8 3l5.7-5.7A20 20 0 1024 44a20 20 0 0019.6-23.9z"/><path fill="#FF3D00" d="M6.3 14.1l6.6 4.8A12 12 0 0124 12c3 0 5.8 1.1 8 3l5.7-5.7A20 20 0 006.3 14.1z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2A12 12 0 0112.7 28L6 33.1A20 20 0 0024 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3a12 12 0 01-4.1 5.6l6.2 5.2c-.5.4 6.6-4.8 6.6-14.8 0-1.4-.1-2.6-.4-3.9z"/></svg>
+          Mit Google fortfahren
+        </button>
+        <button class="auth-btn apple" id="auth-apple">
+          <svg class="auth-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 1.5c-1.4.1-3 1-3.9 2.1-.8 1-1.5 2.5-1.3 3.9 1.5.1 3-.8 3.9-2 .9-1 1.5-2.5 1.3-4zM21 17.5a9.4 9.4 0 01-1.4 2.6c-.9 1.2-2.1 2.7-3.7 2.8-1.4 0-1.7-.9-3.6-.9-1.9 0-2.3.9-3.6 1-1.6 0-2.8-1.4-3.7-2.6C3.7 18 2.4 13.4 4 10.4c1-1.5 2.7-2.4 4.4-2.4 1.4 0 2.7.9 3.6.9.8 0 2.6-1.1 4.3-1 .8 0 2.7.3 4 2.5-3.5 2-2.9 6.7.7 8.1z"/></svg>
+          Mit Apple fortfahren
+        </button>
+        <button class="auth-btn facebook" id="auth-facebook">
+          <svg class="auth-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 10-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.5 2.9h-2.4v7A10 10 0 0022 12z"/></svg>
+          Mit Facebook fortfahren
+        </button>
+        <button class="auth-btn" id="auth-email">
+          <svg class="auth-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm0 4v10h16V8l-8 5z"/></svg>
+          Mit E-Mail fortfahren
+        </button>
+      </div>
+      <div class="auth-buttons" style="margin-top:10px;">
+        <div class="auth-divider">oder</div>
+        <button class="auth-skip" id="auth-skip">Ohne Konto fortfahren</button>
+      </div>
+      <p class="auth-legal">
+        Mit dem Anmelden akzeptierst du unsere Nutzungsbedingungen und die Datenschutzerklärung.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================ DIFFICULTY ============================ -->
+  <section id="screen-difficulty" class="screen">
+    <div class="game-header" style="grid-template-columns: auto 1fr auto;">
+      <button class="icon-btn" id="btn-diff-back">
+        <svg viewBox="0 0 24 24"><path d="M15.5 4l-8 8 8 8 1.4-1.4L10.3 12l6.6-6.6z"/></svg>
+      </button>
+      <div></div>
+      <div></div>
+    </div>
+    <div class="home-hero">
+      <h1 style="font-size:34px; margin:0;">Schwierigkeit</h1>
+      <div class="difficulty-card">
+        <h3>Wähle dein Level</h3>
+        <div class="difficulty-options">
+          <button class="difficulty-option" data-diff="leicht">Leicht <span class="lvl-stars">★</span></button>
+          <button class="difficulty-option" data-diff="mittel">Mittel <span class="lvl-stars">★★</span></button>
+          <button class="difficulty-option" data-diff="schwer">Schwer <span class="lvl-stars">★★★</span></button>
+          <button class="difficulty-option" data-diff="experte">Experte <span class="lvl-stars">★★★★</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ SAMMLUNG ============================ -->
+  <section id="screen-sammlung" class="screen">
+    <h1 class="settings-title sammlung-title">Sammlung</h1>
+
+    <h2 class="section-h">Rekorde</h2>
+    <div class="records-grid">
+      <div class="record-card">
+        <div class="record-icon" style="background:#FFE3D6;">🔥</div>
+        <div class="record-num" id="rec-streak">0</div>
+        <div class="record-label">Tagesserie</div>
+      </div>
+      <div class="record-card">
+        <div class="record-icon" style="background:#FFF1B8;">👑</div>
+        <div class="record-num" id="rec-winstreak">0</div>
+        <div class="record-label">Siegesserie</div>
+      </div>
+      <div class="record-card">
+        <div class="record-icon" style="background:#D6E4FF;">🏆</div>
+        <div class="record-num" id="rec-wins">0</div>
+        <div class="record-label">Siege</div>
+      </div>
+    </div>
+
+    <h2 class="section-h">Auszeichnungen</h2>
+    <div class="ach-grid" id="ach-grid"></div>
+
+    <div class="nav nav-4">
+      <div class="nav-item" data-tab="home">
+        <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3z"/></svg>
+        Startseite
+      </div>
+      <div class="nav-item active" data-tab="sammlung">
+        <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7L12 16l-6.3 4.3 2.3-7L2 8.9h7.6z"/></svg>
+        Sammlung
+      </div>
+      <div class="nav-item" data-tab="shop">
+        <svg viewBox="0 0 24 24"><path d="M5 9h14l-1.5 11h-11zM8 8a4 4 0 118 0h-2a2 2 0 10-4 0z"/></svg>
+        Shop
+      </div>
+      <div class="nav-item" data-tab="settings">
+        <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.4 4l1.5-2.4-2-3.4-2.8.6c-.5-.4-1-.7-1.6-.9L15.6 3h-4l-.9 2.9c-.6.2-1.1.5-1.6.9l-2.8-.6-2 3.4L5.8 12l-1.5 2.4 2 3.4 2.8-.6c.5.4 1 .7 1.6.9l.9 2.9h4l.9-2.9c.6-.2 1.1-.5 1.6-.9l2.8.6 2-3.4L21.4 12z"/></svg>
+        Einstellungen
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ SHOP ============================ -->
+  <section id="screen-shop" class="screen">
+    <h1 class="settings-title sammlung-title">Shop</h1>
+    <div class="shop-balance"><span class="coin-emoji">🪙</span> <span id="shop-coins">0</span> Coins</div>
+
+    <div class="shop-section">
+      <h2 class="shop-section-title">🎨 Designs</h2>
+      <div class="theme-grid" id="shop-theme-grid"></div>
+    </div>
+
+    <div class="shop-section">
+      <h2 class="shop-section-title">⚡ Booster</h2>
+      <div class="booster-grid">
+        <button class="booster-card" id="shop-shield">
+          <div class="booster-icon">🛡</div>
+          <div class="booster-name">Streak-Schild</div>
+          <div class="booster-desc">Schützt deine Streak bei einem verpassten Tag.</div>
+          <span class="booster-buy"><span id="shield-cost">300</span> 🪙</span>
+        </button>
+        <button class="booster-card" id="shop-hint-pack">
+          <div class="booster-icon">💡</div>
+          <div class="booster-name">Tipp-Paket</div>
+          <div class="booster-desc">3 Tipps fürs nächste Spiel direkt einsetzbar.</div>
+          <span class="booster-buy"><span id="hintpack-cost">120</span> 🪙</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="shop-section" id="shop-premium-section">
+      <h2 class="shop-section-title">⭐ Premium</h2>
+      <div class="booster-grid" style="grid-template-columns: 1fr;">
+        <button class="booster-card" id="shop-adfree">
+          <div class="booster-icon">🚫</div>
+          <div class="booster-name">Werbung entfernen</div>
+          <div class="booster-desc">Keine Werbung mehr — dauerhaft, einmalige Zahlung.</div>
+          <span class="booster-buy">9,99 €</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="nav nav-4">
+      <div class="nav-item" data-tab="home">
+        <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3z"/></svg>
+        Startseite
+      </div>
+      <div class="nav-item" data-tab="sammlung">
+        <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7L12 16l-6.3 4.3 2.3-7L2 8.9h7.6z"/></svg>
+        Sammlung
+      </div>
+      <div class="nav-item active" data-tab="shop">
+        <svg viewBox="0 0 24 24"><path d="M5 9h14l-1.5 11h-11zM8 8a4 4 0 118 0h-2a2 2 0 10-4 0z"/></svg>
+        Shop
+      </div>
+      <div class="nav-item" data-tab="settings">
+        <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.4 4l1.5-2.4-2-3.4-2.8.6c-.5-.4-1-.7-1.6-.9L15.6 3h-4l-.9 2.9c-.6.2-1.1.5-1.6.9l-2.8-.6-2 3.4L5.8 12l-1.5 2.4 2 3.4 2.8-.6c.5.4 1 .7 1.6.9l.9 2.9h4l.9-2.9c.6-.2 1.1-.5 1.6-.9l2.8.6 2-3.4L21.4 12z"/></svg>
+        Einstellungen
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ GAME ============================ -->
+  <section id="screen-game" class="screen">
+    <div class="game-header">
+      <button class="icon-btn" id="btn-game-back" title="Zurück">
+        <svg viewBox="0 0 24 24"><path d="M15.5 4l-8 8 8 8 1.4-1.4L10.3 12l6.6-6.6z"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-undo" title="Rückgängig">
+        <svg viewBox="0 0 24 24"><path d="M12.5 8c-2.6 0-5 1-6.8 2.7L3 8v7h7l-2.8-2.8a6.9 6.9 0 015.3-2.4 7 7 0 110 14 7 7 0 01-6.7-5H3.6A9 9 0 1012.5 8z"/></svg>
+      </button>
+      <div class="status">
+        <div class="game-meta">Lvl <span id="game-level">1</span> · Spiel #<span id="game-num">1</span></div>
+        <div class="difficulty-label" id="game-diff">Schwer</div>
+        <div class="hearts" id="hearts"></div>
+      </div>
+      <button class="tipp-btn" id="btn-tipp">
+        <svg viewBox="0 0 24 24"><path d="M4 5h12a2 2 0 012 2v3l4-2v8l-4-2v3a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2z"/></svg>
+        Tipp
+      </button>
+    </div>
+    <div class="progress"><div id="progress-fill"></div></div>
+    <div class="board-wrap">
+      <div class="board" id="board"></div>
+    </div>
+    <div class="actions">
+      <button class="action" id="act-erase">
+        <svg viewBox="0 0 24 24"><path d="M16.2 3.4a2 2 0 012.8 0l1.6 1.6a2 2 0 010 2.8L9.7 18.7a2 2 0 01-1.4.6H4v-4.3a2 2 0 01.6-1.4l11.6-10.2zm0 4l-9 9V18h1.5l9-9-1.5-1.6z"/></svg>
+        <span>Löschen</span>
+      </button>
+      <button class="action" id="act-notes">
+        <svg viewBox="0 0 24 24"><path d="M3 3h18v3H3zm0 6h18v3H3zm0 6h12v3H3z"/></svg>
+        <span>Notizen</span>
+      </button>
+      <button class="action" id="act-hint">
+        <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-4 12.7V17a2 2 0 002 2h4a2 2 0 002-2v-2.3A7 7 0 0012 2zm-2 19h4v1a1 1 0 01-1 1h-2a1 1 0 01-1-1z"/></svg>
+        <span>Tipp</span>
+      </button>
+      <button class="action" id="act-new">
+        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/></svg>
+        <span>Neu</span>
+      </button>
+    </div>
+    <div class="numpad" id="numpad"></div>
+  </section>
+
+  <!-- ============================ SETTINGS ============================ -->
+  <section id="screen-settings" class="screen">
+    <div class="home-top" style="justify-content:flex-start;">
+      <button class="settings-back" data-go="home">
+        <svg viewBox="0 0 24 24"><path d="M15.5 4l-8 8 8 8 1.4-1.4L10.3 12l6.6-6.6z"/></svg>
+      </button>
+    </div>
+    <h1 class="settings-title">Einstellungen</h1>
+    <div class="settings-list">
+      <div class="settings-group">
+        <div class="settings-row">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zm-1-7h2V7h-2zm0 4h2v-2h-2z"/></svg></div>
+          <div class="label">Sprache</div>
+          <div class="val">Deutsch ›</div>
+        </div>
+        <div class="settings-row">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 8l3 4-3 4M9 6l3 6-3 6m6-12l3 6-3 6"/></svg></div>
+          <div class="label">Vibrationen</div>
+          <div class="toggle on" data-setting="vibrate"></div>
+        </div>
+        <div class="settings-row">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 00-2.5-4v8a4.5 4.5 0 002.5-4z"/></svg></div>
+          <div class="label">Geräusche</div>
+          <div class="toggle on" data-setting="sound"></div>
+        </div>
+        <div class="settings-row">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M21 13a9 9 0 01-12-12 9 9 0 1012 12z"/></svg></div>
+          <div class="label">Dunkelmodus</div>
+          <div class="toggle" data-setting="dark"></div>
+        </div>
+        <div class="settings-row" id="row-tutorial">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 4h12a4 4 0 014 4v12H8a4 4 0 01-4-4zm2 2v10a2 2 0 002 2h10V8a2 2 0 00-2-2zm3 3h6v2H9zm0 4h6v2H9z"/></svg></div>
+          <div class="label">Anleitung anzeigen</div>
+          <div class="val">›</div>
+        </div>
+        <div class="settings-row">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zM8.5 11a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm7 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM12 17.5c2 0 3.7-1.2 4.4-3H7.6c.7 1.8 2.4 3 4.4 3z"/></svg></div>
+          <div class="label">
+            Kleinkind-Modus
+            <span class="label-sub">Hebt gleiche Zahlen automatisch hervor.</span>
+          </div>
+          <div class="toggle" data-setting="kleinkindMode"></div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-row">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 22a2 2 0 002-2h-4a2 2 0 002 2zm6-6V11a6 6 0 10-12 0v5l-2 2v1h16v-1z"/></svg></div>
+          <div class="label">Tägliche Erinnerung</div>
+          <div class="toggle" data-setting="reminderEnabled" id="toggle-reminder"></div>
+        </div>
+        <div class="settings-row" id="row-reminder-time">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zm.5-13H11v6l5 3 .8-1.3-4.3-2.5z"/></svg></div>
+          <div class="label">Erinnerungszeit</div>
+          <input type="time" id="reminder-time" class="time-input" />
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-row">
+          <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></div>
+          <div class="label">Werbung entfernen</div>
+          <div id="adfree-status" class="val">9,99 € ›</div>
+        </div>
+        <div class="settings-row" id="restore-purchase">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6a6 6 0 11-6 6H4a8 8 0 108-8z"/></svg></div>
+          <div class="label">Käufe wiederherstellen</div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-row" id="row-rate">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></div>
+          <div class="label">Bewerte uns</div>
+          <div class="val">›</div>
+        </div>
+        <div class="settings-row" id="row-contact">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.95l-3.75-3.75z"/></svg></div>
+          <div class="label">Schreib uns</div>
+          <div class="val">›</div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-row" id="row-privacy">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div>
+          <div class="label">Datenschutz</div>
+          <div class="val">›</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav nav-4">
+      <div class="nav-item" data-tab="home">
+        <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3z"/></svg>
+        Startseite
+      </div>
+      <div class="nav-item" data-tab="sammlung">
+        <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7L12 16l-6.3 4.3 2.3-7L2 8.9h7.6z"/></svg>
+        Sammlung
+      </div>
+      <div class="nav-item" data-tab="shop">
+        <svg viewBox="0 0 24 24"><path d="M5 9h14l-1.5 11h-11zM8 8a4 4 0 118 0h-2a2 2 0 10-4 0z"/></svg>
+        Shop
+      </div>
+      <div class="nav-item active" data-tab="settings">
+        <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.4 4l1.5-2.4-2-3.4-2.8.6c-.5-.4-1-.7-1.6-.9L15.6 3h-4l-.9 2.9c-.6.2-1.1.5-1.6.9l-2.8-.6-2 3.4L5.8 12l-1.5 2.4 2 3.4 2.8-.6c.5.4 1 .7 1.6.9l.9 2.9h4l.9-2.9c.6-.2 1.1-.5 1.6-.9l2.8.6 2-3.4L21.4 12z"/></svg>
+        Einstellungen
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ OVERLAYS ============================ -->
+  <div class="overlay" id="overlay-win">
+    <div class="modal">
+      <h2>Geschafft! 🎉</h2>
+      <p id="win-text">Du hast das Sudoku gelöst.</p>
+      <div class="modal-buttons">
+        <button class="btn-primary" id="btn-win-next">Nächstes Spiel</button>
+        <button class="btn-secondary" id="btn-win-home">Zur Startseite</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-lose">
+    <div class="modal">
+      <h2>Schade!</h2>
+      <p>Keine Leben mehr. Magst du es nochmal versuchen?</p>
+      <div class="modal-buttons">
+        <button class="btn-primary" id="btn-lose-retry">Nochmal</button>
+        <button class="btn-secondary" id="btn-lose-home">Zur Startseite</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-purchase">
+    <div class="modal">
+      <h2>Werbefrei für 9,99 €</h2>
+      <p>Keine Werbung mehr — dauerhaft. Einmal zahlen, ungestört knobeln.</p>
+      <div class="modal-buttons">
+        <button class="btn-primary" id="btn-buy-confirm">Jetzt kaufen</button>
+        <button class="btn-secondary" id="btn-buy-cancel">Später</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-tipp">
+    <div class="modal">
+      <h2>Tipp gegen Werbung</h2>
+      <p>Schau dir ein kurzes Video an und du bekommst einen Tipp geschenkt.</p>
+      <div class="modal-buttons">
+        <button class="btn-primary" id="btn-tipp-watch">Video ansehen</button>
+        <button class="btn-secondary" id="btn-tipp-cancel">Vielleicht später</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-video">
+    <div class="video-screen">
+      <span class="ad-tag">WERBUNG</span>
+      <div class="video-spinner"></div>
+      <div>
+        <div style="font-size:18px;">Video läuft …</div>
+        <div style="opacity:.7;font-size:13px;margin-top:4px;">Noch <span id="video-remaining">5</span> Sekunden</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-ad">
+    <div class="ad-screen">
+      <span class="ad-tag">WERBUNG</span>
+      <button class="ad-skip" id="btn-ad-skip" disabled>Überspringen in <span id="ad-count">5</span></button>
+      <div class="ad-body">
+        <div class="brand">🚀</div>
+        <h3>Schneller Sparen</h3>
+        <p>Die clevere App fürs Haushaltsbuch.<br>Jetzt kostenlos testen.</p>
+        <button class="ad-cta">Mehr erfahren</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-wrap" id="toast-wrap"></div>
+
+  <div class="overlay" id="overlay-info">
+    <div class="modal" style="text-align:left; max-width:380px;">
+      <h2 id="info-title" style="text-align:center;">Info</h2>
+      <div id="info-body" style="color:var(--text-mute); font-weight:500; line-height:1.5; font-size:14px; max-height:50vh; overflow-y:auto; margin-bottom:16px;"></div>
+      <div class="modal-buttons">
+        <button class="btn-primary" id="btn-info-close">Schließen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-login">
+    <div class="modal">
+      <h2>Tägliches Geschenk 🎁</h2>
+      <p>Komm jeden Tag wieder und sammle Bonus-Coins.</p>
+      <div class="login-grid" id="login-grid"></div>
+      <div class="modal-buttons">
+        <button class="btn-primary" id="btn-login-claim">Abholen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-revive">
+    <div class="modal">
+      <div class="revive-icon">❤️</div>
+      <h2>Noch ein Leben?</h2>
+      <p>Schau ein kurzes Video oder zahle <strong>150 🪙</strong> für ein zusätzliches Leben und spiel weiter.</p>
+      <div class="modal-buttons">
+        <button class="btn-primary btn-with-cost" id="btn-revive-watch">Video ansehen</button>
+        <button class="btn-secondary btn-with-cost" id="btn-revive-coins">Mit Coins zahlen <span class="cost-tag">150 🪙</span></button>
+        <button class="btn-secondary" id="btn-revive-cancel">Aufgeben</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-email-auth">
+    <div class="modal">
+      <h2>E-Mail-Anmeldung</h2>
+      <p>Wir senden dir einen Login-Link per E-Mail.</p>
+      <input type="email" class="email-input" id="email-input" placeholder="deine@email.de" autocomplete="email" />
+      <div class="modal-buttons" style="margin-top:14px;">
+        <button class="btn-primary" id="btn-email-send">Link senden</button>
+        <button class="btn-secondary" id="btn-email-cancel">Abbrechen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-shield">
+    <div class="modal">
+      <div class="revive-icon">🛡</div>
+      <h2>Streak-Schild</h2>
+      <p>Verpasst du einen Tag, schützt dich ein Schild davor, deine Streak zu verlieren. Maximal 3 Schilde gleichzeitig.</p>
+      <div class="modal-buttons">
+        <button class="btn-primary btn-with-cost" id="btn-shield-watch">Video ansehen</button>
+        <button class="btn-secondary btn-with-cost" id="btn-shield-coins">Mit Coins zahlen <span class="cost-tag">300 🪙</span></button>
+        <button class="btn-secondary" id="btn-shield-cancel">Schließen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-rate">
+    <div class="modal">
+      <h2>Gefällt dir Brainoku?</h2>
+      <p>Eine Bewertung im App Store hilft uns enorm — und kostet nur einen Moment.</p>
+      <div id="rate-stars" style="display:flex; justify-content:center; gap:6px; font-size:36px; margin-bottom:18px; cursor:pointer;">
+        <span data-s="1">☆</span><span data-s="2">☆</span><span data-s="3">☆</span><span data-s="4">☆</span><span data-s="5">☆</span>
+      </div>
+      <div class="modal-buttons">
+        <button class="btn-primary" id="btn-rate-go">Im App Store bewerten</button>
+        <button class="btn-secondary" id="btn-rate-later">Später</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-tutorial">
+    <div class="modal tutorial-modal">
+      <button class="tutorial-back hidden" id="btn-tut-back" aria-label="Zurück">‹</button>
+      <div id="tut-slide" class="tutorial-slide"></div>
+      <div class="tutorial-dots" id="tut-dots"></div>
+      <div class="modal-buttons tutorial-footer">
+        <button class="btn-secondary" id="btn-tut-skip">Überspringen</button>
+        <button class="btn-primary" id="btn-tut-next">Weiter</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+/* =========================================================
+   STATE
+========================================================= */
+const STORE_KEY = 'sudoku-state-v1';
+const state = loadState();
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+    return Object.assign({
+      streak: 0,
+      longestStreak: 0,
+      lastPlayedDate: null,
+      completed: 0,
+      completedByDifficulty: { leicht: 0, mittel: 0, schwer: 0, experte: 0 },
+      currentWinStreak: 0,
+      longestWinStreak: 0,
+      perfectGames: 0,
+      xp: 0,
+      coins: 0,
+      streakFreezes: 0,
+      lastLoginBonusDate: null,
+      loginBonusDay: 0,
+      savedGame: null,
+      theme: 'classic',
+      unlockedThemes: { classic: true },
+      hintCredits: 0,
+      account: null,
+      authSeen: false,
+      adFree: false,
+      sound: true,
+      vibrate: true,
+      dark: false,
+      tutorialSeen: false,
+      lastDifficulty: 'mittel',
+      kleinkindMode: false,
+      achievements: {},
+      reminderEnabled: false,
+      reminderTime: '19:00',
+      lastReminderSent: null,
+    }, s);
+  } catch { return { streak:0, longestStreak:0, lastPlayedDate:null, completed:0, currentWinStreak:0, longestWinStreak:0, perfectGames:0, xp:0, coins:0, streakFreezes:0, lastLoginBonusDate:null, loginBonusDay:0, savedGame:null, adFree:false, sound:true, vibrate:true, dark:false, tutorialSeen:false, lastDifficulty:'mittel', kleinkindMode:false, achievements:{}, reminderEnabled:false, reminderTime:'19:00', lastReminderSent:null }; }
+}
+function saveState() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+
+/* =========================================================
+   SUPABASE / AUTH
+   Trage deine Supabase-Keys ein, dann läuft echte OAuth.
+   Lass leer für Demo-/Gast-Modus.
+========================================================= */
+const SUPABASE_URL      = ''; // z.B. 'https://xxx.supabase.co'
+const SUPABASE_ANON_KEY = ''; // anon public key
+
+const supabase = (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase)
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+
+async function signInProvider(provider) {
+  if (supabase) {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: location.origin }
+    });
+    if (error) showToast('⚠️', 'Login fehlgeschlagen', error.message || 'Unbekannter Fehler');
+    return; // OAuth redirected die Seite, danach sehen wir Session via getSession()
+  }
+  // Demo-/Mock-Login
+  finishLogin({
+    id: 'mock-' + provider + '-' + Math.random().toString(36).slice(2, 8),
+    provider,
+    email: provider + '@brainoku.local',
+    displayName: provider[0].toUpperCase() + provider.slice(1) + '-User',
+  });
+}
+
+async function signInEmail(email) {
+  if (!email || !email.includes('@')) {
+    showToast('⚠️', 'Ungültige E-Mail', 'Bitte eine gültige Adresse eingeben.');
+    return;
+  }
+  if (supabase) {
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: location.origin }
+    });
+    if (error) showToast('⚠️', 'Login fehlgeschlagen', error.message);
+    else showToast('📧', 'E-Mail unterwegs', 'Klick den Link in deinem Postfach.');
+    return;
+  }
+  // Mock
+  finishLogin({
+    id: 'mock-email-' + Math.random().toString(36).slice(2, 8),
+    provider: 'email',
+    email,
+    displayName: email.split('@')[0],
+  });
+}
+
+async function signOut() {
+  if (supabase) {
+    try { await supabase.auth.signOut(); } catch (e) {}
+  }
+  state.account = null;
+  state.authSeen = false;
+  saveState();
+  show('auth');
+}
+
+function finishLogin(account) {
+  state.account = account;
+  state.authSeen = true;
+  saveState();
+  showToast('✅', 'Angemeldet', account.displayName || account.email || 'Willkommen!');
+  postAuthFlow();
+}
+
+function continueAsGuest() {
+  state.authSeen = true;
+  saveState();
+  postAuthFlow();
+}
+
+function postAuthFlow() {
+  show('home');
+  if (!state.tutorialSeen) openTutorial();
+  else checkLoginBonus();
+}
+
+// Auf zurückkehrenden OAuth-Redirect reagieren
+async function checkSupabaseSession() {
+  if (!supabase) return;
+  const { data } = await supabase.auth.getSession();
+  if (data?.session?.user) {
+    const u = data.session.user;
+    state.account = {
+      id: u.id,
+      provider: u.app_metadata?.provider || 'email',
+      email: u.email || null,
+      displayName: u.user_metadata?.full_name || u.user_metadata?.name || (u.email ? u.email.split('@')[0] : 'Spieler'),
+      avatarUrl: u.user_metadata?.avatar_url || null,
+    };
+    state.authSeen = true;
+    saveState();
+  }
+}
+
+// UI-Hooks
+document.getElementById('auth-google'  ).addEventListener('click', () => signInProvider('google'));
+document.getElementById('auth-apple'   ).addEventListener('click', () => signInProvider('apple'));
+document.getElementById('auth-facebook').addEventListener('click', () => signInProvider('facebook'));
+document.getElementById('auth-email'   ).addEventListener('click', () => {
+  document.getElementById('overlay-email-auth').classList.add('active');
+  setTimeout(() => document.getElementById('email-input').focus(), 100);
+});
+document.getElementById('auth-skip').addEventListener('click', continueAsGuest);
+document.getElementById('btn-email-send').addEventListener('click', () => {
+  const email = document.getElementById('email-input').value.trim();
+  document.getElementById('overlay-email-auth').classList.remove('active');
+  signInEmail(email);
+});
+document.getElementById('btn-email-cancel').addEventListener('click', () => {
+  document.getElementById('overlay-email-auth').classList.remove('active');
+});
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+const screens = ['auth', 'home', 'difficulty', 'sammlung', 'shop', 'game', 'settings'];
+function show(name) {
+  screens.forEach(s => document.getElementById('screen-'+s).classList.toggle('active', s === name));
+  if (name !== 'game') stopIdleTimer();
+  if (name === 'home') refreshHome();
+  if (name === 'sammlung') refreshSammlung();
+  if (name === 'shop') refreshShop();
+}
+
+document.querySelectorAll('[data-tab]').forEach(el => {
+  el.addEventListener('click', () => show(el.dataset.tab));
+});
+document.querySelectorAll('[data-go]').forEach(el => {
+  el.addEventListener('click', () => show(el.dataset.go));
+});
+document.getElementById('btn-home-play').addEventListener('click', () => show('difficulty'));
+document.getElementById('btn-diff-back').addEventListener('click', () => show('home'));
+document.getElementById('btn-game-back').addEventListener('click', () => show('home'));
+
+document.querySelectorAll('.difficulty-option').forEach(el => {
+  el.addEventListener('click', () => startGame(el.dataset.diff));
+});
+
+/* =========================================================
+   SUDOKU GENERATOR  (shuffled-base; quick & good enough)
+========================================================= */
+function shuffleArr(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function generateSolved() {
+  const base = 3, side = 9;
+  const pattern = (r, c) => (base * (r % base) + Math.floor(r / base) + c) % side;
+  const rBase = [0, 1, 2];
+  const rows = shuffleArr(rBase.slice()).flatMap(g => shuffleArr(rBase.slice()).map(r => g * base + r));
+  const cols = shuffleArr(rBase.slice()).flatMap(g => shuffleArr(rBase.slice()).map(c => g * base + c));
+  const nums = shuffleArr([1,2,3,4,5,6,7,8,9]);
+  const board = [];
+  for (let r = 0; r < 9; r++) {
+    const row = [];
+    for (let c = 0; c < 9; c++) row.push(nums[pattern(rows[r], cols[c])]);
+    board.push(row);
+  }
+  return board;
+}
+
+const HOLES = { leicht: 38, mittel: 46, schwer: 52, experte: 58 };
+
+function generatePuzzle(difficulty) {
+  const solved = generateSolved();
+  const puzzle = solved.map(r => r.slice());
+  const positions = [];
+  for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++) positions.push([r, c]);
+  shuffleArr(positions);
+  const holes = HOLES[difficulty] || 46;
+  for (let i = 0; i < holes; i++) {
+    const [r, c] = positions[i];
+    puzzle[r][c] = 0;
+  }
+  return { solved, puzzle };
+}
+
+/* =========================================================
+   GAME
+========================================================= */
+const game = {
+  difficulty: 'mittel',
+  solved: null,
+  start: null,         // initial puzzle
+  board: null,         // current board
+  notes: null,         // 9x9 of Set<number>
+  selected: null,      // {r, c}
+  lives: 3,
+  notesMode: false,
+  history: [],         // for undo
+  hintsUsedThisGame: 0,
+  errorsThisGame: 0,
+  startTime: null,
+  finished: false,
+};
+
+function startGame(diff) {
+  state.lastDifficulty = diff; saveState();
+  game.difficulty = diff;
+  const { solved, puzzle } = generatePuzzle(diff);
+  game.solved = solved;
+  game.start = puzzle.map(r => r.slice());
+  game.board = puzzle.map(r => r.slice());
+  game.notes = Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => new Set()));
+  game.selected = null;
+  game.lives = 3;
+  game.notesMode = false;
+  game.history = [];
+  game.hintsUsedThisGame = 0;
+  game.errorsThisGame = 0;
+  game.startTime = Date.now();
+  game.reviveUsed = false;
+  game.finished = false;
+  clearSavedGame();
+
+  document.getElementById('game-diff').textContent =
+    diff[0].toUpperCase() + diff.slice(1);
+  document.getElementById('game-level').textContent = levelOf(state.xp);
+  document.getElementById('game-num').textContent = completedFor(diff) + 1;
+  document.getElementById('act-notes').classList.remove('active');
+
+  buildBoard();
+  buildNumpad();
+  renderHearts();
+  updateProgress();
+  show('game');
+  resetIdleTimer();
+}
+
+function buildBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+  for (let r = 0; r < 9; r++) {
+    for (let c = 0; c < 9; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.dataset.r = r;
+      cell.dataset.c = c;
+      if ((c + 1) % 3 === 0 && c !== 8) cell.classList.add('br-r');
+      if ((r + 1) % 3 === 0 && r !== 8) cell.classList.add('br-b');
+      cell.addEventListener('click', () => selectCell(r, c));
+      board.appendChild(cell);
+    }
+  }
+  renderBoard();
+}
+
+function buildNumpad() {
+  const pad = document.getElementById('numpad');
+  pad.innerHTML = '';
+  for (let n = 1; n <= 9; n++) {
+    const b = document.createElement('button');
+    b.className = 'num';
+    b.dataset.n = n;
+    b.innerHTML = `${n}<small></small>`;
+    b.addEventListener('click', () => inputDigit(n));
+    pad.appendChild(b);
+  }
+  updateNumpadCounts();
+}
+
+function renderBoard() {
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach(cell => {
+    const r = +cell.dataset.r, c = +cell.dataset.c;
+    cell.classList.remove('given','user','peer','same','selected','error');
+    cell.innerHTML = '';
+    const v = game.board[r][c];
+    if (v) {
+      cell.textContent = v;
+      cell.classList.add(game.start[r][c] ? 'given' : 'user');
+    } else if (game.notes[r][c].size) {
+      const n = document.createElement('div');
+      n.className = 'notes';
+      for (let k = 1; k <= 9; k++) {
+        const s = document.createElement('span');
+        s.textContent = game.notes[r][c].has(k) ? k : '';
+        n.appendChild(s);
+      }
+      cell.appendChild(n);
+    }
+  });
+  if (game.selected) highlightSelection();
+  updateNumpadCounts();
+}
+
+function highlightSelection() {
+  const { r, c } = game.selected;
+  const v = game.board[r][c];
+  document.querySelectorAll('.cell').forEach(cell => {
+    const cr = +cell.dataset.r, cc = +cell.dataset.c;
+    cell.classList.remove('peer','same','selected');
+    if (cr === r && cc === c) cell.classList.add('selected');
+    else if (cr === r || cc === c || (Math.floor(cr/3)===Math.floor(r/3) && Math.floor(cc/3)===Math.floor(c/3))) cell.classList.add('peer');
+    if (state.kleinkindMode && v && game.board[cr][cc] === v) cell.classList.add('same');
+  });
+}
+
+function selectCell(r, c) {
+  game.selected = { r, c };
+  highlightSelection();
+  resetIdleTimer();
+}
+
+function inputDigit(n) {
+  if (game.finished || !game.selected) return;
+  const { r, c } = game.selected;
+  if (game.start[r][c] !== 0) return; // can't overwrite given
+  resetIdleTimer();
+
+  if (game.notesMode) {
+    game.history.push({ type: 'note', r, c, prev: new Set(game.notes[r][c]), prevVal: game.board[r][c] });
+    if (game.notes[r][c].has(n)) game.notes[r][c].delete(n);
+    else game.notes[r][c].add(n);
+    game.board[r][c] = 0;
+    renderBoard();
+    saveCurrentGame();
+    return;
+  }
+
+  game.history.push({ type: 'value', r, c, prev: game.board[r][c], prevNotes: new Set(game.notes[r][c]) });
+  game.board[r][c] = n;
+  game.notes[r][c].clear();
+
+  const correct = game.solved[r][c] === n;
+  renderBoard();
+
+  if (!correct) {
+    const cell = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+    cell.classList.add('error');
+    vibrate(60);
+    playSfx('error');
+    setTimeout(() => {
+      game.board[r][c] = 0;
+      renderBoard();
+    }, 500);
+    game.lives--;
+    game.errorsThisGame++;
+    renderHearts();
+    if (game.lives <= 0) {
+      stopIdleTimer();
+      offerRevive();
+    } else {
+      saveCurrentGame();
+    }
+  } else {
+    vibrate(20);
+    playSfx('correct');
+    updateProgress();
+    if (isComplete()) winGame();
+    else saveCurrentGame();
+  }
+}
+
+function undo() {
+  if (!game.history.length || game.finished) return;
+  const last = game.history.pop();
+  if (last.type === 'value') {
+    game.board[last.r][last.c] = last.prev;
+    game.notes[last.r][last.c] = last.prevNotes;
+  } else {
+    game.notes[last.r][last.c] = last.prev;
+    game.board[last.r][last.c] = last.prevVal;
+  }
+  renderBoard();
+  saveCurrentGame();
+  resetIdleTimer();
+}
+
+function eraseSelected() {
+  if (!game.selected || game.finished) return;
+  const { r, c } = game.selected;
+  if (game.start[r][c] !== 0) return;
+  game.history.push({ type: 'value', r, c, prev: game.board[r][c], prevNotes: new Set(game.notes[r][c]) });
+  game.board[r][c] = 0;
+  game.notes[r][c].clear();
+  renderBoard();
+  saveCurrentGame();
+  resetIdleTimer();
+}
+
+function isComplete() {
+  for (let r = 0; r < 9; r++)
+    for (let c = 0; c < 9; c++)
+      if (game.board[r][c] !== game.solved[r][c]) return false;
+  return true;
+}
+
+function updateProgress() {
+  let filled = 0, total = 0;
+  for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++) {
+    if (game.start[r][c] === 0) {
+      total++;
+      if (game.board[r][c] === game.solved[r][c]) filled++;
+    }
+  }
+  const pct = total ? Math.round((filled / total) * 100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function updateNumpadCounts() {
+  const counts = Array(10).fill(0);
+  for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++) {
+    if (game.board[r][c] === game.solved[r][c]) counts[game.board[r][c]]++;
+  }
+  document.querySelectorAll('.num').forEach(b => {
+    const n = +b.dataset.n;
+    const left = 9 - counts[n];
+    b.querySelector('small').textContent = left > 0 ? left : '';
+    b.classList.toggle('depleted', left <= 0);
+  });
+}
+
+function renderHearts() {
+  const wrap = document.getElementById('hearts');
+  wrap.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    const filled = i < game.lives;
+    wrap.insertAdjacentHTML('beforeend', `
+      <svg viewBox="0 0 24 24">
+        <path d="M12 21s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 11c0 5.5-7 10-7 10z"
+              fill="${filled ? 'var(--heart)' : 'var(--heart-empty)'}"/>
+      </svg>`);
+  }
+}
+
+/* =========================================================
+   HINTS
+========================================================= */
+function applyHint() {
+  // Find a still-empty cell that has the wrong or no value, fill it correctly
+  const empty = [];
+  for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++) {
+    if (game.start[r][c] === 0 && game.board[r][c] !== game.solved[r][c]) empty.push([r, c]);
+  }
+  if (!empty.length) return;
+  const [r, c] = empty[Math.floor(Math.random() * empty.length)];
+  game.history.push({ type: 'value', r, c, prev: game.board[r][c], prevNotes: new Set(game.notes[r][c]) });
+  game.board[r][c] = game.solved[r][c];
+  game.notes[r][c].clear();
+  renderBoard();
+  const cell = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+  cell.classList.add('hint-flash');
+  playSfx('hint');
+  setTimeout(() => cell.classList.remove('hint-flash'), 1200);
+  game.hintsUsedThisGame++;
+  updateProgress();
+  if (isComplete()) winGame();
+  else saveCurrentGame();
+}
+
+/* =========================================================
+   IDLE -> TIPP
+========================================================= */
+let idleTimer = null;
+const tippBtn = document.getElementById('btn-tipp');
+
+function resetIdleTimer() {
+  stopIdleTimer();
+  if (game.finished) return;
+  tippBtn.classList.remove('visible');
+  idleTimer = setTimeout(() => {
+    if (!game.finished) tippBtn.classList.add('visible');
+  }, 10000);
+}
+function stopIdleTimer() {
+  if (idleTimer) clearTimeout(idleTimer);
+  idleTimer = null;
+  tippBtn.classList.remove('visible');
+}
+
+tippBtn.addEventListener('click', () => {
+  stopIdleTimer();
+  document.getElementById('overlay-tipp').classList.add('active');
+});
+document.getElementById('btn-tipp-cancel').addEventListener('click', () => {
+  document.getElementById('overlay-tipp').classList.remove('active');
+  resetIdleTimer();
+});
+document.getElementById('btn-tipp-watch').addEventListener('click', () => {
+  document.getElementById('overlay-tipp').classList.remove('active');
+  playTippVideo();
+});
+document.getElementById('act-hint').addEventListener('click', () => {
+  if (state.adFree) { applyHint(); resetIdleTimer(); return; }
+  if ((state.hintCredits || 0) > 0) {
+    state.hintCredits--;
+    saveState();
+    applyHint();
+    showToast('💡', 'Pack-Tipp', `${state.hintCredits} übrig.`);
+    resetIdleTimer();
+    return;
+  }
+  document.getElementById('overlay-tipp').classList.add('active');
+});
+
+function playTippVideo() {
+  playRewardedAd(() => { applyHint(); resetIdleTimer(); });
+}
+
+/* =========================================================
+   AD INTERSTITIAL  (every 20 completed rounds)
+========================================================= */
+function maybeShowInterstitial(after) {
+  if (state.adFree) { after(); return; }
+  if (state.completed > 0 && state.completed % 20 === 0) {
+    showInterstitial(after);
+  } else {
+    after();
+  }
+}
+
+function showInterstitial(done) {
+  let secs = 5;
+  const skip = document.getElementById('btn-ad-skip');
+  const count = document.getElementById('ad-count');
+  count.textContent = secs;
+  skip.disabled = true;
+  document.getElementById('overlay-ad').classList.add('active');
+  const t = setInterval(() => {
+    secs--;
+    count.textContent = secs;
+    if (secs <= 0) {
+      clearInterval(t);
+      skip.disabled = false;
+      skip.innerHTML = 'Schließen ✕';
+    }
+  }, 1000);
+  skip.onclick = () => {
+    if (skip.disabled) return;
+    clearInterval(t);
+    document.getElementById('overlay-ad').classList.remove('active');
+    done();
+  };
+}
+
+/* =========================================================
+   WIN / LOSE
+========================================================= */
+function winGame() {
+  if (game.finished) return;
+  game.finished = true;
+  stopIdleTimer();
+
+  state.completed++;
+  state.completedByDifficulty = state.completedByDifficulty || { leicht: 0, mittel: 0, schwer: 0, experte: 0 };
+  state.completedByDifficulty[game.difficulty] = (state.completedByDifficulty[game.difficulty] || 0) + 1;
+  state.currentWinStreak = (state.currentWinStreak || 0) + 1;
+  if (state.currentWinStreak > (state.longestWinStreak || 0)) state.longestWinStreak = state.currentWinStreak;
+
+  const isPerfect = game.errorsThisGame === 0;
+  if (isPerfect) state.perfectGames = (state.perfectGames || 0) + 1;
+
+  awardXP(game.difficulty);
+  const newDay = bumpDailyStreak();
+  clearSavedGame();
+  saveState();
+
+  const ctx = {
+    difficulty: game.difficulty,
+    noHint: game.hintsUsedThisGame === 0,
+    timeSec: Math.floor((Date.now() - (game.startTime || Date.now())) / 1000),
+  };
+  checkAchievements(ctx);
+
+  let msg = `Spiel ${state.completed} gelöst.`;
+  if (newDay) msg += ` Tagesserie: ${state.streak} ${state.streak === 1 ? 'Tag' : 'Tage'}.`;
+  if (state.completed % 20 === 0 && !state.adFree) msg += ' Kurze Werbung folgt.';
+  document.getElementById('win-text').textContent = msg;
+  document.getElementById('overlay-win').classList.add('active');
+  playSfx('win');
+}
+
+function actuallyLoseGame() {
+  if (game.finished) return;
+  game.finished = true;
+  state.currentWinStreak = 0;
+  clearSavedGame();
+  saveState();
+  stopIdleTimer();
+  document.getElementById('overlay-lose').classList.add('active');
+  playSfx('lose');
+}
+
+document.getElementById('btn-win-next').addEventListener('click', () => {
+  document.getElementById('overlay-win').classList.remove('active');
+  maybeShowInterstitial(() => startGame(game.difficulty));
+});
+document.getElementById('btn-win-home').addEventListener('click', () => {
+  document.getElementById('overlay-win').classList.remove('active');
+  maybeShowInterstitial(() => show('home'));
+});
+document.getElementById('btn-lose-retry').addEventListener('click', () => {
+  document.getElementById('overlay-lose').classList.remove('active');
+  startGame(game.difficulty);
+});
+document.getElementById('btn-lose-home').addEventListener('click', () => {
+  document.getElementById('overlay-lose').classList.remove('active');
+  show('home');
+});
+
+/* =========================================================
+   ACTION BAR
+========================================================= */
+document.getElementById('btn-undo').addEventListener('click', undo);
+document.getElementById('act-erase').addEventListener('click', eraseSelected);
+document.getElementById('act-notes').addEventListener('click', () => {
+  game.notesMode = !game.notesMode;
+  document.getElementById('act-notes').classList.toggle('active', game.notesMode);
+  resetIdleTimer();
+});
+document.getElementById('act-new').addEventListener('click', () => show('difficulty'));
+
+/* =========================================================
+   KEYBOARD INPUT
+========================================================= */
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('screen-game').classList.contains('active')) return;
+  if (e.key >= '1' && e.key <= '9') inputDigit(parseInt(e.key));
+  else if (e.key === 'Backspace' || e.key === 'Delete') eraseSelected();
+  else if (e.key === 'z' && (e.ctrlKey || e.metaKey)) undo();
+  else if (game.selected) {
+    let { r, c } = game.selected;
+    if (e.key === 'ArrowUp') r = Math.max(0, r - 1);
+    else if (e.key === 'ArrowDown') r = Math.min(8, r + 1);
+    else if (e.key === 'ArrowLeft') c = Math.max(0, c - 1);
+    else if (e.key === 'ArrowRight') c = Math.min(8, c + 1);
+    else return;
+    selectCell(r, c);
+    e.preventDefault();
+  }
+});
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+function applySettings() {
+  document.querySelectorAll('.toggle').forEach(t => {
+    const key = t.dataset.setting;
+    if (state[key]) t.classList.add('on'); else t.classList.remove('on');
+  });
+  document.body.classList.toggle('dark', !!state.dark);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', state.dark ? '#10142A' : '#F2F3F9');
+  applyTheme(state.theme || 'classic');
+  refreshAdFreeUI();
+}
+document.querySelectorAll('.toggle').forEach(t => {
+  if (t.id === 'toggle-reminder') return; // handled separately
+  t.addEventListener('click', () => {
+    const key = t.dataset.setting;
+    state[key] = !state[key];
+    saveState();
+    applySettings();
+  });
+});
+document.querySelector('.settings-row .label').parentElement; // no-op
+
+document.querySelectorAll('.settings-row').forEach(row => {
+  if (row.querySelector('.label')?.textContent === 'Werbung entfernen') {
+    row.addEventListener('click', () => {
+      if (state.adFree) return;
+      document.getElementById('overlay-purchase').classList.add('active');
+    });
+  }
+});
+document.getElementById('btn-buy-cancel').addEventListener('click', () => {
+  document.getElementById('overlay-purchase').classList.remove('active');
+});
+document.getElementById('btn-buy-confirm').addEventListener('click', () => {
+  state.adFree = true; saveState();
+  document.getElementById('overlay-purchase').classList.remove('active');
+  refreshAdFreeUI();
+});
+document.getElementById('restore-purchase').addEventListener('click', () => {
+  showToast('🛒', 'Käufe wiederherstellen', state.adFree ? 'Werbefrei aktiv.' : 'Keine Käufe gefunden.');
+});
+
+/* ---- Info / Rate / Contact / Privacy ---- */
+function openInfo(title, body) {
+  document.getElementById('info-title').textContent = title;
+  document.getElementById('info-body').innerHTML = body;
+  document.getElementById('overlay-info').classList.add('active');
+}
+document.getElementById('btn-info-close').addEventListener('click', () => {
+  document.getElementById('overlay-info').classList.remove('active');
+});
+
+document.getElementById('row-privacy').addEventListener('click', () => openInfo('Datenschutz', `
+  <p><strong>Brainoku Sudoku</strong> respektiert deine Privatsphäre.</p>
+  <p>Lokale Daten (Streak, Level, Errungenschaften, Einstellungen) werden ausschließlich auf deinem Gerät im Browser-Speicher abgelegt — sie verlassen dein Gerät nicht.</p>
+  <p>In der kostenlosen Version werden Werbeanzeigen über einen Drittanbieter ausgeliefert. Anonyme Werbedaten können dabei vom Werbenetzwerk verarbeitet werden, gemäß dessen Datenschutzerklärung.</p>
+  <p>Mit dem Kauf von „Werbung entfernen" werden keine Werbedaten mehr verarbeitet.</p>
+  <p>Es werden keine Konten, E-Mail-Adressen oder personenbezogenen Daten erhoben.</p>
+  <p style="font-size:11px; opacity:.6; margin-top:12px;">Stand: ${new Date().toLocaleDateString('de-DE')}</p>
+`));
+
+document.getElementById('row-contact').addEventListener('click', () => {
+  const subject = encodeURIComponent('Brainoku Sudoku — Feedback');
+  const body = encodeURIComponent('Hi,\\n\\nich habe folgendes Feedback / Anliegen:\\n\\n');
+  window.location.href = `mailto:hallo@brainoku.app?subject=${subject}&body=${body}`;
+});
+
+document.getElementById('row-rate').addEventListener('click', () => {
+  document.getElementById('overlay-rate').classList.add('active');
+  document.querySelectorAll('#rate-stars span').forEach(s => s.textContent = '☆');
+});
+document.querySelectorAll('#rate-stars span').forEach(star => {
+  star.addEventListener('click', () => {
+    const v = +star.dataset.s;
+    document.querySelectorAll('#rate-stars span').forEach(s => {
+      s.textContent = (+s.dataset.s <= v) ? '★' : '☆';
+      s.style.color = (+s.dataset.s <= v) ? '#FFB400' : '';
+    });
+    playSfx('correct');
+  });
+});
+document.getElementById('btn-rate-go').addEventListener('click', () => {
+  document.getElementById('overlay-rate').classList.remove('active');
+  showToast('⭐', 'Danke!', 'Du wirst zum App Store geleitet.');
+  // window.location.href = 'https://apps.apple.com/app/idXXXXXXXXX'; // <— echte ID einsetzen
+});
+document.getElementById('btn-rate-later').addEventListener('click', () => {
+  document.getElementById('overlay-rate').classList.remove('active');
+});
+
+function refreshAdFreeUI() {
+  document.getElementById('adfree-status').textContent = state.adFree ? 'Aktiv ✓' : '9,99 € ›';
+}
+
+function vibrate(ms) {
+  if (state.vibrate && navigator.vibrate) navigator.vibrate(ms);
+}
+
+/* =========================================================
+   SOUND  (Web Audio API — synth. Effekte, kein Asset-Bundle)
+========================================================= */
+let audioCtx = null;
+function ensureAudio() {
+  if (!state.sound) return null;
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; }
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+function tone({ freq = 440, dur = 0.12, type = 'sine', vol = 0.18, attack = 0.005, release = 0.08, start = 0 }) {
+  const ctx = ensureAudio();
+  if (!ctx) return;
+  const t0 = ctx.currentTime + start;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t0);
+  g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(vol, t0 + attack);
+  g.gain.linearRampToValueAtTime(0, t0 + dur + release);
+  osc.connect(g).connect(ctx.destination);
+  osc.start(t0);
+  osc.stop(t0 + dur + release + 0.02);
+}
+function chord(notes, dur = 0.18, type = 'triangle', vol = 0.15) {
+  notes.forEach(n => tone({ freq: n.f, dur, type, vol, start: n.t || 0 }));
+}
+const SFX = {
+  click:    () => tone({ freq: 880, dur: 0.04, type: 'square', vol: 0.10, release: 0.04 }),
+  correct:  () => tone({ freq: 660, dur: 0.08, type: 'sine',   vol: 0.16, release: 0.10 }),
+  error:    () => {
+    tone({ freq: 220, dur: 0.10, type: 'sawtooth', vol: 0.18 });
+    tone({ freq: 165, dur: 0.14, type: 'sawtooth', vol: 0.16, start: 0.06 });
+  },
+  hint:     () => chord([{f:880,t:0},{f:1175,t:0.05}], 0.18, 'sine', 0.14),
+  win:      () => chord([{f:523,t:0},{f:659,t:0.10},{f:784,t:0.20},{f:1047,t:0.30}], 0.22, 'triangle', 0.18),
+  lose:     () => chord([{f:392,t:0},{f:330,t:0.12},{f:262,t:0.24}], 0.30, 'triangle', 0.18),
+  levelUp:  () => chord([{f:523,t:0},{f:659,t:0.06},{f:784,t:0.12},{f:1047,t:0.18},{f:1318,t:0.24}], 0.16, 'triangle', 0.16),
+  achieve:  () => chord([{f:784,t:0},{f:988,t:0.08},{f:1175,t:0.16}], 0.20, 'triangle', 0.17),
+  toggle:   () => tone({ freq: 660, dur: 0.05, type: 'square', vol: 0.10, release: 0.05 }),
+};
+function playSfx(name) {
+  if (!state.sound) return;
+  try { SFX[name] && SFX[name](); } catch (e) {}
+}
+
+/* =========================================================
+   THEMES
+========================================================= */
+const THEMES = {
+  classic: { name: 'Classic', price: 0,    primary: '#5C5CF0', primarySoft: '#EAEAFD', primaryLight: '#A5A8E8', cellBg: '#fff',    cellPeer: '#EEF0FA', cellSelected: '#C8C9FA', cellSame: '#DEDFFB', cellUser: '#5C5CF0' },
+  sakura:  { name: 'Sakura',  price: 500,  primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4', cellBg: '#FFF8FB', cellPeer: '#FCE0EC', cellSelected: '#F9A8D4', cellSame: '#FBCFE8', cellUser: '#DB2777' },
+  ozean:   { name: 'Ozean',   price: 500,  primary: '#0EA5E9', primarySoft: '#E0F2FE', primaryLight: '#7DD3FC', cellBg: '#F8FCFF', cellPeer: '#D5EEFA', cellSelected: '#7DD3FC', cellSame: '#BAE6FD', cellUser: '#0284C7' },
+  wald:    { name: 'Wald',    price: 500,  primary: '#16A34A', primarySoft: '#DCFCE7', primaryLight: '#86EFAC', cellBg: '#F8FCF9', cellPeer: '#D2F0DA', cellSelected: '#86EFAC', cellSame: '#BBF7D0', cellUser: '#15803D' },
+  sunset:  { name: 'Sunset',  price: 700,  primary: '#F97316', primarySoft: '#FFEDD5', primaryLight: '#FDBA74', cellBg: '#FFFBF6', cellPeer: '#FFE0C2', cellSelected: '#FDBA74', cellSame: '#FED7AA', cellUser: '#EA580C' },
+  neon:    { name: 'Neon',    price: 1000, primary: '#A855F7', primarySoft: '#F3E8FF', primaryLight: '#D8B4FE', cellBg: '#FFFBFF', cellPeer: '#EDD5FE', cellSelected: '#D8B4FE', cellSame: '#E9D5FF', cellUser: '#9333EA' },
+};
+
+function applyTheme(id) {
+  const t = THEMES[id] || THEMES.classic;
+  const s = document.body.style;
+  s.setProperty('--primary',       t.primary);
+  s.setProperty('--primary-soft',  t.primarySoft);
+  s.setProperty('--primary-light', t.primaryLight);
+  s.setProperty('--cell-bg',       t.cellBg);
+  s.setProperty('--cell-peer',     t.cellPeer);
+  s.setProperty('--cell-selected', t.cellSelected);
+  s.setProperty('--cell-same',     t.cellSame);
+  s.setProperty('--cell-user',     t.cellUser);
+}
+
+function buildThemeGrid() {
+  const grid = document.getElementById('shop-theme-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  Object.keys(THEMES).forEach(id => {
+    const t = THEMES[id];
+    const owned = !!state.unlockedThemes?.[id] || t.price === 0;
+    const active = state.theme === id;
+    const card = document.createElement('button');
+    card.className = 'theme-card' + (active ? ' active' : '');
+    card.dataset.id = id;
+    card.innerHTML = `
+      <div class="theme-preview" style="background:${t.cellBg};">
+        <span class="pv-cell-given" style="color:#1E2A4A;">3</span>
+        <span class="pv-cell-user" style="color:${t.cellUser};">7</span>
+        <div class="pv-pill" style="background:${t.primary};"></div>
+      </div>
+      <div class="theme-name">${t.name}</div>
+      <div class="theme-price${owned ? ' owned' : ''}">${owned ? (active ? '✓ Aktiv' : 'Im Besitz') : `🪙 ${t.price}`}</div>
+      ${active ? '<div class="lock">✓</div>' : (owned ? '' : '<div class="lock">🔒</div>')}
+    `;
+    card.addEventListener('click', () => onThemeClick(id));
+    grid.appendChild(card);
+  });
+}
+
+function onThemeClick(id) {
+  const t = THEMES[id];
+  const owned = !!state.unlockedThemes?.[id] || t.price === 0;
+  if (owned) {
+    state.theme = id;
+    saveState();
+    applyTheme(id);
+    buildThemeGrid();
+    playSfx('toggle');
+    return;
+  }
+  if ((state.coins || 0) < t.price) {
+    showToast('🪙', 'Zu wenig Coins', `Du brauchst ${t.price} Coins.`);
+    return;
+  }
+  if (!confirm(`„${t.name}" für ${t.price} Coins kaufen?`)) return;
+  state.coins -= t.price;
+  state.unlockedThemes = Object.assign({}, state.unlockedThemes, { [id]: true });
+  state.theme = id;
+  saveState();
+  applyTheme(id);
+  refreshShop();
+  refreshHome();
+  showToast('🎨', 'Design gekauft', `„${t.name}" aktiviert.`);
+  playSfx('achieve');
+}
+
+function refreshShop() {
+  document.getElementById('shop-coins').textContent = state.coins || 0;
+  document.getElementById('shield-cost').textContent = COSTS.shield;
+  // shield card disabled if max reached
+  const shieldCard = document.getElementById('shop-shield');
+  const shieldsFull = (state.streakFreezes || 0) >= MAX_SHIELDS;
+  shieldCard.classList.toggle('disabled', shieldsFull);
+  // hint pack
+  document.getElementById('hintpack-cost').textContent = HINT_PACK_COST;
+  // ad-free hidden if already bought
+  document.getElementById('shop-premium-section').classList.toggle('hidden', !!state.adFree);
+  buildThemeGrid();
+}
+
+const HINT_PACK_COST = 120;
+const HINT_PACK_AMOUNT = 3;
+
+document.getElementById('shop-shield').addEventListener('click', () => {
+  if ((state.streakFreezes || 0) >= MAX_SHIELDS) {
+    showToast('🛡', 'Maximum erreicht', 'Du hast schon 3 Schilde.');
+    return;
+  }
+  if (!spendCoins(COSTS.shield)) {
+    showToast('🪙', 'Zu wenig Coins', `Du brauchst ${COSTS.shield} Coins.`);
+    return;
+  }
+  addShield(1);
+  refreshShop();
+  showToast('🛡', 'Schild gekauft', `Du hast jetzt ${state.streakFreezes} Schild${state.streakFreezes === 1 ? '' : 'er'}.`);
+  playSfx('achieve');
+});
+
+document.getElementById('shop-hint-pack').addEventListener('click', () => {
+  if (!spendCoins(HINT_PACK_COST)) {
+    showToast('🪙', 'Zu wenig Coins', `Du brauchst ${HINT_PACK_COST} Coins.`);
+    return;
+  }
+  state.hintCredits = (state.hintCredits || 0) + HINT_PACK_AMOUNT;
+  saveState();
+  refreshShop();
+  showToast('💡', 'Tipp-Paket gekauft', `+${HINT_PACK_AMOUNT} Tipps verfügbar.`);
+  playSfx('achieve');
+});
+
+document.getElementById('shop-adfree').addEventListener('click', () => {
+  document.getElementById('overlay-purchase').classList.add('active');
+});
+
+/* =========================================================
+   COINS / SHIELDS
+========================================================= */
+const COSTS = { hint: 50, revive: 150, shield: 300 };
+const MAX_SHIELDS = 3;
+
+function addCoins(n, label) {
+  state.coins = (state.coins || 0) + n;
+  saveState();
+  refreshHome();
+  if (label) showToast('🪙', label, `+${n} Coins`);
+}
+function spendCoins(n) {
+  if ((state.coins || 0) < n) return false;
+  state.coins -= n;
+  saveState();
+  refreshHome();
+  return true;
+}
+function addShield(n = 1) {
+  state.streakFreezes = Math.min(MAX_SHIELDS, (state.streakFreezes || 0) + n);
+  saveState();
+  refreshHome();
+}
+
+/* =========================================================
+   LOGIN BONUS  (7-day rotating calendar)
+========================================================= */
+const LOGIN_REWARDS = [
+  { coins: 50 },
+  { coins: 75 },
+  { coins: 100 },
+  { coins: 150 },
+  { coins: 200 },
+  { coins: 300 },
+  { coins: 500, shield: 1 },
+];
+
+function checkLoginBonus() {
+  const today = todayStr();
+  if (state.lastLoginBonusDate === today) return; // already claimed today
+  // determine which day
+  let day;
+  if (state.lastLoginBonusDate === yesterdayStr()) {
+    day = ((state.loginBonusDay || 0) % 7) + 1;
+  } else {
+    day = 1;
+  }
+  state.loginBonusDay = day;
+  saveState();
+  openLoginBonus();
+}
+
+function openLoginBonus() {
+  const grid = document.getElementById('login-grid');
+  const today = state.loginBonusDay || 1;
+  const claimed = state.lastLoginBonusDate === todayStr();
+  grid.innerHTML = '';
+  LOGIN_REWARDS.forEach((r, i) => {
+    const dayNum = i + 1;
+    const cls = ['login-day'];
+    if (dayNum === 7) cls.push('day7');
+    if (dayNum < today) cls.push('claimed');
+    if (dayNum === today) {
+      cls.push('today');
+      if (claimed) cls.push('claimed');
+      if (dayNum === 7) cls.push('bigday');
+    }
+    if (dayNum > today) cls.push('upcoming');
+    const reward = r.shield ? `${r.coins} 🪙 + 🛡` : `${r.coins} 🪙`;
+    grid.insertAdjacentHTML('beforeend', `
+      <div class="${cls.join(' ')}">
+        ${dayNum < today || (dayNum === today && claimed) ? '<div class="login-check">✓</div>' : ''}
+        <div class="day-num">Tag ${dayNum}</div>
+        <div class="day-coins">${reward}</div>
+      </div>
+    `);
+  });
+  const claim = document.getElementById('btn-login-claim');
+  claim.textContent = claimed ? 'Schließen' : 'Abholen';
+  document.getElementById('overlay-login').classList.add('active');
+}
+
+document.getElementById('btn-login-claim').addEventListener('click', () => {
+  const today = state.loginBonusDay || 1;
+  const claimed = state.lastLoginBonusDate === todayStr();
+  if (!claimed) {
+    const reward = LOGIN_REWARDS[today - 1];
+    state.lastLoginBonusDate = todayStr();
+    state.coins = (state.coins || 0) + reward.coins;
+    if (reward.shield) addShield(reward.shield);
+    saveState();
+    refreshHome();
+    playSfx('achieve');
+  }
+  document.getElementById('overlay-login').classList.remove('active');
+});
+
+/* =========================================================
+   STREAK SHIELD
+========================================================= */
+function openShieldModal() {
+  const fullBtn = document.getElementById('btn-shield-watch');
+  const coinBtn = document.getElementById('btn-shield-coins');
+  const isFull = (state.streakFreezes || 0) >= MAX_SHIELDS;
+  fullBtn.disabled = isFull;
+  coinBtn.disabled = isFull || (state.coins || 0) < COSTS.shield;
+  fullBtn.style.opacity = isFull ? 0.5 : 1;
+  coinBtn.style.opacity = coinBtn.disabled ? 0.5 : 1;
+  document.getElementById('overlay-shield').classList.add('active');
+}
+
+document.getElementById('stat-shield').addEventListener('click', openShieldModal);
+document.getElementById('btn-shield-cancel').addEventListener('click', () => {
+  document.getElementById('overlay-shield').classList.remove('active');
+});
+document.getElementById('btn-shield-watch').addEventListener('click', () => {
+  if ((state.streakFreezes || 0) >= MAX_SHIELDS) return;
+  document.getElementById('overlay-shield').classList.remove('active');
+  playRewardedAd(() => {
+    addShield(1);
+    showToast('🛡', 'Schild erhalten', `Du hast jetzt ${state.streakFreezes} Schild${state.streakFreezes === 1 ? '' : 'er'}.`);
+    playSfx('achieve');
+  });
+});
+document.getElementById('btn-shield-coins').addEventListener('click', () => {
+  if ((state.streakFreezes || 0) >= MAX_SHIELDS) return;
+  if (!spendCoins(COSTS.shield)) return;
+  addShield(1);
+  document.getElementById('overlay-shield').classList.remove('active');
+  showToast('🛡', 'Schild erhalten', `Du hast jetzt ${state.streakFreezes} Schild${state.streakFreezes === 1 ? '' : 'er'}.`);
+  playSfx('achieve');
+});
+
+/* =========================================================
+   GENERIC REWARDED AD  (5s mock)
+========================================================= */
+function playRewardedAd(onComplete) {
+  if (state.adFree) { onComplete(); return; }
+  let secs = 5;
+  document.getElementById('video-remaining').textContent = secs;
+  document.getElementById('overlay-video').classList.add('active');
+  const t = setInterval(() => {
+    secs--;
+    document.getElementById('video-remaining').textContent = secs;
+    if (secs <= 0) {
+      clearInterval(t);
+      document.getElementById('overlay-video').classList.remove('active');
+      onComplete();
+    }
+  }, 1000);
+}
+
+/* =========================================================
+   RESUME GAME (Auto-save)
+========================================================= */
+function serializeNotes(notes) {
+  return notes.map(row => row.map(s => Array.from(s)));
+}
+function deserializeNotes(arr) {
+  return arr.map(row => row.map(a => new Set(a)));
+}
+function saveCurrentGame() {
+  if (!game.solved || game.finished) return;
+  state.savedGame = {
+    difficulty: game.difficulty,
+    solved: game.solved,
+    start: game.start,
+    board: game.board,
+    notes: serializeNotes(game.notes),
+    lives: game.lives,
+    errorsThisGame: game.errorsThisGame,
+    hintsUsedThisGame: game.hintsUsedThisGame,
+    startTime: game.startTime,
+    reviveUsed: game.reviveUsed || false,
+  };
+  saveState();
+}
+function clearSavedGame() {
+  state.savedGame = null;
+  saveState();
+}
+function hasSavedGame() {
+  return !!state.savedGame;
+}
+function loadSavedGame() {
+  const g = state.savedGame;
+  if (!g) return;
+  game.difficulty = g.difficulty;
+  game.solved = g.solved;
+  game.start = g.start;
+  game.board = g.board;
+  game.notes = deserializeNotes(g.notes);
+  game.selected = null;
+  game.lives = g.lives;
+  game.notesMode = false;
+  game.history = [];
+  game.hintsUsedThisGame = g.hintsUsedThisGame || 0;
+  game.errorsThisGame = g.errorsThisGame || 0;
+  game.startTime = g.startTime || Date.now();
+  game.reviveUsed = g.reviveUsed || false;
+  game.finished = false;
+
+  document.getElementById('game-diff').textContent = g.difficulty[0].toUpperCase() + g.difficulty.slice(1);
+  document.getElementById('game-level').textContent = levelOf(state.xp);
+  document.getElementById('game-num').textContent = completedFor(g.difficulty) + 1;
+  document.getElementById('act-notes').classList.remove('active');
+  buildBoard();
+  buildNumpad();
+  renderHearts();
+  updateProgress();
+  show('game');
+  resetIdleTimer();
+}
+
+document.getElementById('resume-card').addEventListener('click', loadSavedGame);
+
+/* =========================================================
+   REVIVE
+========================================================= */
+function offerRevive() {
+  if (game.reviveUsed) { actuallyLoseGame(); return; }
+  const coinBtn = document.getElementById('btn-revive-coins');
+  coinBtn.disabled = (state.coins || 0) < COSTS.revive;
+  coinBtn.style.opacity = coinBtn.disabled ? 0.5 : 1;
+  document.getElementById('overlay-revive').classList.add('active');
+}
+function performRevive() {
+  game.reviveUsed = true;
+  game.lives = 1;
+  renderHearts();
+  saveCurrentGame();
+  document.getElementById('overlay-revive').classList.remove('active');
+  showToast('❤️', 'Wiederbelebt', 'Du hast wieder ein Leben.');
+  playSfx('achieve');
+  resetIdleTimer();
+}
+document.getElementById('btn-revive-watch').addEventListener('click', () => {
+  document.getElementById('overlay-revive').classList.remove('active');
+  playRewardedAd(performRevive);
+});
+document.getElementById('btn-revive-coins').addEventListener('click', () => {
+  if (!spendCoins(COSTS.revive)) return;
+  performRevive();
+});
+document.getElementById('btn-revive-cancel').addEventListener('click', () => {
+  document.getElementById('overlay-revive').classList.remove('active');
+  actuallyLoseGame();
+});
+
+/* =========================================================
+   SPLASH TEXTS  (Minecraft-Style)
+========================================================= */
+const splashTexts = [
+  "Trainiert dein Gehirn!",
+  "Schärft die Logik!",
+  "Wissenschaftlich erwiesen!",
+  "Steigert die Konzentration!",
+  "Schützt vor Demenz!",
+  "100 % Brainfood!",
+  "Macht klüger!",
+  "Pro-Logik aktiviert!",
+  "Beste Hirngymnastik!",
+  "Aktiviert beide Hirnhälften!",
+  "Reduziert Stress!",
+  "Stärkt das Gedächtnis!",
+  "Tägliches Hirntraining!",
+  "Knobeln statt Scrollen!",
+  "Hirn-Workout!",
+  "Mehr als nur Zahlen!",
+  "Konzentration auf Profi-Niveau!",
+  "Logik schlägt Glück!",
+  "Kein Zufall, nur Köpfchen!",
+  "Studien lieben es!",
+  "Anti-Aging fürs Gehirn!",
+  "Macht süchtig (gesund)!",
+  "Für alle ab 8 bis 99!",
+  "Schon Sherlock liebte es!",
+];
+function initSplash() {
+  const el = document.getElementById('splash');
+  if (!el) return;
+  const idx = Math.floor(Math.random() * splashTexts.length);
+  el.textContent = splashTexts[idx];
+}
+
+/* =========================================================
+   LEVEL / XP
+========================================================= */
+const XP_PER_WIN = { leicht: 10, mittel: 20, schwer: 35, experte: 50 };
+const XP_PER_LEVEL = 100;
+function levelOf(xp)        { return Math.floor(xp / XP_PER_LEVEL) + 1; }
+function levelProgress(xp)  {
+  const lvl = levelOf(xp);
+  const start = (lvl - 1) * XP_PER_LEVEL;
+  return { current: xp - start, needed: XP_PER_LEVEL };
+}
+function completedFor(diff) {
+  return (state.completedByDifficulty && state.completedByDifficulty[diff]) || 0;
+}
+
+function awardXP(diff) {
+  const before = levelOf(state.xp);
+  state.xp += XP_PER_WIN[diff] || 10;
+  const after = levelOf(state.xp);
+  if (after > before) {
+    showToast('🎉', `Level ${after} erreicht`, 'Weiter so!');
+    playSfx('levelUp');
+    checkAchievements();
+  }
+}
+
+/* =========================================================
+   DAILY STREAK
+========================================================= */
+function dateStr(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+function todayStr() { return dateStr(new Date()); }
+function yesterdayStr() {
+  const d = new Date(); d.setDate(d.getDate() - 1); return dateStr(d);
+}
+function bumpDailyStreak() {
+  const today = todayStr();
+  if (state.lastPlayedDate === today) return false;
+  if (state.lastPlayedDate === yesterdayStr()) {
+    state.streak = (state.streak || 0) + 1;
+  } else {
+    // gap > 1 day — try shield
+    const dayBefore = (() => {
+      const d = new Date(); d.setDate(d.getDate() - 2); return dateStr(d);
+    })();
+    if (state.lastPlayedDate === dayBefore && (state.streakFreezes || 0) > 0) {
+      state.streakFreezes--;
+      state.streak = (state.streak || 0) + 1;
+      setTimeout(() => showToast('🛡', 'Schild verbraucht', 'Deine Streak ist gerettet.'), 600);
+    } else {
+      state.streak = 1;
+    }
+  }
+  state.lastPlayedDate = today;
+  if (state.streak > (state.longestStreak || 0)) state.longestStreak = state.streak;
+  return true;
+}
+
+/* =========================================================
+   ACHIEVEMENTS
+========================================================= */
+const ACHIEVEMENTS = [
+  { id: 'first_win',   emoji: '🎯', title: 'Erstes Spiel',       desc: 'Löse dein erstes Sudoku.',          check: () => state.completed >= 1 },
+  { id: 'wins_10',     emoji: '🥉', title: 'Geübter Spieler',    desc: '10 Sudokus gewonnen.',              check: () => state.completed >= 10 },
+  { id: 'wins_50',     emoji: '🥈', title: 'Sudoku-Profi',       desc: '50 Sudokus gewonnen.',              check: () => state.completed >= 50 },
+  { id: 'wins_100',    emoji: '🥇', title: 'Sudoku-Meister',     desc: '100 Sudokus gewonnen.',             check: () => state.completed >= 100 },
+  { id: 'perfect_1',   emoji: '✨', title: 'Perfektionist',      desc: '1 Spiel ohne Fehler.',              check: () => state.perfectGames >= 1 },
+  { id: 'perfect_10',  emoji: '🌟', title: 'Makellos',           desc: '10 Spiele ohne Fehler.',            check: () => state.perfectGames >= 10 },
+  { id: 'no_hint',     emoji: '🧠', title: 'Tipp-Verzichter',    desc: 'Spiel ohne Tipp gelöst.',           check: ctx => !!ctx?.noHint },
+  { id: 'streak_7',    emoji: '🔥', title: 'Eiserner Wille',     desc: '7 Tage in Folge gespielt.',         check: () => state.streak >= 7 },
+  { id: 'streak_30',   emoji: '👑', title: 'Unaufhaltsam',       desc: '30 Tage in Folge gespielt.',        check: () => state.streak >= 30 },
+  { id: 'level_10',    emoji: '⭐', title: 'Level-Legende',      desc: 'Level 10 erreicht.',                check: () => levelOf(state.xp) >= 10 },
+  { id: 'speed_demon', emoji: '⚡', title: 'Schnelldenker',      desc: 'Spiel unter 5 Min gelöst.',         check: ctx => ctx?.timeSec && ctx.timeSec < 300 },
+  { id: 'expert_win',  emoji: '🏆', title: 'Experten-Sieg',      desc: 'Ein Experten-Sudoku gewonnen.',     check: ctx => ctx?.difficulty === 'experte' },
+];
+
+function checkAchievements(ctx) {
+  const newly = [];
+  ACHIEVEMENTS.forEach(a => {
+    if (state.achievements[a.id]) return;
+    if (a.check(ctx)) {
+      state.achievements[a.id] = Date.now();
+      newly.push(a);
+    }
+  });
+  if (newly.length) {
+    saveState();
+    newly.forEach((a, i) => setTimeout(() => {
+      showToast(a.emoji, 'Errungenschaft', a.title);
+      playSfx('achieve');
+    }, i * 600));
+  }
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+function showToast(emoji, title, sub, ms = 3500) {
+  const wrap = document.getElementById('toast-wrap');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `
+    <div class="toast-icon">${emoji}</div>
+    <div class="toast-text">
+      <div class="toast-title">${title}</div>
+      <div class="toast-sub">${sub}</div>
+    </div>`;
+  wrap.appendChild(t);
+  setTimeout(() => { t.classList.add('fading'); setTimeout(() => t.remove(), 300); }, ms);
+}
+
+/* =========================================================
+   HOME / SAMMLUNG REFRESH
+========================================================= */
+function refreshHome() {
+  document.getElementById('streak').textContent = state.streak || 0;
+  document.getElementById('shields').textContent = state.streakFreezes || 0;
+  document.getElementById('coins').textContent = state.coins || 0;
+  const lvl = levelOf(state.xp);
+  const p = levelProgress(state.xp);
+  document.getElementById('lvl-num').textContent = lvl;
+  document.getElementById('lvl-cur').textContent = p.current;
+  document.getElementById('lvl-max').textContent = p.needed;
+  document.getElementById('lvl-fill').style.width = (p.current / p.needed * 100) + '%';
+
+  // Reminder banner
+  const banner = document.getElementById('reminder-banner');
+  const playedToday = state.lastPlayedDate === todayStr();
+  banner.classList.toggle('hidden', playedToday || !state.reminderEnabled);
+
+  // Resume card
+  const resume = document.getElementById('resume-card');
+  if (hasSavedGame()) {
+    const g = state.savedGame;
+    let filled = 0, total = 0;
+    for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++) {
+      if (g.start[r][c] === 0) {
+        total++;
+        if (g.board[r][c] === g.solved[r][c]) filled++;
+      }
+    }
+    const pct = total ? Math.round(filled / total * 100) : 0;
+    const diffName = g.difficulty[0].toUpperCase() + g.difficulty.slice(1);
+    document.getElementById('resume-sub').textContent = `${diffName} · ${pct} %`;
+    resume.classList.remove('hidden');
+  } else {
+    resume.classList.add('hidden');
+  }
+}
+
+function refreshSammlung() {
+  document.getElementById('rec-streak').textContent = state.longestStreak || 0;
+  document.getElementById('rec-winstreak').textContent = state.longestWinStreak || 0;
+  document.getElementById('rec-wins').textContent = state.completed || 0;
+  const grid = document.getElementById('ach-grid');
+  grid.innerHTML = '';
+  ACHIEVEMENTS.forEach(a => {
+    const unlocked = !!state.achievements[a.id];
+    const el = document.createElement('div');
+    el.className = 'ach-card' + (unlocked ? ' unlocked' : '');
+    el.innerHTML = `
+      <div class="ach-icon">${unlocked ? a.emoji : '🔒'}</div>
+      <div class="ach-title">${a.title}</div>
+      <div class="ach-desc">${a.desc}</div>`;
+    grid.appendChild(el);
+  });
+}
+
+/* =========================================================
+   REMINDER (Notification API + in-app)
+========================================================= */
+function parseHM(t) {
+  const [h, m] = (t || '19:00').split(':').map(Number);
+  return { h, m };
+}
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) return false;
+  if (Notification.permission === 'granted') return true;
+  if (Notification.permission === 'denied') return false;
+  const r = await Notification.requestPermission();
+  return r === 'granted';
+}
+function setupReminderInputs() {
+  const tog = document.getElementById('toggle-reminder');
+  const inp = document.getElementById('reminder-time');
+  inp.value = state.reminderTime || '19:00';
+  tog.classList.toggle('on', !!state.reminderEnabled);
+
+  tog.addEventListener('click', async (e) => {
+    e.stopImmediatePropagation();
+    if (!state.reminderEnabled) {
+      const ok = await requestNotificationPermission();
+      if (!ok && Notification.permission !== 'default') {
+        showToast('🔕', 'Benachrichtigungen blockiert', 'Aktiviere sie im Browser.');
+      }
+      state.reminderEnabled = true;
+    } else {
+      state.reminderEnabled = false;
+    }
+    saveState();
+    tog.classList.toggle('on', state.reminderEnabled);
+  }, true);
+
+  inp.addEventListener('change', () => {
+    state.reminderTime = inp.value || '19:00';
+    saveState();
+  });
+}
+function checkReminder() {
+  if (!state.reminderEnabled) return;
+  if (state.lastPlayedDate === todayStr()) return;
+  const today = todayStr();
+  if (state.lastReminderSent === today) return;
+  const { h, m } = parseHM(state.reminderTime);
+  const now = new Date();
+  if (now.getHours() > h || (now.getHours() === h && now.getMinutes() >= m)) {
+    state.lastReminderSent = today;
+    saveState();
+    if ('Notification' in window && Notification.permission === 'granted') {
+      try { new Notification('Sudoku-Zeit!', { body: 'Halte deine Streak am Leben — kurze Runde gefällig?' }); } catch (e) {}
+    }
+    if (document.getElementById('screen-home').classList.contains('active')) {
+      refreshHome();
+    }
+  }
+}
+
+/* =========================================================
+   TUTORIAL
+========================================================= */
+const tutorialSlides = [
+  {
+    icon: '🧩',
+    title: 'Willkommen bei Brainoku',
+    html: 'Bereit für ein Sudoku? In wenigen Sekunden zeigen wir dir die Regeln und alle Funktionen.<br><br>Du kennst Sudoku schon? Tippe einfach <strong>„Überspringen"</strong>.'
+  },
+  {
+    icon: 'GRID',
+    title: 'Das Ziel',
+    html: 'Fülle das 9×9-Gitter mit den Zahlen 1 bis 9. In <strong>jeder Reihe</strong>, <strong>jeder Spalte</strong> und <strong>jeder 3×3-Box</strong> muss jede Zahl genau einmal vorkommen — keine Wiederholungen.'
+  },
+  {
+    icon: '👆',
+    title: 'So spielst du',
+    html: 'Tippe auf eine leere Zelle, dann auf eine Zahl unten. Stimmt sie nicht, verlierst du <strong>ein Herz</strong> — nach drei Fehlern ist die Runde vorbei.'
+  },
+  {
+    icon: '✏️',
+    title: 'Notizen-Modus',
+    html: 'Nicht sicher? Aktiviere <strong>Notizen</strong> und merke dir mögliche Zahlen klein in einer Zelle. Nochmal tippen wechselt zurück in den Eingabe-Modus.'
+  },
+  {
+    icon: '↺',
+    title: 'Löschen & Rückgängig',
+    html: 'Vertippt? Mit <strong>Löschen</strong> entfernst du deinen Eintrag, mit <strong>Rückgängig</strong> (oben links) machst du den letzten Zug ungeschehen.'
+  },
+  {
+    icon: '🎬',
+    title: 'Tipp-Hilfe',
+    html: 'Wenn du <strong>10 Sekunden</strong> nicht weiter weißt, erscheint oben rechts die <strong>Tipp-Pille</strong>. Schau dir ein kurzes Video an und eine Zelle wird für dich gelöst.'
+  },
+  {
+    icon: '⭐',
+    title: 'Werbefrei spielen',
+    html: 'Das Spiel ist <strong>kostenlos</strong>. Alle 20 Runden kommt eine kurze Werbung. Für <strong>9,99 €</strong> (einmalig) kannst du Werbung dauerhaft entfernen — Einstellungen → <em>Werbung entfernen</em>.'
+  },
+];
+
+function buildMiniGrid() {
+  // 9x9 mini grid: row 4 highlighted, col 6 highlighted, box (rows 0-2, cols 0-2) highlighted
+  const cells = [];
+  for (let r = 0; r < 9; r++) {
+    for (let c = 0; c < 9; c++) {
+      const inRow = r === 4;
+      const inCol = c === 6;
+      const inBox = r < 3 && c < 3;
+      let cls = 'mc';
+      const hits = [inRow, inCol, inBox].filter(Boolean).length;
+      if (hits >= 2) cls += ' cross';
+      else if (inRow) cls += ' row-hl';
+      else if (inCol) cls += ' col-hl';
+      else if (inBox) cls += ' box-hl';
+      cells.push(`<div class="${cls}"></div>`);
+    }
+  }
+  return `<div class="mini-grid">${cells.join('')}</div>`;
+}
+
+let tutStep = 0;
+function renderTutSlide() {
+  const slide = tutorialSlides[tutStep];
+  const iconHtml = slide.icon === 'GRID'
+    ? buildMiniGrid()
+    : `<div class="icon-bubble">${slide.icon}</div>`;
+  document.getElementById('tut-slide').innerHTML = `
+    ${iconHtml}
+    <h2>${slide.title}</h2>
+    <p>${slide.html}</p>
+  `;
+  const dots = tutorialSlides.map((_, i) => `<span class="${i === tutStep ? 'active' : ''}"></span>`).join('');
+  document.getElementById('tut-dots').innerHTML = dots;
+  document.getElementById('btn-tut-back').classList.toggle('hidden', tutStep === 0);
+  document.getElementById('btn-tut-next').textContent =
+    tutStep === tutorialSlides.length - 1 ? "Los geht's" : 'Weiter';
+}
+
+function openTutorial() {
+  tutStep = 0;
+  renderTutSlide();
+  document.getElementById('overlay-tutorial').classList.add('active');
+}
+
+function closeTutorial() {
+  state.tutorialSeen = true;
+  saveState();
+  document.getElementById('overlay-tutorial').classList.remove('active');
+  setTimeout(checkLoginBonus, 400);
+}
+
+document.getElementById('btn-tut-next').addEventListener('click', () => {
+  if (tutStep === tutorialSlides.length - 1) closeTutorial();
+  else { tutStep++; renderTutSlide(); }
+});
+document.getElementById('btn-tut-back').addEventListener('click', () => {
+  if (tutStep > 0) { tutStep--; renderTutSlide(); }
+});
+document.getElementById('btn-tut-skip').addEventListener('click', closeTutorial);
+document.getElementById('row-tutorial').addEventListener('click', openTutorial);
+
+/* =========================================================
+   INIT
+========================================================= */
+applySettings();
+initSplash();
+setupReminderInputs();
+refreshHome();
+checkAchievements();
+checkReminder();
+setInterval(checkReminder, 60 * 1000);
+
+// pointer interaction on board area resets idle timer
+document.getElementById('board').addEventListener('pointerdown', resetIdleTimer);
+document.getElementById('numpad').addEventListener('pointerdown', resetIdleTimer);
+
+(async () => {
+  await checkSupabaseSession();
+  if (!state.authSeen) {
+    show('auth');
+    return;
+  }
+  show('home');
+  if (!state.tutorialSeen) openTutorial();
+  else checkLoginBonus();
+})();
+
+/* =========================================================
+   PWA — Service Worker registrieren
+========================================================= */
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
