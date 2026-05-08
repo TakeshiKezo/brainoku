@@ -1420,7 +1420,7 @@
   </section>
 
   <!-- ============================ AUTH ============================ -->
-  <section id="screen-auth" class="screen">
+  <section id="screen-auth" class="screen active">
     <div class="auth-hero">
       <h1 class="home-logo">Brain<span class="dot">o</span>ku</h1>
       <p class="home-sub">Sudoku · Täglich knobeln</p>
@@ -1895,7 +1895,6 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 /* =========================================================
    STATE
@@ -1950,13 +1949,30 @@ function saveState() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
 const SUPABASE_URL      = ''; // z.B. 'https://xxx.supabase.co'
 const SUPABASE_ANON_KEY = ''; // anon public key
 
-const supabase = (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase)
-  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-  : null;
+let supabase = null;
+
+async function loadSupabase() {
+  if (supabase) return supabase;
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
+  if (!window.supabase) {
+    await new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    }).catch(() => null);
+  }
+  if (window.supabase) {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+  return supabase;
+}
 
 async function signInProvider(provider) {
-  if (supabase) {
-    const { error } = await supabase.auth.signInWithOAuth({
+  const sb = await loadSupabase();
+  if (sb) {
+    const { error } = await sb.auth.signInWithOAuth({
       provider,
       options: { redirectTo: location.origin }
     });
@@ -1977,8 +1993,9 @@ async function signInEmail(email) {
     showToast('⚠️', 'Ungültige E-Mail', 'Bitte eine gültige Adresse eingeben.');
     return;
   }
-  if (supabase) {
-    const { error } = await supabase.auth.signInWithOtp({
+  const sb = await loadSupabase();
+  if (sb) {
+    const { error } = await sb.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: location.origin }
     });
@@ -1996,8 +2013,9 @@ async function signInEmail(email) {
 }
 
 async function signOut() {
-  if (supabase) {
-    try { await supabase.auth.signOut(); } catch (e) {}
+  const sb = await loadSupabase();
+  if (sb) {
+    try { await sb.auth.signOut(); } catch (e) {}
   }
   state.account = null;
   state.authSeen = false;
@@ -2027,8 +2045,9 @@ function postAuthFlow() {
 
 // Auf zurückkehrenden OAuth-Redirect reagieren
 async function checkSupabaseSession() {
-  if (!supabase) return;
-  const { data } = await supabase.auth.getSession();
+  const sb = await loadSupabase();
+  if (!sb) return;
+  const { data } = await sb.auth.getSession();
   if (data?.session?.user) {
     const u = data.session.user;
     state.account = {
@@ -3496,14 +3515,23 @@ document.getElementById('board').addEventListener('pointerdown', resetIdleTimer)
 document.getElementById('numpad').addEventListener('pointerdown', resetIdleTimer);
 
 (async () => {
-  await checkSupabaseSession();
-  if (!state.authSeen) {
-    show('auth');
-    return;
+  try {
+    await checkSupabaseSession();
+  } catch (e) {
+    console.warn('Supabase session check failed:', e);
   }
-  show('home');
-  if (!state.tutorialSeen) openTutorial();
-  else checkLoginBonus();
+  try {
+    if (!state.authSeen) {
+      show('auth');
+      return;
+    }
+    show('home');
+    if (!state.tutorialSeen) openTutorial();
+    else checkLoginBonus();
+  } catch (e) {
+    console.error('Init error:', e);
+    show('home'); // Fallback so page is never blank
+  }
 })();
 
 /* =========================================================
