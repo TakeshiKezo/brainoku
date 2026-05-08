@@ -501,11 +501,20 @@
     grid-template-columns: 1fr 1fr;
     background: var(--card);
     padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
-    margin-top: auto;
-    position: sticky;
+    position: fixed;
     bottom: 0;
-    z-index: 5;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    z-index: 50;
     border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 14px rgba(30, 42, 74, 0.06);
+  }
+  body.dark .nav { box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.35); }
+  /* Screens mit Nav brauchen Platz unten, damit Inhalt nicht hinter der Nav verschwindet */
+  #screen-home, #screen-sammlung, #screen-shop, #screen-settings {
+    padding-bottom: calc(78px + env(safe-area-inset-bottom));
   }
   .nav-item {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
