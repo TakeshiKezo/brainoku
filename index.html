@@ -2954,18 +2954,63 @@ function generateSolved(rand) {
 
 const HOLES = { leicht: 38, mittel: 46, schwer: 52, experte: 58 };
 
+// Schneller MRV-Backtracking-Solver, zählt Lösungen bis zum Limit
+function isAllowedAt(b, r, c, n) {
+  for (let i = 0; i < 9; i++) if (b[r][i] === n || b[i][c] === n) return false;
+  const br = Math.floor(r/3)*3, bc = Math.floor(c/3)*3;
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (b[br+i][bc+j] === n) return false;
+  return true;
+}
+function countSolutionsUpTo(board, limit) {
+  const b = board.map(r => r.slice());
+  let count = 0;
+  function recurse() {
+    let bestR = -1, bestC = -1, bestCands = null;
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        if (b[r][c] !== 0) continue;
+        const cands = [];
+        for (let n = 1; n <= 9; n++) if (isAllowedAt(b, r, c, n)) cands.push(n);
+        if (cands.length === 0) return; // Dead-End
+        if (bestCands === null || cands.length < bestCands.length) {
+          bestR = r; bestC = c; bestCands = cands;
+          if (cands.length === 1) break;
+        }
+      }
+      if (bestCands && bestCands.length === 1) break;
+    }
+    if (bestCands === null) { count++; return; } // Brett voll = Lösung
+    for (const n of bestCands) {
+      b[bestR][bestC] = n;
+      recurse();
+      b[bestR][bestC] = 0;
+      if (count >= limit) return;
+    }
+  }
+  recurse();
+  return count;
+}
+
 function generatePuzzle(difficulty, levelNum) {
   // Gleicher Seed = identisches Puzzle für alle Spieler
-  const rand = seededRng(hashSeed(`${difficulty}-v1-${levelNum}`));
+  const rand = seededRng(hashSeed(`${difficulty}-v2-${levelNum}`));
   const solved = generateSolved(rand);
   const puzzle = solved.map(r => r.slice());
   const positions = [];
   for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++) positions.push([r, c]);
   shuffleArr(positions, rand);
-  const holes = HOLES[difficulty] || 46;
-  for (let i = 0; i < holes; i++) {
-    const [r, c] = positions[i];
+  const holesTarget = HOLES[difficulty] || 46;
+  let removed = 0;
+  for (const [r, c] of positions) {
+    if (removed >= holesTarget) break;
+    const save = puzzle[r][c];
     puzzle[r][c] = 0;
+    // Eindeutigkeit prüfen — wenn mehrdeutig, Loch wieder schließen
+    if (countSolutionsUpTo(puzzle, 2) !== 1) {
+      puzzle[r][c] = save;
+    } else {
+      removed++;
+    }
   }
   return { solved, puzzle };
 }
