@@ -3474,12 +3474,13 @@ document.getElementById('btn-tipp-watch').addEventListener('click', () => {
   playTippVideo();
 });
 document.getElementById('act-hint').addEventListener('click', () => {
-  if (state.adFree) { applyHint(); resetIdleTimer(); return; }
+  // Anti-Cheat: Auch adFree-User müssen für Tipps Coins ausgeben oder
+  // ein Reward-Video schauen. AdFree gilt nur für Zwangs-Interstitials.
   if ((state.hintCredits || 0) > 0) {
     state.hintCredits--;
     saveState();
     applyHint();
-    showToast('💡', 'Pack-Tipp', `${state.hintCredits} übrig.`);
+    showToast('💡', t('tipp.pack'), t('tipp.packLeft', { n: state.hintCredits }));
     resetIdleTimer();
     return;
   }
@@ -4197,7 +4198,12 @@ document.getElementById('btn-shield-coins').addEventListener('click', () => {
    GENERIC REWARDED AD  (5s mock)
 ========================================================= */
 function playRewardedAd(onComplete) {
-  if (state.adFree) { onComplete(); return; }
+  // Anti-Cheat: Rewarded-Videos laufen IMMER, auch bei adFree.
+  // 'Werbung entfernen' gilt ausschließlich für Zwangs-Interstitials
+  // zwischen Runden. Freiwillige Reward-Videos für Tipps, Wiederbelebung
+  // und Streak-Schild müssen für alle gleich bezahlt/angeschaut werden,
+  // sonst können adFree-User unbegrenzt Tipps spammen und so Bestzeiten
+  // kaputtspielen.
   let secs = 5;
   document.getElementById('video-remaining').textContent = secs;
   document.getElementById('overlay-video').classList.add('active');
