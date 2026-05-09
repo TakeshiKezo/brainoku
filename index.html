@@ -899,7 +899,12 @@
     margin: 14px auto 18px;
     max-width: 320px;
   }
-  .auth-legal a { color: var(--primary); text-decoration: none; }
+  .auth-legal a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
 
   .email-input {
     background: rgba(30, 42, 74, 0.06);
@@ -1657,8 +1662,8 @@
         <div class="auth-divider" data-i18n="auth.or">oder</div>
         <button class="auth-skip" id="auth-skip" data-i18n="auth.skip">Ohne Konto fortfahren</button>
       </div>
-      <p class="auth-legal" data-i18n="auth.legal">
-        Mit dem Anmelden akzeptierst du unsere Nutzungsbedingungen und die Datenschutzerklärung.
+      <p class="auth-legal" data-i18n-html="auth.legal">
+        Mit dem Anmelden akzeptierst du unsere <a href="https://isukato.com/agb" target="_blank" rel="noopener">Nutzungsbedingungen</a> und die <a href="https://isukato.com/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.
       </p>
     </div>
   </section>
@@ -1926,7 +1931,12 @@
         <div class="settings-row" id="row-privacy">
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div>
           <div class="label" data-i18n="settings.privacy">Datenschutz</div>
-          <div class="val">›</div>
+          <div class="val">↗</div>
+        </div>
+        <div class="settings-row" id="row-imprint">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 4a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm2 14h-4v-1h1v-6H10v-1h3v7h1z"/></svg></div>
+          <div class="label" data-i18n="settings.imprint">Impressum</div>
+          <div class="val">↗</div>
         </div>
       </div>
     </div>
@@ -2230,12 +2240,12 @@ const LANG = {
     'purchase.title':'Werbefrei für 9,99 €','purchase.text':'Keine Werbung mehr — dauerhaft. Einmal zahlen, ungestört knobeln.','purchase.buy':'Jetzt kaufen','purchase.later':'Später',
     'rate.title':'Gefällt dir Brainoku?','rate.text':'Eine Bewertung im App Store hilft uns enorm — und kostet nur einen Moment.','rate.go':'Im App Store bewerten','rate.later':'Später','rate.thanks':'Danke!','rate.toAppStore':'Du wirst zum App Store geleitet.',
     'auth.google':'Mit Google fortfahren','auth.apple':'Mit Apple fortfahren','auth.facebook':'Mit Facebook fortfahren','auth.email':'Mit E-Mail fortfahren','auth.or':'oder','auth.skip':'Ohne Konto fortfahren',
-    'auth.legal':'Mit dem Anmelden akzeptierst du unsere Nutzungsbedingungen und die Datenschutzerklärung.','auth.welcome':'Angemeldet',
+    'auth.legal':'Mit dem Anmelden akzeptierst du unsere <a href="https://isukato.com/agb" target="_blank" rel="noopener">Nutzungsbedingungen</a> und die <a href="https://isukato.com/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.','auth.welcome':'Angemeldet',
     'email.title':'E-Mail-Anmeldung','email.text':'Wir senden dir einen Login-Link per E-Mail.','email.placeholder':'deine@email.de','email.send':'Link senden','email.cancel':'Abbrechen','email.sent':'E-Mail unterwegs','email.sentSub':'Klick den Link in deinem Postfach.','email.invalid':'Ungültige E-Mail','email.invalidSub':'Bitte eine gültige Adresse eingeben.','email.fail':'Login fehlgeschlagen',
     'settings.title':'Einstellungen','settings.lang':'Sprache','settings.vibrate':'Vibrationen','settings.sound':'Geräusche','settings.dark':'Dunkelmodus','settings.tutorial':'Anleitung anzeigen','settings.kleinkind':'Kleinkind-Modus','settings.kleinkindDesc':'Hebt gleiche Zahlen automatisch hervor.',
     'settings.reminder':'Tägliche Erinnerung','settings.reminderTime':'Erinnerungszeit',
     'settings.removeAds':'Werbung entfernen','settings.adFreeOn':'Aktiv ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Käufe wiederherstellen','settings.restoreOk':'Werbefrei aktiv.','settings.restoreNone':'Keine Käufe gefunden.',
-    'settings.rate':'Bewerte uns','settings.contact':'Schreib uns','settings.privacy':'Datenschutz',
+    'settings.rate':'Bewerte uns','settings.contact':'Schreib uns','settings.privacy':'Datenschutz','settings.imprint':'Impressum',
     'settings.langPick':'Sprache wählen',
     'sammlung.title':'Sammlung','sammlung.records':'Rekorde','sammlung.streak':'Tagesserie','sammlung.winStreak':'Siegesserie','sammlung.wins':'Siege','sammlung.achievements':'Auszeichnungen','sammlung.bestTimes':'Bestzeiten',
     'shop.title':'Shop','shop.coins':'Coins','shop.designs':'🎨 Designs','shop.boosters':'⚡ Booster','shop.premium':'⭐ Premium',
@@ -2297,12 +2307,12 @@ const LANG = {
     'purchase.title':'Ad-free for €9.99','purchase.text':'No more ads — forever. One-time purchase, undisturbed puzzling.','purchase.buy':'Buy now','purchase.later':'Later',
     'rate.title':'Enjoying Brainoku?','rate.text':'A review in the App Store helps a lot — and only takes a moment.','rate.go':'Rate on App Store','rate.later':'Later','rate.thanks':'Thanks!','rate.toAppStore':'Sending you to the App Store.',
     'auth.google':'Continue with Google','auth.apple':'Continue with Apple','auth.facebook':'Continue with Facebook','auth.email':'Continue with Email','auth.or':'or','auth.skip':'Continue without account',
-    'auth.legal':'By signing in you accept our Terms of Service and Privacy Policy.','auth.welcome':'Signed in',
+    'auth.legal':'By signing in you accept our <a href="https://isukato.com/agb" target="_blank" rel="noopener">Terms of Service</a> and <a href="https://isukato.com/datenschutz" target="_blank" rel="noopener">Privacy Policy</a>.','auth.welcome':'Signed in',
     'email.title':'Email sign-in','email.text':"We'll send you a login link by email.",'email.placeholder':'your@email.com','email.send':'Send link','email.cancel':'Cancel','email.sent':'Email on the way','email.sentSub':'Tap the link in your inbox.','email.invalid':'Invalid email','email.invalidSub':'Please enter a valid address.','email.fail':'Sign-in failed',
     'settings.title':'Settings','settings.lang':'Language','settings.vibrate':'Vibrations','settings.sound':'Sounds','settings.dark':'Dark mode','settings.tutorial':'Show tutorial','settings.kleinkind':'Toddler mode','settings.kleinkindDesc':'Highlights matching numbers automatically.',
     'settings.reminder':'Daily reminder','settings.reminderTime':'Reminder time',
     'settings.removeAds':'Remove ads','settings.adFreeOn':'Active ✓','settings.adFreePrice':'€9.99 ›','settings.restore':'Restore purchases','settings.restoreOk':'Ad-free is active.','settings.restoreNone':'No purchases found.',
-    'settings.rate':'Rate us','settings.contact':'Contact us','settings.privacy':'Privacy',
+    'settings.rate':'Rate us','settings.contact':'Contact us','settings.privacy':'Privacy','settings.imprint':'Imprint',
     'settings.langPick':'Choose language',
     'sammlung.title':'Collection','sammlung.records':'Records','sammlung.streak':'Daily streak','sammlung.winStreak':'Win streak','sammlung.wins':'Wins','sammlung.achievements':'Achievements','sammlung.bestTimes':'Best times',
     'shop.title':'Shop','shop.coins':'Coins','shop.designs':'🎨 Designs','shop.boosters':'⚡ Boosters','shop.premium':'⭐ Premium',
@@ -2364,12 +2374,12 @@ const LANG = {
     'purchase.title':'Без рекламы за 9,99 €','purchase.text':'Никакой рекламы — навсегда. Один раз заплатил, играй спокойно.','purchase.buy':'Купить','purchase.later':'Позже',
     'rate.title':'Нравится Brainoku?','rate.text':'Оценка в App Store очень помогает — и займёт всего минуту.','rate.go':'Оценить в App Store','rate.later':'Позже','rate.thanks':'Спасибо!','rate.toAppStore':'Открываем App Store.',
     'auth.google':'Войти через Google','auth.apple':'Войти через Apple','auth.facebook':'Войти через Facebook','auth.email':'Войти по E-Mail','auth.or':'или','auth.skip':'Продолжить без аккаунта',
-    'auth.legal':'Входя, ты принимаешь Условия использования и Политику конфиденциальности.','auth.welcome':'Вход выполнен',
+    'auth.legal':'Входя, ты принимаешь <a href="https://isukato.com/agb" target="_blank" rel="noopener">Условия</a> и <a href="https://isukato.com/datenschutz" target="_blank" rel="noopener">Политику конфиденциальности</a>.','auth.welcome':'Вход выполнен',
     'email.title':'Вход по E-Mail','email.text':'Мы пришлём тебе ссылку для входа.','email.placeholder':'твой@email.com','email.send':'Отправить ссылку','email.cancel':'Отмена','email.sent':'Письмо отправлено','email.sentSub':'Открой ссылку из письма.','email.invalid':'Неверный E-Mail','email.invalidSub':'Введи корректный адрес.','email.fail':'Не удалось войти',
     'settings.title':'Настройки','settings.lang':'Язык','settings.vibrate':'Вибрация','settings.sound':'Звуки','settings.dark':'Тёмная тема','settings.tutorial':'Показать обучение','settings.kleinkind':'Режим новичка','settings.kleinkindDesc':'Подсвечивает одинаковые числа автоматически.',
     'settings.reminder':'Ежедневное напоминание','settings.reminderTime':'Время напоминания',
     'settings.removeAds':'Убрать рекламу','settings.adFreeOn':'Активно ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Восстановить покупки','settings.restoreOk':'Без рекламы активно.','settings.restoreNone':'Покупки не найдены.',
-    'settings.rate':'Оцените нас','settings.contact':'Связаться','settings.privacy':'Конфиденциальность',
+    'settings.rate':'Оцените нас','settings.contact':'Связаться','settings.privacy':'Конфиденциальность','settings.imprint':'Выходные данные',
     'settings.langPick':'Выбери язык',
     'sammlung.title':'Коллекция','sammlung.records':'Рекорды','sammlung.streak':'Серия дней','sammlung.winStreak':'Серия побед','sammlung.wins':'Победы','sammlung.achievements':'Достижения','sammlung.bestTimes':'Лучшие времена',
     'shop.title':'Магазин','shop.coins':'Монеты','shop.designs':'🎨 Темы','shop.boosters':'⚡ Бустеры','shop.premium':'⭐ Премиум',
@@ -2431,12 +2441,12 @@ const LANG = {
     'purchase.title':'Reklamsız 9,99 €','purchase.text':'Reklamsız — sonsuza dek. Tek seferlik ödeme.','purchase.buy':'Şimdi al','purchase.later':'Sonra',
     'rate.title':'Brainoku hoşuna gitti mi?','rate.text':"App Store'da puan vermek bize çok yardımcı olur — sadece bir saniye sürer.",'rate.go':"App Store'da puan ver",'rate.later':'Sonra','rate.thanks':'Teşekkürler!','rate.toAppStore':"App Store'a yönlendiriliyorsun.",
     'auth.google':'Google ile devam et','auth.apple':'Apple ile devam et','auth.facebook':'Facebook ile devam et','auth.email':'E-posta ile devam et','auth.or':'veya','auth.skip':'Hesapsız devam et',
-    'auth.legal':'Giriş yaparak Kullanım Şartları ve Gizlilik Politikası kabul edilir.','auth.welcome':'Giriş yapıldı',
+    'auth.legal':'Giriş yaparak <a href="https://isukato.com/agb" target="_blank" rel="noopener">Kullanım Şartları</a> ve <a href="https://isukato.com/datenschutz" target="_blank" rel="noopener">Gizlilik Politikası</a> kabul edilir.','auth.welcome':'Giriş yapıldı',
     'email.title':'E-posta ile giriş','email.text':'Sana bir giriş bağlantısı göndereceğiz.','email.placeholder':'senin@eposta.com','email.send':'Bağlantı gönder','email.cancel':'İptal','email.sent':'E-posta yolda','email.sentSub':'Gelen kutusundaki bağlantıya tıkla.','email.invalid':'Geçersiz e-posta','email.invalidSub':'Geçerli bir adres gir.','email.fail':'Giriş başarısız',
     'settings.title':'Ayarlar','settings.lang':'Dil','settings.vibrate':'Titreşim','settings.sound':'Sesler','settings.dark':'Karanlık mod','settings.tutorial':'Eğitimi göster','settings.kleinkind':'Çocuk modu','settings.kleinkindDesc':'Aynı sayıları otomatik vurgular.',
     'settings.reminder':'Günlük hatırlatıcı','settings.reminderTime':'Hatırlatma saati',
     'settings.removeAds':'Reklamları kaldır','settings.adFreeOn':'Aktif ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Satın alımları geri yükle','settings.restoreOk':'Reklamsız aktif.','settings.restoreNone':'Satın alma bulunamadı.',
-    'settings.rate':'Bizi puanla','settings.contact':'İletişim','settings.privacy':'Gizlilik',
+    'settings.rate':'Bizi puanla','settings.contact':'İletişim','settings.privacy':'Gizlilik','settings.imprint':'Künye',
     'settings.langPick':'Dil seç',
     'sammlung.title':'Koleksiyon','sammlung.records':'Rekorlar','sammlung.streak':'Günlük seri','sammlung.winStreak':'Galibiyet serisi','sammlung.wins':'Galibiyetler','sammlung.achievements':'Başarılar','sammlung.bestTimes':'En iyi süreler',
     'shop.title':'Mağaza','shop.coins':'Coin','shop.designs':'🎨 Tasarımlar','shop.boosters':'⚡ Güçlendirici','shop.premium':'⭐ Premium',
@@ -2498,12 +2508,12 @@ const LANG = {
     'purchase.title':'広告非表示 9.99€','purchase.text':'広告は永久に非表示。一度の支払いで快適にプレイ。','purchase.buy':'今すぐ購入','purchase.later':'あとで',
     'rate.title':'Brainokuはお気に入り？','rate.text':'App Storeでの評価が大きな励みになります — 一瞬で完了します。','rate.go':'App Storeで評価','rate.later':'あとで','rate.thanks':'ありがとう！','rate.toAppStore':'App Storeへ移動します。',
     'auth.google':'Googleで続ける','auth.apple':'Appleで続ける','auth.facebook':'Facebookで続ける','auth.email':'メールで続ける','auth.or':'または','auth.skip':'アカウントなしで続ける',
-    'auth.legal':'サインインすると、利用規約とプライバシーポリシーに同意したものとみなされます。','auth.welcome':'サインインしました',
+    'auth.legal':'サインインすると、<a href="https://isukato.com/agb" target="_blank" rel="noopener">利用規約</a>と<a href="https://isukato.com/datenschutz" target="_blank" rel="noopener">プライバシーポリシー</a>に同意したものとみなされます。','auth.welcome':'サインインしました',
     'email.title':'メールでサインイン','email.text':'ログインリンクをメールでお送りします。','email.placeholder':'your@email.com','email.send':'リンク送信','email.cancel':'キャンセル','email.sent':'メール送信済み','email.sentSub':'受信ボックスのリンクをタップしてください。','email.invalid':'無効なメールアドレス','email.invalidSub':'正しいアドレスを入力してください。','email.fail':'サインイン失敗',
     'settings.title':'設定','settings.lang':'言語','settings.vibrate':'バイブレーション','settings.sound':'サウンド','settings.dark':'ダークモード','settings.tutorial':'チュートリアルを表示','settings.kleinkind':'初心者モード','settings.kleinkindDesc':'同じ数字を自動でハイライトします。',
     'settings.reminder':'毎日のリマインダー','settings.reminderTime':'リマインダー時刻',
     'settings.removeAds':'広告を削除','settings.adFreeOn':'有効 ✓','settings.adFreePrice':'9.99€ ›','settings.restore':'購入を復元','settings.restoreOk':'広告非表示が有効。','settings.restoreNone':'購入は見つかりませんでした。',
-    'settings.rate':'評価する','settings.contact':'お問い合わせ','settings.privacy':'プライバシー',
+    'settings.rate':'評価する','settings.contact':'お問い合わせ','settings.privacy':'プライバシー','settings.imprint':'運営者情報',
     'settings.langPick':'言語を選択',
     'sammlung.title':'コレクション','sammlung.records':'記録','sammlung.streak':'連続記録','sammlung.winStreak':'連勝記録','sammlung.wins':'勝利','sammlung.achievements':'実績','sammlung.bestTimes':'ベストタイム',
     'shop.title':'ショップ','shop.coins':'コイン','shop.designs':'🎨 デザイン','shop.boosters':'⚡ ブースター','shop.premium':'⭐ プレミアム',
@@ -3540,14 +3550,12 @@ document.getElementById('btn-info-close').addEventListener('click', () => {
   document.getElementById('overlay-info').classList.remove('active');
 });
 
-document.getElementById('row-privacy').addEventListener('click', () => openInfo('Datenschutz', `
-  <p><strong>Brainoku Sudoku</strong> respektiert deine Privatsphäre.</p>
-  <p>Lokale Daten (Streak, Level, Errungenschaften, Einstellungen) werden ausschließlich auf deinem Gerät im Browser-Speicher abgelegt — sie verlassen dein Gerät nicht.</p>
-  <p>In der kostenlosen Version werden Werbeanzeigen über einen Drittanbieter ausgeliefert. Anonyme Werbedaten können dabei vom Werbenetzwerk verarbeitet werden, gemäß dessen Datenschutzerklärung.</p>
-  <p>Mit dem Kauf von „Werbung entfernen" werden keine Werbedaten mehr verarbeitet.</p>
-  <p>Es werden keine Konten, E-Mail-Adressen oder personenbezogenen Daten erhoben.</p>
-  <p style="font-size:11px; opacity:.6; margin-top:12px;">Stand: ${new Date().toLocaleDateString('de-DE')}</p>
-`));
+document.getElementById('row-privacy').addEventListener('click', () => {
+  window.open('https://isukato.com/datenschutz', '_blank', 'noopener,noreferrer');
+});
+document.getElementById('row-imprint').addEventListener('click', () => {
+  window.open('https://isukato.com/impressum', '_blank', 'noopener,noreferrer');
+});
 
 document.getElementById('row-contact').addEventListener('click', () => {
   const subject = encodeURIComponent('Brainoku Sudoku — Feedback');
