@@ -2285,10 +2285,17 @@ function applyLanguage() {
     const key = el.dataset.i18nPlaceholder;
     el.placeholder = t(key);
   });
-  // Refresh dynamic UI that holds translated text
+  // Splash text in der neuen Sprache neu setzen
+  if (typeof initSplash === 'function') initSplash();
+  // Sprach-Label in den Settings nachziehen
+  const cur = document.getElementById('lang-current');
+  if (cur) cur.textContent = t('lang.' + currentLang);
+  // Adfree-Status (deutsch/englisch unterscheidet sich)
+  if (typeof refreshAdFreeUI === 'function') refreshAdFreeUI();
+  // Dynamische Listen IMMER neu rendern (Achievements/Themes haben t() im Inhalt)
   if (typeof refreshHome === 'function') refreshHome();
-  if (typeof refreshSammlung === 'function' && document.getElementById('screen-sammlung')?.classList.contains('active')) refreshSammlung();
-  if (typeof refreshShop === 'function' && document.getElementById('screen-shop')?.classList.contains('active')) refreshShop();
+  if (typeof refreshSammlung === 'function' && document.getElementById('ach-grid')) refreshSammlung();
+  if (typeof refreshShop === 'function' && document.getElementById('shop-theme-grid')) refreshShop();
 }
 
 function setLanguage(lang) {
@@ -3143,20 +3150,20 @@ function buildThemeGrid() {
   if (!grid) return;
   grid.innerHTML = '';
   Object.keys(THEMES).forEach(id => {
-    const t = THEMES[id];
-    const owned = !!state.unlockedThemes?.[id] || t.price === 0;
+    const th = THEMES[id];
+    const owned = !!state.unlockedThemes?.[id] || th.price === 0;
     const active = state.theme === id;
     const card = document.createElement('button');
     card.className = 'theme-card' + (active ? ' active' : '');
     card.dataset.id = id;
     card.innerHTML = `
-      <div class="theme-preview" style="background:${t.cellBg};">
+      <div class="theme-preview" style="background:${th.cellBg};">
         <span class="pv-cell-given" style="color:#1E2A4A;">3</span>
-        <span class="pv-cell-user" style="color:${t.cellUser};">7</span>
-        <div class="pv-pill" style="background:${t.primary};"></div>
+        <span class="pv-cell-user" style="color:${th.cellUser};">7</span>
+        <div class="pv-pill" style="background:${th.primary};"></div>
       </div>
-      <div class="theme-name">${t.name}</div>
-      <div class="theme-price${owned ? ' owned' : ''}">${owned ? (active ? '✓ Aktiv' : 'Im Besitz') : `🪙 ${t.price}`}</div>
+      <div class="theme-name">${th.name}</div>
+      <div class="theme-price${owned ? ' owned' : ''}">${owned ? (active ? t('shop.themeActiveLabel') : t('shop.themeOwned')) : `🪙 ${th.price}`}</div>
       ${active ? '<div class="lock">✓</div>' : (owned ? '' : '<div class="lock">🔒</div>')}
     `;
     card.addEventListener('click', () => onThemeClick(id));
@@ -3165,8 +3172,8 @@ function buildThemeGrid() {
 }
 
 function onThemeClick(id) {
-  const t = THEMES[id];
-  const owned = !!state.unlockedThemes?.[id] || t.price === 0;
+  const th = THEMES[id];
+  const owned = !!state.unlockedThemes?.[id] || th.price === 0;
   if (owned) {
     state.theme = id;
     saveState();
@@ -3175,19 +3182,19 @@ function onThemeClick(id) {
     playSfx('toggle');
     return;
   }
-  if ((state.coins || 0) < t.price) {
-    showToast('🪙', 'Zu wenig Coins', `Du brauchst ${t.price} Coins.`);
+  if ((state.coins || 0) < th.price) {
+    showToast('🪙', t('shop.notEnough'), t('shop.notEnoughSub', { n: th.price }));
     return;
   }
-  if (!confirm(`„${t.name}" für ${t.price} Coins kaufen?`)) return;
-  state.coins -= t.price;
+  if (!confirm(t('shop.confirm', { name: th.name, price: th.price }))) return;
+  state.coins -= th.price;
   state.unlockedThemes = Object.assign({}, state.unlockedThemes, { [id]: true });
   state.theme = id;
   saveState();
   applyTheme(id);
   refreshShop();
   refreshHome();
-  showToast('🎨', 'Design gekauft', `„${t.name}" aktiviert.`);
+  showToast('🎨', t('shop.themeBought'), t('shop.themeActive', { name: th.name }));
   playSfx('achieve');
 }
 
@@ -3336,13 +3343,13 @@ function openLoginBonus() {
     grid.insertAdjacentHTML('beforeend', `
       <div class="${cls.join(' ')}">
         ${dayNum < today || (dayNum === today && claimed) ? '<div class="login-check">✓</div>' : ''}
-        <div class="day-num">Tag ${dayNum}</div>
+        <div class="day-num">${t('login.day')} ${dayNum}</div>
         <div class="day-coins">${reward}</div>
       </div>
     `);
   });
   const claim = document.getElementById('btn-login-claim');
-  claim.textContent = claimed ? 'Schließen' : 'Abholen';
+  claim.textContent = claimed ? t('login.close') : t('login.claim');
   document.getElementById('overlay-login').classList.add('active');
 }
 
