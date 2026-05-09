@@ -10,6 +10,8 @@ const SRC_FILES = [
   'manifest.webmanifest',
   'sw.js',
   'icon.svg',
+  'sakura.jpeg',
+  'sakuradark.jpeg',
 ];
 
 const OUT_DIR = 'www';

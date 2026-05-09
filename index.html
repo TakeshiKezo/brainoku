@@ -3861,8 +3861,9 @@ const PATTERN_MARBLE  = "linear-gradient(135deg, rgba(180,180,200,0.18) 0%, tran
 const PATTERN_GOLD    = "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='70' height='70' viewBox='0 0 70 70'><g fill='%23D4AF37' opacity='0.45'><circle cx='12' cy='12' r='1.4'/><circle cx='38' cy='20' r='2'/><circle cx='58' cy='14' r='1.2'/><circle cx='22' cy='38' r='1.6'/><circle cx='50' cy='44' r='1.2'/><circle cx='8' cy='56' r='1.4'/><circle cx='32' cy='62' r='1.8'/><circle cx='62' cy='58' r='1.4'/></g></svg>\")";
 
 const THEMES = {
-  classic:      { name: 'Classic',     price: 0,    primary: '#5C5CF0', primarySoft: '#EAEAFD', primaryLight: '#A5A8E8', cellBg: '#fff',    cellPeer: '#EEF0FA', cellSelected: '#C8C9FA', cellSame: '#DEDFFB', cellUser: '#5C5CF0' },
-  sakura:       { name: 'Sakura',      price: 500,  primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4', cellBg: '#FFF8FB', cellPeer: '#FCE0EC', cellSelected: '#F9A8D4', cellSame: '#FBCFE8', cellUser: '#DB2777' },
+  classic:        { name: 'Classic',       price: 0,    primary: '#5C5CF0', primarySoft: '#EAEAFD', primaryLight: '#A5A8E8', cellBg: '#fff',    cellPeer: '#EEF0FA', cellSelected: '#C8C9FA', cellSame: '#DEDFFB', cellUser: '#5C5CF0' },
+  sakura_photo:   { name: 'Sakura Foto',   price: 50,   primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4', cellBg: 'rgba(255,248,251,0.92)', cellPeer: 'rgba(252,224,236,0.85)', cellSelected: 'rgba(249,168,212,0.85)', cellSame: 'rgba(251,207,232,0.85)', cellUser: '#DB2777', wallpaper: { light: 'sakura.jpeg', dark: 'sakuradark.jpeg' } },
+  sakura:         { name: 'Sakura',        price: 500,  primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4', cellBg: '#FFF8FB', cellPeer: '#FCE0EC', cellSelected: '#F9A8D4', cellSame: '#FBCFE8', cellUser: '#DB2777' },
   ozean:        { name: 'Ozean',       price: 500,  primary: '#0EA5E9', primarySoft: '#E0F2FE', primaryLight: '#7DD3FC', cellBg: '#F8FCFF', cellPeer: '#D5EEFA', cellSelected: '#7DD3FC', cellSame: '#BAE6FD', cellUser: '#0284C7' },
   wald:         { name: 'Wald',        price: 500,  primary: '#16A34A', primarySoft: '#DCFCE7', primaryLight: '#86EFAC', cellBg: '#F8FCF9', cellPeer: '#D2F0DA', cellSelected: '#86EFAC', cellSame: '#BBF7D0', cellUser: '#15803D' },
   sunset:       { name: 'Sunset',      price: 700,  primary: '#F97316', primarySoft: '#FFEDD5', primaryLight: '#FDBA74', cellBg: '#FFFBF6', cellPeer: '#FFE0C2', cellSelected: '#FDBA74', cellSame: '#FED7AA', cellUser: '#EA580C' },
@@ -3898,11 +3899,23 @@ function applyTheme(id) {
   document.documentElement.classList.toggle('theme-dark', !!t.dark);
   const app = document.getElementById('app');
   if (app) {
-    if (t.bgPattern) {
+    // Reset
+    app.style.backgroundImage = '';
+    app.style.backgroundRepeat = '';
+    app.style.backgroundSize = '';
+    app.style.backgroundPosition = '';
+    app.style.backgroundAttachment = '';
+    if (t.wallpaper) {
+      // Wallpaper-Theme — Foto-Hintergrund, Light/Dark passt zu state.dark
+      const url = state.dark && t.wallpaper.dark ? t.wallpaper.dark : t.wallpaper.light;
+      app.style.backgroundImage = `url('${url}')`;
+      app.style.backgroundSize = 'cover';
+      app.style.backgroundRepeat = 'no-repeat';
+      app.style.backgroundPosition = 'center center';
+      app.style.backgroundAttachment = 'fixed';
+    } else if (t.bgPattern) {
       app.style.backgroundImage = t.bgPattern;
       app.style.backgroundRepeat = 'repeat';
-    } else {
-      app.style.backgroundImage = '';
     }
   }
 }
@@ -3919,10 +3932,17 @@ function buildThemeGrid() {
     card.className = 'theme-card' + (active ? ' active' : '');
     card.dataset.id = id;
     const previewBg = th.bgColor || th.cellBg;
-    const previewPattern = th.bgPattern ? `background-image:${th.bgPattern}; background-size:60px 60px;` : '';
+    let previewBgStyle;
+    if (th.wallpaper) {
+      previewBgStyle = `background-image:url('${th.wallpaper.light}'); background-size:cover; background-position:center;`;
+    } else if (th.bgPattern) {
+      previewBgStyle = `background-image:${th.bgPattern}; background-size:60px 60px;`;
+    } else {
+      previewBgStyle = '';
+    }
     const givenColor = th.cellGiven || '#1E2A4A';
     card.innerHTML = `
-      <div class="theme-preview" style="background:${previewBg}; ${previewPattern}">
+      <div class="theme-preview" style="background-color:${previewBg}; ${previewBgStyle}">
         <span class="pv-cell-given" style="color:${givenColor};">3</span>
         <span class="pv-cell-user" style="color:${th.cellUser};">7</span>
         <div class="pv-pill" style="background:${th.primary};"></div>
