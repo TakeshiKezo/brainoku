@@ -112,7 +112,18 @@ Vercel → Project → **Settings** → **Domains** → eigene Domain hinzufüge
 - Cloud-Sync zwischen Geräten (muss noch implementiert werden — siehe TODO)
 - Persistenz nach Browser-Cache-Clear
 
-## TODO für vollen Cloud-Sync (späterer Schritt)
-- `state` periodisch an `user_state.data` (jsonb) senden via `supabase.from('user_state').upsert(...)`
-- Beim Login `user_state` laden und mit lokalem State mergen (newest-wins per Feld)
-- Realtime-Subscription für Multi-Device-Sync
+## ✅ Cloud-Sync ist jetzt implementiert (aktiv sobald SUPABASE_URL gefüllt)
+
+Sobald du oben die `SUPABASE_URL` und `SUPABASE_ANON_KEY` einträgst und das `supabase-schema.sql` ausführst:
+
+- **Login**: zieht den letzten Cloud-Spielstand und merged ihn mit dem lokalen State (max für Counter, union für Achievements/Themes, schnellste Zeit für Bestzeiten — kein Fortschrittsverlust).
+- **Während des Spielens**: jede Änderung (Sieg, Coin-Erhalt, Theme-Kauf etc.) wird debounced (~2,5 s) hochgeladen.
+- **Login auf zweitem Gerät**: alles wird automatisch gemergt — niemand verliert Fortschritt, egal wo gespielt wurde.
+- **Toast „☁️ Cloud-Sync — Spielstand aktualisiert"** erscheint nur wenn sich beim Merge etwas geändert hat.
+
+Die Code-Logik ist robust: ohne Supabase-Keys passiert nichts (kein Network-Request), Cloud-Sync ist also komplett opt-in.
+
+### Multi-Device-Test
+1. Spiele auf Gerät A, gewinne 3 Spiele → Cloud bekommt Update
+2. Logge dich auf Gerät B ein → bei finishLogin/checkSupabaseSession lädt Brainoku den Cloud-State, mergt mit dem (leeren) lokalen → Stats erscheinen sofort, Toast zeigt sich
+3. Spiele auf B → Cloud bekommt neuen merged State → bei nächstem Open auf A wieder Sync

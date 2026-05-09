@@ -2208,7 +2208,11 @@ function loadState() {
     }, s);
   } catch { return { streak:0, longestStreak:0, lastPlayedDate:null, completed:0, currentWinStreak:0, longestWinStreak:0, perfectGames:0, xp:0, coins:0, streakFreezes:0, lastLoginBonusDate:null, loginBonusDay:0, savedGame:null, adFree:false, sound:true, vibrate:true, dark:false, tutorialSeen:false, lastDifficulty:'mittel', kleinkindMode:false, achievements:{}, reminderEnabled:false, reminderTime:'19:00', lastReminderSent:null }; }
 }
-function saveState() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+function saveState(opts) {
+  state.updatedAt = Date.now();
+  localStorage.setItem(STORE_KEY, JSON.stringify(state));
+  if (!opts?.skipSync && state.account?.id) syncStateUpDebounced();
+}
 
 /* =========================================================
    i18n  —  DE / EN / RU / TR
@@ -2280,6 +2284,7 @@ const LANG = {
       "Trainiere deine Logik!","Schärft den Verstand!","Pure Knobelfreude!","Konzentration auf Profi-Niveau!","Hirn-Gymnastik!","Mach den Kopf frei!","Macht süchtig!","Pro-Logik aktiviert!","Mehr als nur Zahlen!","Logik schlägt Glück!","Tägliches Knobel-Workout!","Knobeln statt Scrollen!","Kein Zufall, nur Köpfchen!","Für alle ab 8 bis 99!","Schon Sherlock liebte es!","100 % Brainfood-Vibes!","Klassisch und zeitlos!","Denk dich rein!","Stille Konzentration!","Ein Klassiker neu gemacht!","Knack die Zellen!","Ein Puzzle für den Kopf!","Logik-Liebhaber willkommen!","Knobeln macht stark!"
     ],
     'gen.close':'Schließen','gen.back':'Zurück','gen.confirm':'OK','gen.cancel':'Abbrechen',
+    'sync.title':'Cloud-Sync','sync.sub':'Spielstand wurde aktualisiert.',
   },
   en: {
     'lang.de':'Deutsch','lang.en':'English','lang.ru':'Русский','lang.tr':'Türkçe','lang.ja':'日本語',
@@ -2347,6 +2352,7 @@ const LANG = {
       "Train your logic!","Sharpens the mind!","Pure puzzle joy!","Pro-level focus!","Mental gymnastics!","Clear your head!","Highly addictive!","Pro-logic engaged!","More than just numbers!","Logic beats luck!","Daily puzzle workout!","Puzzle, don't scroll!","Skill, not chance!","For ages 8 to 99!","Even Sherlock loved it!","100 % brainfood vibes!","Classic and timeless!","Think your way in!","Quiet focus!","A classic, reborn!","Crack the cells!","A puzzle for the mind!","Logic lovers welcome!","Puzzling makes you sharp!"
     ],
     'gen.close':'Close','gen.back':'Back','gen.confirm':'OK','gen.cancel':'Cancel',
+    'sync.title':'Cloud sync','sync.sub':'Game progress updated.',
   },
   ru: {
     'lang.de':'Deutsch','lang.en':'English','lang.ru':'Русский','lang.tr':'Türkçe','lang.ja':'日本語',
@@ -2414,6 +2420,7 @@ const LANG = {
       "Тренируй логику!","Точит ум!","Чистое удовольствие!","Концентрация про-уровня!","Гимнастика для ума!","Очисти голову!","Затягивает!","Про-логика!","Больше чем числа!","Логика побеждает удачу!","Ежедневная тренировка!","Думай, а не скролль!","Не везение, а ум!","Для всех 8-99!","Шерлок одобряет!","100 % пища для ума!","Классика на все времена!","Вдумайся!","Тихая концентрация!","Классика заново!","Раскрой клетки!","Головоломка для ума!","Любителям логики!","Головоломки делают сильнее!"
     ],
     'gen.close':'Закрыть','gen.back':'Назад','gen.confirm':'ОК','gen.cancel':'Отмена',
+    'sync.title':'Облачная синхронизация','sync.sub':'Прогресс обновлён.',
   },
   tr: {
     'lang.de':'Deutsch','lang.en':'English','lang.ru':'Русский','lang.tr':'Türkçe','lang.ja':'日本語',
@@ -2481,6 +2488,7 @@ const LANG = {
       "Mantığını çalıştır!","Zihni keskinleştirir!","Saf bulmaca keyfi!","Pro seviyede odak!","Zihin jimnastiği!","Kafanı boşalt!","Bağımlılık yapıcı!","Pro-mantık aktif!","Sayılardan fazlası!","Mantık şanstan üstündür!","Günlük bulmaca egzersizi!","Kaydırma yerine düşün!","Şans değil, zekâ!","8'den 99'a herkese!","Sherlock bile severdi!","100 % beyin gıdası!","Klasik ve zamansız!","Düşünerek çöz!","Sessiz konsantrasyon!","Klasik yeniden!","Hücreleri çöz!","Zihne bir bulmaca!","Mantık severlere!","Bulmaca güçlendirir!"
     ],
     'gen.close':'Kapat','gen.back':'Geri','gen.confirm':'Tamam','gen.cancel':'İptal',
+    'sync.title':'Bulut senkronizasyonu','sync.sub':'İlerleme güncellendi.',
   },
   ja: {
     'lang.de':'Deutsch','lang.en':'English','lang.ru':'Русский','lang.tr':'Türkçe','lang.ja':'日本語',
@@ -2548,6 +2556,7 @@ const LANG = {
       "論理を鍛えよう！","頭脳を磨く！","純粋なパズルの楽しさ！","プロ級の集中！","頭の体操！","頭をスッキリ！","ハマる！","プロ級の論理！","ただの数字じゃない！","運より論理！","毎日のパズル！","スクロールより数独！","運じゃなく頭脳！","8歳から99歳まで！","シャーロックも愛した！","100% ブレインフード！","クラシックで永遠！","じっくり考える！","静かな集中！","クラシック再び！","マスを解け！","頭のためのパズル！","論理ファン歓迎！","パズルで強くなる！"
     ],
     'gen.close':'閉じる','gen.back':'戻る','gen.confirm':'OK','gen.cancel':'キャンセル',
+    'sync.title':'クラウド同期','sync.sub':'進捗を更新しました。',
   },
 };
 
@@ -2686,7 +2695,9 @@ function finishLogin(account) {
   state.account = account;
   state.authSeen = true;
   saveState();
-  showToast('✅', 'Angemeldet', account.displayName || account.email || 'Willkommen!');
+  showToast('✅', t('auth.welcome'), account.displayName || account.email || 'Willkommen!');
+  // Cloud-Sync: bei Login Spielstand abrufen + mergen
+  if (typeof syncStateDown === 'function') syncStateDown();
   postAuthFlow();
 }
 
@@ -2718,6 +2729,8 @@ async function checkSupabaseSession() {
     };
     state.authSeen = true;
     saveState();
+    // Cloud-Sync: bei wiederkehrender Session Spielstand abrufen + mergen
+    if (typeof syncStateDown === 'function') syncStateDown();
   }
 }
 
@@ -2738,6 +2751,124 @@ document.getElementById('btn-email-send').addEventListener('click', () => {
 document.getElementById('btn-email-cancel').addEventListener('click', () => {
   document.getElementById('overlay-email-auth').classList.remove('active');
 });
+
+/* =========================================================
+   CLOUD-SYNC  (über Supabase, nur aktiv wenn Keys gesetzt + eingeloggt)
+========================================================= */
+let syncUpTimer = null;
+function syncStateUpDebounced() {
+  if (!state.account?.id) return;
+  if (syncUpTimer) clearTimeout(syncUpTimer);
+  syncUpTimer = setTimeout(syncStateUp, 2500);
+}
+
+async function syncStateUp() {
+  const sb = await loadSupabase();
+  if (!sb || !state.account?.id) return;
+  try {
+    await sb.from('user_state').upsert({
+      user_id: state.account.id,
+      data: state,
+    }, { onConflict: 'user_id' });
+  } catch (e) {
+    console.warn('Cloud-Sync up failed:', e);
+  }
+}
+
+async function syncStateDown() {
+  const sb = await loadSupabase();
+  if (!sb || !state.account?.id) return;
+  try {
+    const { data, error } = await sb.from('user_state')
+      .select('data')
+      .eq('user_id', state.account.id)
+      .maybeSingle();
+    if (error || !data?.data) return;
+    const cloud = data.data;
+    const before = JSON.stringify({
+      xp: state.xp, completed: state.completed, coins: state.coins,
+      streak: state.streak, achievements: state.achievements,
+    });
+    const merged = mergeCloudIntoLocal(state, cloud);
+    Object.assign(state, merged);
+    const after = JSON.stringify({
+      xp: state.xp, completed: state.completed, coins: state.coins,
+      streak: state.streak, achievements: state.achievements,
+    });
+    saveState({ skipSync: true });
+    if (typeof applyLanguage === 'function') applyLanguage();
+    if (typeof applySettings === 'function') applySettings();
+    if (typeof refreshHome === 'function') refreshHome();
+    // Push merged state zurück, damit Cloud aktuell bleibt
+    syncStateUp();
+    // Toast nur wenn sich was geändert hat
+    if (before !== after) showToast('☁️', t('sync.title'), t('sync.sub'));
+  } catch (e) {
+    console.warn('Cloud-Sync down failed:', e);
+  }
+}
+
+function mergeCloudIntoLocal(local, cloud) {
+  const merged = Object.assign({}, local, cloud);
+  // Counter: max von beiden — kein Fortschrittsverlust
+  ['xp','completed','longestStreak','longestWinStreak','perfectGames','coins','currentWinStreak','streakFreezes','hintCredits'].forEach(k => {
+    merged[k] = Math.max(local[k] || 0, cloud[k] || 0);
+  });
+  // Streak: das höhere Datum gewinnt, dann Wert übernehmen
+  const lDate = local.lastPlayedDate || '';
+  const cDate = cloud.lastPlayedDate || '';
+  if (cDate > lDate) {
+    merged.streak = cloud.streak || 0;
+    merged.lastPlayedDate = cDate;
+  } else {
+    merged.streak = local.streak || 0;
+    merged.lastPlayedDate = lDate;
+  }
+  // Achievements + Themes: union (alles freischalten)
+  merged.achievements    = Object.assign({}, local.achievements    || {}, cloud.achievements    || {});
+  merged.unlockedThemes  = Object.assign({}, local.unlockedThemes  || {}, cloud.unlockedThemes  || {});
+  // completedByDifficulty: per-difficulty max
+  const diffs = ['leicht','mittel','schwer','experte'];
+  merged.completedByDifficulty = diffs.reduce((acc, d) => {
+    acc[d] = Math.max(local.completedByDifficulty?.[d] || 0, cloud.completedByDifficulty?.[d] || 0);
+    return acc;
+  }, {});
+  // Levels: max
+  merged.levels = diffs.reduce((acc, d) => {
+    acc[d] = Math.max(local.levels?.[d] || 1, cloud.levels?.[d] || 1);
+    return acc;
+  }, {});
+  // Best times: per Level min (schnellste Zeit gewinnt)
+  merged.bestTimesByLevel = diffs.reduce((acc, d) => {
+    acc[d] = {};
+    const all = new Set([
+      ...Object.keys(local.bestTimesByLevel?.[d]  || {}),
+      ...Object.keys(cloud.bestTimesByLevel?.[d]  || {}),
+    ]);
+    all.forEach(lvl => {
+      const a = local.bestTimesByLevel?.[d]?.[lvl];
+      const b = cloud.bestTimesByLevel?.[d]?.[lvl];
+      acc[d][lvl] = (a && b) ? Math.min(a, b) : (a || b);
+    });
+    return acc;
+  }, {});
+  merged.bestOverall = diffs.reduce((acc, d) => {
+    const a = local.bestOverall?.[d];
+    const b = cloud.bestOverall?.[d];
+    acc[d] = (a && b) ? Math.min(a, b) : (a || b);
+    return acc;
+  }, {});
+  // Settings: lokale Auswahl behalten (User hat hier zuletzt entschieden)
+  ['lang','theme','sound','vibrate','dark','kleinkindMode','reminderEnabled','reminderTime'].forEach(k => {
+    if (local[k] !== undefined) merged[k] = local[k];
+    else if (cloud[k] !== undefined) merged[k] = cloud[k];
+  });
+  // Flags: sobald irgendwo true → bleibt true
+  ['adFree','rated','tutorialSeen','authSeen'].forEach(k => {
+    merged[k] = !!(local[k] || cloud[k]);
+  });
+  return merged;
+}
 
 /* =========================================================
    NAVIGATION
@@ -3610,7 +3741,7 @@ function ensureAudio() {
   if (audioCtx.state === 'suspended') audioCtx.resume();
   return audioCtx;
 }
-function tone({ freq = 440, dur = 0.12, type = 'sine', vol = 0.18, attack = 0.005, release = 0.08, start = 0 }) {
+function tone({ freq = 440, dur = 0.12, type = 'sine', vol = 0.14, attack = 0.008, release = 0.12, start = 0, filter = null }) {
   const ctx = ensureAudio();
   if (!ctx) return;
   const t0 = ctx.currentTime + start;
@@ -3618,29 +3749,65 @@ function tone({ freq = 440, dur = 0.12, type = 'sine', vol = 0.18, attack = 0.00
   const g = ctx.createGain();
   osc.type = type;
   osc.frequency.setValueAtTime(freq, t0);
-  g.gain.setValueAtTime(0, t0);
-  g.gain.linearRampToValueAtTime(vol, t0 + attack);
-  g.gain.linearRampToValueAtTime(0, t0 + dur + release);
-  osc.connect(g).connect(ctx.destination);
+  // Glatte ADSR-Hüllkurve, exponentielles Release wirkt natürlicher
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(vol, t0 + attack);
+  g.gain.setValueAtTime(vol, t0 + dur);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur + release);
+  let chain = osc;
+  if (filter) {
+    const bq = ctx.createBiquadFilter();
+    bq.type = 'lowpass';
+    bq.frequency.setValueAtTime(filter, t0);
+    bq.Q.setValueAtTime(0.7, t0);
+    chain.connect(bq);
+    chain = bq;
+  }
+  chain.connect(g).connect(ctx.destination);
   osc.start(t0);
-  osc.stop(t0 + dur + release + 0.02);
-}
-function chord(notes, dur = 0.18, type = 'triangle', vol = 0.15) {
-  notes.forEach(n => tone({ freq: n.f, dur, type, vol, start: n.t || 0 }));
+  osc.stop(t0 + dur + release + 0.05);
 }
 const SFX = {
-  click:    () => tone({ freq: 880, dur: 0.04, type: 'square', vol: 0.10, release: 0.04 }),
-  correct:  () => tone({ freq: 660, dur: 0.08, type: 'sine',   vol: 0.16, release: 0.10 }),
-  error:    () => {
-    tone({ freq: 220, dur: 0.10, type: 'sawtooth', vol: 0.18 });
-    tone({ freq: 165, dur: 0.14, type: 'sawtooth', vol: 0.16, start: 0.06 });
+  click:    () => tone({ freq: 1100, dur: 0.03, type: 'sine', vol: 0.07, attack: 0.003, release: 0.04 }),
+  correct:  () => {
+    // Warmer Bell-Ton: Grundton + Oktave leiser drüber
+    tone({ freq: 880,  dur: 0.10, type: 'sine', vol: 0.12, release: 0.18 });
+    tone({ freq: 1320, dur: 0.08, type: 'sine', vol: 0.05, release: 0.18, start: 0.015 });
   },
-  hint:     () => chord([{f:880,t:0},{f:1175,t:0.05}], 0.18, 'sine', 0.14),
-  win:      () => chord([{f:523,t:0},{f:659,t:0.10},{f:784,t:0.20},{f:1047,t:0.30}], 0.22, 'triangle', 0.18),
-  lose:     () => chord([{f:392,t:0},{f:330,t:0.12},{f:262,t:0.24}], 0.30, 'triangle', 0.18),
-  levelUp:  () => chord([{f:523,t:0},{f:659,t:0.06},{f:784,t:0.12},{f:1047,t:0.18},{f:1318,t:0.24}], 0.16, 'triangle', 0.16),
-  achieve:  () => chord([{f:784,t:0},{f:988,t:0.08},{f:1175,t:0.16}], 0.20, 'triangle', 0.17),
-  toggle:   () => tone({ freq: 660, dur: 0.05, type: 'square', vol: 0.10, release: 0.05 }),
+  error:    () => {
+    // Tiefer, gefiltert — kein scharfes Sawtooth mehr
+    tone({ freq: 280, dur: 0.10, type: 'sine', vol: 0.14, filter: 900 });
+    tone({ freq: 220, dur: 0.16, type: 'sine', vol: 0.13, start: 0.08, filter: 700 });
+  },
+  hint:     () => {
+    tone({ freq: 880,  dur: 0.10, type: 'sine', vol: 0.10, release: 0.18 });
+    tone({ freq: 1175, dur: 0.10, type: 'sine', vol: 0.10, release: 0.18, start: 0.05 });
+    tone({ freq: 1480, dur: 0.18, type: 'sine', vol: 0.09, release: 0.22, start: 0.10 });
+  },
+  win:      () => {
+    [523, 659, 784, 1047].forEach((f, i) => {
+      tone({ freq: f,     dur: 0.18, type: 'sine', vol: 0.12, release: 0.22, start: i * 0.10 });
+      tone({ freq: f * 2, dur: 0.18, type: 'sine', vol: 0.04, release: 0.22, start: i * 0.10 });
+    });
+  },
+  lose:     () => {
+    tone({ freq: 392, dur: 0.28, type: 'sine', vol: 0.13, filter: 1100, release: 0.30 });
+    tone({ freq: 330, dur: 0.30, type: 'sine', vol: 0.13, filter: 900,  release: 0.30, start: 0.12 });
+    tone({ freq: 262, dur: 0.40, type: 'sine', vol: 0.14, filter: 700,  release: 0.40, start: 0.26 });
+  },
+  levelUp:  () => {
+    [523, 659, 784, 1047, 1318].forEach((f, i) => {
+      tone({ freq: f, dur: 0.14, type: 'sine', vol: 0.12, release: 0.20, start: i * 0.07 });
+    });
+  },
+  achieve:  () => {
+    // Bell-artiger Akkord mit Sub-Oktave
+    [784, 988, 1175].forEach((f, i) => {
+      tone({ freq: f,       dur: 0.20, type: 'sine', vol: 0.12, release: 0.30, start: i * 0.08 });
+      tone({ freq: f * 0.5, dur: 0.20, type: 'sine', vol: 0.04, release: 0.30, start: i * 0.08 });
+    });
+  },
+  toggle:   () => tone({ freq: 700, dur: 0.04, type: 'sine', vol: 0.07, release: 0.06 }),
 };
 function playSfx(name) {
   if (!state.sound) return;
