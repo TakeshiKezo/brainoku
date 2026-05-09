@@ -497,7 +497,7 @@
   .settings-back svg { width: 18px; height: 18px; fill: currentColor; }
   .settings-title { font-size: 22px; margin: 14px 0 6px; }
 
-  /* ---------- BOTTOM NAV ---------- */
+  /* ---------- BOTTOM NAV (Tinder-Style: flush, angeheftet) ---------- */
   .nav {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -510,10 +510,10 @@
     width: 100%;
     max-width: 480px;
     z-index: 50;
-    border-radius: 16px 16px 0 0;
-    box-shadow: 0 -4px 14px rgba(30, 42, 74, 0.06);
+    border-radius: 0;
+    border-top: 1px solid var(--card-strong);
   }
-  body.dark .nav { box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.35); }
+  body.dark .nav { border-top-color: rgba(255, 255, 255, 0.08); }
   /* Screens mit Nav brauchen Platz unten, damit Inhalt nicht hinter der Nav verschwindet */
   #screen-home, #screen-sammlung, #screen-shop, #screen-settings {
     padding-bottom: calc(78px + env(safe-area-inset-bottom));
