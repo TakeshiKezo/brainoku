@@ -1882,6 +1882,7 @@
         <button class="lang-option" data-lang="en"><span class="lang-flag">🇬🇧</span> <span data-i18n="lang.en">English</span></button>
         <button class="lang-option" data-lang="ru"><span class="lang-flag">🇷🇺</span> <span data-i18n="lang.ru">Русский</span></button>
         <button class="lang-option" data-lang="tr"><span class="lang-flag">🇹🇷</span> <span data-i18n="lang.tr">Türkçe</span></button>
+        <button class="lang-option" data-lang="ja"><span class="lang-flag">🇯🇵</span> <span data-i18n="lang.ja">日本語</span></button>
       </div>
       <div class="modal-buttons">
         <button class="btn-secondary" id="btn-lang-close" data-i18n="gen.close">Schließen</button>
@@ -2028,7 +2029,7 @@ function saveState() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
 ========================================================= */
 const LANG = {
   de: {
-    'lang.de': 'Deutsch', 'lang.en': 'English', 'lang.ru': 'Русский', 'lang.tr': 'Türkçe',
+    'lang.de': 'Deutsch', 'lang.en': 'English', 'lang.ru': 'Русский', 'lang.tr': 'Türkçe', 'lang.ja': '日本語',
     'nav.home':'Startseite','nav.sammlung':'Sammlung','nav.shop':'Shop','nav.settings':'Einstellungen',
     'home.subtitle':'Sudoku · Täglich knobeln','home.play':'Spielen',
     'home.day':'Tag','home.days':'Tage','home.lvl':'Level','home.xp':'XP',
@@ -2094,7 +2095,7 @@ const LANG = {
     'gen.close':'Schließen','gen.back':'Zurück','gen.confirm':'OK','gen.cancel':'Abbrechen',
   },
   en: {
-    'lang.de':'Deutsch','lang.en':'English','lang.ru':'Русский','lang.tr':'Türkçe',
+    'lang.de':'Deutsch','lang.en':'English','lang.ru':'Русский','lang.tr':'Türkçe','lang.ja':'日本語',
     'nav.home':'Home','nav.sammlung':'Collection','nav.shop':'Shop','nav.settings':'Settings',
     'home.subtitle':'Sudoku · Daily brain training','home.play':'Play',
     'home.day':'day','home.days':'days','home.lvl':'Level','home.xp':'XP',
@@ -2160,7 +2161,7 @@ const LANG = {
     'gen.close':'Close','gen.back':'Back','gen.confirm':'OK','gen.cancel':'Cancel',
   },
   ru: {
-    'lang.de':'Deutsch','lang.en':'English','lang.ru':'Русский','lang.tr':'Türkçe',
+    'lang.de':'Deutsch','lang.en':'English','lang.ru':'Русский','lang.tr':'Türkçe','lang.ja':'日本語',
     'nav.home':'Главная','nav.sammlung':'Коллекция','nav.shop':'Магазин','nav.settings':'Настройки',
     'home.subtitle':'Судоку · Ежедневная тренировка','home.play':'Играть',
     'home.day':'день','home.days':'дней','home.lvl':'Уровень','home.xp':'XP',
@@ -2226,7 +2227,7 @@ const LANG = {
     'gen.close':'Закрыть','gen.back':'Назад','gen.confirm':'ОК','gen.cancel':'Отмена',
   },
   tr: {
-    'lang.de':'Deutsch','lang.en':'English','lang.ru':'Русский','lang.tr':'Türkçe',
+    'lang.de':'Deutsch','lang.en':'English','lang.ru':'Русский','lang.tr':'Türkçe','lang.ja':'日本語',
     'nav.home':'Ana sayfa','nav.sammlung':'Koleksiyon','nav.shop':'Mağaza','nav.settings':'Ayarlar',
     'home.subtitle':'Sudoku · Günlük beyin antrenmanı','home.play':'Oyna',
     'home.day':'gün','home.days':'gün','home.lvl':'Seviye','home.xp':'XP',
@@ -2290,6 +2291,72 @@ const LANG = {
       "Beyni çalıştırır!","Mantığı keskinleştirir!","Bilimsel olarak kanıtlandı!","Konsantrasyonu artırır!","Demansa karşı koruyucu!","100 % beyin gıdası!","Daha akıllı yapar!","Pro-mantık aktif!","En iyi beyin egzersizi!","Her iki beyin yarımküresini aktive eder!","Stresi azaltır!","Hafızayı güçlendirir!","Günlük beyin antrenmanı!","Kaydırma yerine düşün!","Beyin spor salonu!","Sayılardan fazlası!","Pro seviyede odak!","Mantık şanstan üstündür!","Şans değil, beyin!","Bilim seviyor!","Beyin için anti-aging!","Sağlıklı bağımlılık!","8'den 99'a herkese!","Sherlock bile severdi!"
     ],
     'gen.close':'Kapat','gen.back':'Geri','gen.confirm':'Tamam','gen.cancel':'İptal',
+  },
+  ja: {
+    'lang.de':'Deutsch','lang.en':'English','lang.ru':'Русский','lang.tr':'Türkçe','lang.ja':'日本語',
+    'nav.home':'ホーム','nav.sammlung':'コレクション','nav.shop':'ショップ','nav.settings':'設定',
+    'home.subtitle':'数独 · 毎日の脳トレ','home.play':'プレイ',
+    'home.day':'日','home.days':'日','home.lvl':'レベル','home.xp':'XP',
+    'home.resumeTitle':'ゲームを再開',
+    'home.reminder':'⏰ 今日まだプレイしていません。連続記録を絶やさないために一局どうぞ。',
+    'diff.title':'難易度','diff.choose':'レベルを選択',
+    'diff.leicht':'簡単','diff.mittel':'普通','diff.schwer':'難しい','diff.experte':'エキスパート',
+    'game.lvl':'Lv','game.spiel':'ゲーム','game.erase':'消去','game.notes':'メモ','game.hint':'ヒント','game.new':'新規','game.tipp':'ヒント',
+    'win.title':'クリア！🎉','win.next':'次のゲーム','win.home':'ホームへ',
+    'win.solved':'ゲーム {n} クリア。','win.streakAdd':' 連続: {n}{label}。','win.adNext':' 短い広告が流れます。',
+    'lose.title':'残念！','lose.text':'ライフがありません。もう一度挑戦しますか？','lose.retry':'もう一度','lose.home':'ホームへ',
+    'revive.title':'もう1つライフ？','revive.text':'短い動画を見るか、<strong>150 🪙</strong> を払って追加ライフを獲得してください。',
+    'revive.watch':'動画を見る','revive.coins':'コインで支払う','revive.cancel':'あきらめる',
+    'revive.ok.title':'復活','revive.ok.sub':'ライフが回復しました。',
+    'shield.title':'ストリーク・シールド','shield.text':'日を逃してもシールドがストリークを守ります。最大3つ。',
+    'shield.watch':'動画を見る','shield.coins':'コインで支払う','shield.close':'閉じる',
+    'shield.bought':'シールド購入','shield.have':'現在 {n} 個のシールドがあります。','shield.max':'上限に達しました','shield.maxSub':'すでに3つ持っています。','shield.used.title':'シールド使用','shield.used.sub':'ストリークが守られました。',
+    'login.title':'デイリーギフト 🎁','login.text':'毎日来てボーナスコインを集めよう。','login.day':'デー','login.claim':'受け取る','login.close':'閉じる',
+    'tipp.title':'広告でヒント','tipp.text':'短い動画を見てヒントをもらおう。','tipp.watch':'動画を見る','tipp.later':'あとで',
+    'tipp.pack':'パックヒント','tipp.packLeft':'残り{n}個。',
+    'purchase.title':'広告非表示 9.99€','purchase.text':'広告は永久に非表示。一度の支払いで快適にプレイ。','purchase.buy':'今すぐ購入','purchase.later':'あとで',
+    'rate.title':'Brainokuはお気に入り？','rate.text':'App Storeでの評価が大きな励みになります — 一瞬で完了します。','rate.go':'App Storeで評価','rate.later':'あとで','rate.thanks':'ありがとう！','rate.toAppStore':'App Storeへ移動します。',
+    'auth.google':'Googleで続ける','auth.apple':'Appleで続ける','auth.facebook':'Facebookで続ける','auth.email':'メールで続ける','auth.or':'または','auth.skip':'アカウントなしで続ける',
+    'auth.legal':'サインインすると、利用規約とプライバシーポリシーに同意したものとみなされます。','auth.welcome':'サインインしました',
+    'email.title':'メールでサインイン','email.text':'ログインリンクをメールでお送りします。','email.placeholder':'your@email.com','email.send':'リンク送信','email.cancel':'キャンセル','email.sent':'メール送信済み','email.sentSub':'受信ボックスのリンクをタップしてください。','email.invalid':'無効なメールアドレス','email.invalidSub':'正しいアドレスを入力してください。','email.fail':'サインイン失敗',
+    'settings.title':'設定','settings.lang':'言語','settings.vibrate':'バイブレーション','settings.sound':'サウンド','settings.dark':'ダークモード','settings.tutorial':'チュートリアルを表示','settings.kleinkind':'初心者モード','settings.kleinkindDesc':'同じ数字を自動でハイライトします。',
+    'settings.reminder':'毎日のリマインダー','settings.reminderTime':'リマインダー時刻',
+    'settings.removeAds':'広告を削除','settings.adFreeOn':'有効 ✓','settings.adFreePrice':'9.99€ ›','settings.restore':'購入を復元','settings.restoreOk':'広告非表示が有効。','settings.restoreNone':'購入は見つかりませんでした。',
+    'settings.rate':'評価する','settings.contact':'お問い合わせ','settings.privacy':'プライバシー',
+    'settings.langPick':'言語を選択',
+    'sammlung.title':'コレクション','sammlung.records':'記録','sammlung.streak':'連続記録','sammlung.winStreak':'連勝記録','sammlung.wins':'勝利','sammlung.achievements':'実績',
+    'shop.title':'ショップ','shop.coins':'コイン','shop.designs':'🎨 デザイン','shop.boosters':'⚡ ブースター','shop.premium':'⭐ プレミアム',
+    'shop.shieldName':'ストリーク・シールド','shop.shieldDesc':'日を逃したときストリークを守ります。',
+    'shop.hintPackName':'ヒントパック','shop.hintPackDesc':'次のゲームですぐ使える3つのヒント。','shop.hintBought':'ヒントパック購入','shop.hintAdded':'+{n} ヒント獲得。',
+    'shop.adFreeName':'広告を削除','shop.adFreeDesc':'広告なし — 永久、一度きりの支払い。',
+    'shop.notEnough':'コインが足りません','shop.notEnoughSub':'{n} コイン必要です。','shop.themeBought':'デザイン購入','shop.themeActive':'「{name}」を有効化。',
+    'shop.themeOwned':'所有済み','shop.themeActiveLabel':'✓ 使用中','shop.confirm':'「{name}」を {price} コインで購入しますか？',
+    'level.up':'レベル {n} に到達','level.upSub':'その調子！',
+    'ach.unlock':'実績解除',
+    'tut.skip':'スキップ','tut.next':'次へ','tut.go':'スタート',
+    'tut.s1.t':'Brainokuへようこそ','tut.s1.h':'数独の準備はいい？数秒でルールと機能を紹介します。<br><br>もう数独を知ってる？<strong>「スキップ」</strong>をタップ。',
+    'tut.s2.t':'目的','tut.s2.h':'9×9のマスを1から9で埋めます。<strong>各行</strong>、<strong>各列</strong>、<strong>各3×3ブロック</strong>に同じ数字は1回だけ。',
+    'tut.s3.t':'遊び方','tut.s3.h':'空のマスをタップ、下の数字をタップ。間違えると<strong>ハート</strong>が1つ減る — 3回間違えるとラウンド終了。',
+    'tut.s4.t':'メモモード','tut.s4.h':'迷ったら<strong>メモ</strong>をオンにして候補を小さく書く。もう一度タップで入力モードに戻る。',
+    'tut.s5.t':'消去 & 取り消し','tut.s5.h':'<strong>消去</strong>で入力をクリア、<strong>取り消し</strong>(左上)で直前の操作を戻す。',
+    'tut.s6.t':'ヒント','tut.s6.h':'<strong>10秒</strong>動かないと右上に<strong>ヒント</strong>が出る。短い動画でマスが1つ解ける。',
+    'tut.s7.t':'広告非表示でプレイ','tut.s7.h':'ゲームは<strong>無料</strong>。20ラウンドごとに短い広告が流れます。<strong>9.99€</strong>(一度限り)で永久に削除可能 — 設定 → <em>広告を削除</em>。',
+    'ach.first_win.t':'初勝利','ach.first_win.d':'初めての数独をクリア。',
+    'ach.wins_10.t':'熟練プレイヤー','ach.wins_10.d':'10回勝利。',
+    'ach.wins_50.t':'数独プロ','ach.wins_50.d':'50回勝利。',
+    'ach.wins_100.t':'数独マスター','ach.wins_100.d':'100回勝利。',
+    'ach.perfect_1.t':'完璧主義者','ach.perfect_1.d':'ノーミスで1勝。',
+    'ach.perfect_10.t':'無欠','ach.perfect_10.d':'ノーミスで10勝。',
+    'ach.no_hint.t':'ヒントなし','ach.no_hint.d':'ヒントなしでクリア。',
+    'ach.streak_7.t':'鉄の意志','ach.streak_7.d':'7日連続プレイ。',
+    'ach.streak_30.t':'無敵','ach.streak_30.d':'30日連続プレイ。',
+    'ach.level_10.t':'レベルの伝説','ach.level_10.d':'レベル10到達。',
+    'ach.speed_demon.t':'クイックシンカー','ach.speed_demon.d':'5分以内でクリア。',
+    'ach.expert_win.t':'エキスパート勝利','ach.expert_win.d':'エキスパートで勝利。',
+    'splash':[
+      "脳を鍛える！","論理を磨く！","科学的に証明済み！","集中力アップ！","認知症予防に！","100% 脳のごちそう！","頭が良くなる！","プロ級の論理！","最高の頭脳トレ！","左右の脳を活性化！","ストレス軽減！","記憶力強化！","毎日の頭脳トレ！","スクロールより数独！","脳のジム！","ただの数字じゃない！","プロ級の集中！","運より論理！","運じゃなく頭脳！","研究も認める！","脳のアンチエイジング！","健康的にハマる！","8歳から99歳まで！","シャーロックも愛した！"
+    ],
+    'gen.close':'閉じる','gen.back':'戻る','gen.confirm':'OK','gen.cancel':'キャンセル',
   },
 };
 
