@@ -1240,6 +1240,27 @@
     appearance: none;
   }
 
+  /* ---------- LANGUAGE PICKER ---------- */
+  .lang-list { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 16px; }
+  .lang-option {
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform .08s ease, border-color .15s ease;
+  }
+  .lang-option:active { transform: scale(0.97); }
+  .lang-option.active { border-color: var(--primary); }
+  .lang-option .lang-flag { font-size: 22px; line-height: 1; }
+
   /* ---------- TOAST ---------- */
   .toast-wrap {
     position: fixed;
@@ -1388,42 +1409,42 @@
     </div>
     <div class="home-hero">
       <h1 class="home-logo">Brain<span class="dot">o</span>ku</h1>
-      <p class="home-sub">Sudoku · Täglich knobeln</p>
+      <p class="home-sub" data-i18n="home.subtitle">Sudoku · Täglich knobeln</p>
       <div class="level-card">
         <div class="level-row">
-          <span class="level-name">Level <span id="lvl-num">1</span></span>
+          <span class="level-name"><span data-i18n="home.lvl">Level</span> <span id="lvl-num">1</span></span>
           <span class="level-xp"><span id="lvl-cur">0</span>/<span id="lvl-max">100</span> XP</span>
         </div>
         <div class="level-bar"><div id="lvl-fill"></div></div>
       </div>
       <button class="resume-card hidden" id="resume-card">
         <div class="resume-info">
-          <div class="resume-title">Spielstand fortsetzen</div>
+          <div class="resume-title" data-i18n="home.resumeTitle">Spielstand fortsetzen</div>
           <div class="resume-sub" id="resume-sub">Schwer · 64 %</div>
         </div>
         <span class="resume-arrow">›</span>
       </button>
     </div>
-    <div id="reminder-banner" class="reminder-banner hidden">
+    <div id="reminder-banner" class="reminder-banner hidden" data-i18n="home.reminder">
       ⏰ Heute schon Sudoku gespielt? Ein Spiel hält die Streak am Leben.
     </div>
-    <button class="play-btn" id="btn-home-play">Spielen</button>
+    <button class="play-btn" id="btn-home-play" data-i18n="home.play">Spielen</button>
     <div class="nav nav-4">
       <div class="nav-item active" data-tab="home">
         <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3z"/></svg>
-        Startseite
+        <span data-i18n="nav.home">Startseite</span>
       </div>
       <div class="nav-item" data-tab="sammlung">
         <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7L12 16l-6.3 4.3 2.3-7L2 8.9h7.6z"/></svg>
-        Sammlung
+        <span data-i18n="nav.sammlung">Sammlung</span>
       </div>
       <div class="nav-item" data-tab="shop">
         <svg viewBox="0 0 24 24"><path d="M5 9h14l-1.5 11h-11zM8 8a4 4 0 118 0h-2a2 2 0 10-4 0z"/></svg>
-        Shop
+        <span data-i18n="nav.shop">Shop</span>
       </div>
       <div class="nav-item" data-tab="settings">
         <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.4 4l1.5-2.4-2-3.4-2.8.6c-.5-.4-1-.7-1.6-.9L15.6 3h-4l-.9 2.9c-.6.2-1.1.5-1.6.9l-2.8-.6-2 3.4L5.8 12l-1.5 2.4 2 3.4 2.8-.6c.5.4 1 .7 1.6.9l.9 2.9h4l.9-2.9c.6-.2 1.1-.5 1.6-.9l2.8.6 2-3.4L21.4 12z"/></svg>
-        Einstellungen
+        <span data-i18n="nav.settings">Einstellungen</span>
       </div>
     </div>
   </section>
@@ -1432,30 +1453,30 @@
   <section id="screen-auth" class="screen active">
     <div class="auth-hero">
       <h1 class="home-logo">Brain<span class="dot">o</span>ku</h1>
-      <p class="home-sub">Sudoku · Täglich knobeln</p>
+      <p class="home-sub" data-i18n="home.subtitle">Sudoku · Täglich knobeln</p>
       <div class="auth-buttons">
         <button class="auth-btn" id="auth-google">
           <svg class="auth-ico" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3a12 12 0 01-11.3 8 12 12 0 010-24c3 0 5.8 1.1 8 3l5.7-5.7A20 20 0 1024 44a20 20 0 0019.6-23.9z"/><path fill="#FF3D00" d="M6.3 14.1l6.6 4.8A12 12 0 0124 12c3 0 5.8 1.1 8 3l5.7-5.7A20 20 0 006.3 14.1z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2A12 12 0 0112.7 28L6 33.1A20 20 0 0024 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3a12 12 0 01-4.1 5.6l6.2 5.2c-.5.4 6.6-4.8 6.6-14.8 0-1.4-.1-2.6-.4-3.9z"/></svg>
-          Mit Google fortfahren
+          <span data-i18n="auth.google">Mit Google fortfahren</span>
         </button>
         <button class="auth-btn apple" id="auth-apple">
           <svg class="auth-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 1.5c-1.4.1-3 1-3.9 2.1-.8 1-1.5 2.5-1.3 3.9 1.5.1 3-.8 3.9-2 .9-1 1.5-2.5 1.3-4zM21 17.5a9.4 9.4 0 01-1.4 2.6c-.9 1.2-2.1 2.7-3.7 2.8-1.4 0-1.7-.9-3.6-.9-1.9 0-2.3.9-3.6 1-1.6 0-2.8-1.4-3.7-2.6C3.7 18 2.4 13.4 4 10.4c1-1.5 2.7-2.4 4.4-2.4 1.4 0 2.7.9 3.6.9.8 0 2.6-1.1 4.3-1 .8 0 2.7.3 4 2.5-3.5 2-2.9 6.7.7 8.1z"/></svg>
-          Mit Apple fortfahren
+          <span data-i18n="auth.apple">Mit Apple fortfahren</span>
         </button>
         <button class="auth-btn facebook" id="auth-facebook">
           <svg class="auth-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 10-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.5 2.9h-2.4v7A10 10 0 0022 12z"/></svg>
-          Mit Facebook fortfahren
+          <span data-i18n="auth.facebook">Mit Facebook fortfahren</span>
         </button>
         <button class="auth-btn" id="auth-email">
           <svg class="auth-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm0 4v10h16V8l-8 5z"/></svg>
-          Mit E-Mail fortfahren
+          <span data-i18n="auth.email">Mit E-Mail fortfahren</span>
         </button>
       </div>
       <div class="auth-buttons" style="margin-top:10px;">
-        <div class="auth-divider">oder</div>
-        <button class="auth-skip" id="auth-skip">Ohne Konto fortfahren</button>
+        <div class="auth-divider" data-i18n="auth.or">oder</div>
+        <button class="auth-skip" id="auth-skip" data-i18n="auth.skip">Ohne Konto fortfahren</button>
       </div>
-      <p class="auth-legal">
+      <p class="auth-legal" data-i18n="auth.legal">
         Mit dem Anmelden akzeptierst du unsere Nutzungsbedingungen und die Datenschutzerklärung.
       </p>
     </div>
@@ -1471,14 +1492,14 @@
       <div></div>
     </div>
     <div class="home-hero">
-      <h1 style="font-size:34px; margin:0;">Schwierigkeit</h1>
+      <h1 style="font-size:34px; margin:0;" data-i18n="diff.title">Schwierigkeit</h1>
       <div class="difficulty-card">
-        <h3>Wähle dein Level</h3>
+        <h3 data-i18n="diff.choose">Wähle dein Level</h3>
         <div class="difficulty-options">
-          <button class="difficulty-option" data-diff="leicht">Leicht <span class="lvl-stars">★</span></button>
-          <button class="difficulty-option" data-diff="mittel">Mittel <span class="lvl-stars">★★</span></button>
-          <button class="difficulty-option" data-diff="schwer">Schwer <span class="lvl-stars">★★★</span></button>
-          <button class="difficulty-option" data-diff="experte">Experte <span class="lvl-stars">★★★★</span></button>
+          <button class="difficulty-option" data-diff="leicht"><span data-i18n="diff.leicht">Leicht</span> <span class="lvl-stars">★</span></button>
+          <button class="difficulty-option" data-diff="mittel"><span data-i18n="diff.mittel">Mittel</span> <span class="lvl-stars">★★</span></button>
+          <button class="difficulty-option" data-diff="schwer"><span data-i18n="diff.schwer">Schwer</span> <span class="lvl-stars">★★★</span></button>
+          <button class="difficulty-option" data-diff="experte"><span data-i18n="diff.experte">Experte</span> <span class="lvl-stars">★★★★</span></button>
         </div>
       </div>
     </div>
@@ -1486,85 +1507,85 @@
 
   <!-- ============================ SAMMLUNG ============================ -->
   <section id="screen-sammlung" class="screen">
-    <h1 class="settings-title sammlung-title">Sammlung</h1>
+    <h1 class="settings-title sammlung-title" data-i18n="sammlung.title">Sammlung</h1>
 
-    <h2 class="section-h">Rekorde</h2>
+    <h2 class="section-h" data-i18n="sammlung.records">Rekorde</h2>
     <div class="records-grid">
       <div class="record-card">
         <div class="record-icon" style="background:#FFE3D6;">🔥</div>
         <div class="record-num" id="rec-streak">0</div>
-        <div class="record-label">Tagesserie</div>
+        <div class="record-label" data-i18n="sammlung.streak">Tagesserie</div>
       </div>
       <div class="record-card">
         <div class="record-icon" style="background:#FFF1B8;">👑</div>
         <div class="record-num" id="rec-winstreak">0</div>
-        <div class="record-label">Siegesserie</div>
+        <div class="record-label" data-i18n="sammlung.winStreak">Siegesserie</div>
       </div>
       <div class="record-card">
         <div class="record-icon" style="background:#D6E4FF;">🏆</div>
         <div class="record-num" id="rec-wins">0</div>
-        <div class="record-label">Siege</div>
+        <div class="record-label" data-i18n="sammlung.wins">Siege</div>
       </div>
     </div>
 
-    <h2 class="section-h">Auszeichnungen</h2>
+    <h2 class="section-h" data-i18n="sammlung.achievements">Auszeichnungen</h2>
     <div class="ach-grid" id="ach-grid"></div>
 
     <div class="nav nav-4">
       <div class="nav-item" data-tab="home">
         <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3z"/></svg>
-        Startseite
+        <span data-i18n="nav.home">Startseite</span>
       </div>
       <div class="nav-item active" data-tab="sammlung">
         <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7L12 16l-6.3 4.3 2.3-7L2 8.9h7.6z"/></svg>
-        Sammlung
+        <span data-i18n="nav.sammlung">Sammlung</span>
       </div>
       <div class="nav-item" data-tab="shop">
         <svg viewBox="0 0 24 24"><path d="M5 9h14l-1.5 11h-11zM8 8a4 4 0 118 0h-2a2 2 0 10-4 0z"/></svg>
-        Shop
+        <span data-i18n="nav.shop">Shop</span>
       </div>
       <div class="nav-item" data-tab="settings">
         <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.4 4l1.5-2.4-2-3.4-2.8.6c-.5-.4-1-.7-1.6-.9L15.6 3h-4l-.9 2.9c-.6.2-1.1.5-1.6.9l-2.8-.6-2 3.4L5.8 12l-1.5 2.4 2 3.4 2.8-.6c.5.4 1 .7 1.6.9l.9 2.9h4l.9-2.9c.6-.2 1.1-.5 1.6-.9l2.8.6 2-3.4L21.4 12z"/></svg>
-        Einstellungen
+        <span data-i18n="nav.settings">Einstellungen</span>
       </div>
     </div>
   </section>
 
   <!-- ============================ SHOP ============================ -->
   <section id="screen-shop" class="screen">
-    <h1 class="settings-title sammlung-title">Shop</h1>
-    <div class="shop-balance"><span class="coin-emoji">🪙</span> <span id="shop-coins">0</span> Coins</div>
+    <h1 class="settings-title sammlung-title" data-i18n="shop.title">Shop</h1>
+    <div class="shop-balance"><span class="coin-emoji">🪙</span> <span id="shop-coins">0</span> <span data-i18n="shop.coins">Coins</span></div>
 
     <div class="shop-section">
-      <h2 class="shop-section-title">🎨 Designs</h2>
+      <h2 class="shop-section-title" data-i18n="shop.designs">🎨 Designs</h2>
       <div class="theme-grid" id="shop-theme-grid"></div>
     </div>
 
     <div class="shop-section">
-      <h2 class="shop-section-title">⚡ Booster</h2>
+      <h2 class="shop-section-title" data-i18n="shop.boosters">⚡ Booster</h2>
       <div class="booster-grid">
         <button class="booster-card" id="shop-shield">
           <div class="booster-icon">🛡</div>
-          <div class="booster-name">Streak-Schild</div>
-          <div class="booster-desc">Schützt deine Streak bei einem verpassten Tag.</div>
+          <div class="booster-name" data-i18n="shop.shieldName">Streak-Schild</div>
+          <div class="booster-desc" data-i18n="shop.shieldDesc">Schützt deine Streak bei einem verpassten Tag.</div>
           <span class="booster-buy"><span id="shield-cost">300</span> 🪙</span>
         </button>
         <button class="booster-card" id="shop-hint-pack">
           <div class="booster-icon">💡</div>
-          <div class="booster-name">Tipp-Paket</div>
-          <div class="booster-desc">3 Tipps fürs nächste Spiel direkt einsetzbar.</div>
+          <div class="booster-name" data-i18n="shop.hintPackName">Tipp-Paket</div>
+          <div class="booster-desc" data-i18n="shop.hintPackDesc">3 Tipps fürs nächste Spiel direkt einsetzbar.</div>
           <span class="booster-buy"><span id="hintpack-cost">120</span> 🪙</span>
         </button>
       </div>
     </div>
 
     <div class="shop-section" id="shop-premium-section">
-      <h2 class="shop-section-title">⭐ Premium</h2>
+      <h2 class="shop-section-title" data-i18n="shop.premium">⭐ Premium</h2>
       <div class="booster-grid" style="grid-template-columns: 1fr;">
         <button class="booster-card" id="shop-adfree">
           <div class="booster-icon">🚫</div>
-          <div class="booster-name">Werbung entfernen</div>
-          <div class="booster-desc">Keine Werbung mehr — dauerhaft, einmalige Zahlung.</div>
+          <div class="booster-name" data-i18n="shop.adFreeName">Werbung entfernen</div>
+          <div class="booster-desc" data-i18n="shop.adFreeDesc">Keine Werbung mehr — dauerhaft, einmalige Zahlung.</div>
           <span class="booster-buy">9,99 €</span>
         </button>
       </div>
@@ -1573,19 +1594,19 @@
     <div class="nav nav-4">
       <div class="nav-item" data-tab="home">
         <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3z"/></svg>
-        Startseite
+        <span data-i18n="nav.home">Startseite</span>
       </div>
       <div class="nav-item" data-tab="sammlung">
         <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7L12 16l-6.3 4.3 2.3-7L2 8.9h7.6z"/></svg>
-        Sammlung
+        <span data-i18n="nav.sammlung">Sammlung</span>
       </div>
       <div class="nav-item active" data-tab="shop">
         <svg viewBox="0 0 24 24"><path d="M5 9h14l-1.5 11h-11zM8 8a4 4 0 118 0h-2a2 2 0 10-4 0z"/></svg>
-        Shop
+        <span data-i18n="nav.shop">Shop</span>
       </div>
       <div class="nav-item" data-tab="settings">
         <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.4 4l1.5-2.4-2-3.4-2.8.6c-.5-.4-1-.7-1.6-.9L15.6 3h-4l-.9 2.9c-.6.2-1.1.5-1.6.9l-2.8-.6-2 3.4L5.8 12l-1.5 2.4 2 3.4 2.8-.6c.5.4 1 .7 1.6.9l.9 2.9h4l.9-2.9c.6-.2 1.1-.5 1.6-.9l2.8.6 2-3.4L21.4 12z"/></svg>
-        Einstellungen
+        <span data-i18n="nav.settings">Einstellungen</span>
       </div>
     </div>
   </section>
@@ -1606,7 +1627,7 @@
       </div>
       <button class="tipp-btn" id="btn-tipp">
         <svg viewBox="0 0 24 24"><path d="M4 5h12a2 2 0 012 2v3l4-2v8l-4-2v3a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2z"/></svg>
-        Tipp
+        <span data-i18n="game.tipp">Tipp</span>
       </button>
     </div>
     <div class="progress"><div id="progress-fill"></div></div>
@@ -1616,19 +1637,19 @@
     <div class="actions">
       <button class="action" id="act-erase">
         <svg viewBox="0 0 24 24"><path d="M16.2 3.4a2 2 0 012.8 0l1.6 1.6a2 2 0 010 2.8L9.7 18.7a2 2 0 01-1.4.6H4v-4.3a2 2 0 01.6-1.4l11.6-10.2zm0 4l-9 9V18h1.5l9-9-1.5-1.6z"/></svg>
-        <span>Löschen</span>
+        <span data-i18n="game.erase">Löschen</span>
       </button>
       <button class="action" id="act-notes">
         <svg viewBox="0 0 24 24"><path d="M3 3h18v3H3zm0 6h18v3H3zm0 6h12v3H3z"/></svg>
-        <span>Notizen</span>
+        <span data-i18n="game.notes">Notizen</span>
       </button>
       <button class="action" id="act-hint">
         <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-4 12.7V17a2 2 0 002 2h4a2 2 0 002-2v-2.3A7 7 0 0012 2zm-2 19h4v1a1 1 0 01-1 1h-2a1 1 0 01-1-1z"/></svg>
-        <span>Tipp</span>
+        <span data-i18n="game.hint">Tipp</span>
       </button>
       <button class="action" id="act-new">
         <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/></svg>
-        <span>Neu</span>
+        <span data-i18n="game.new">Neu</span>
       </button>
     </div>
     <div class="numpad" id="numpad"></div>
@@ -1641,39 +1662,39 @@
         <svg viewBox="0 0 24 24"><path d="M15.5 4l-8 8 8 8 1.4-1.4L10.3 12l6.6-6.6z"/></svg>
       </button>
     </div>
-    <h1 class="settings-title">Einstellungen</h1>
+    <h1 class="settings-title" data-i18n="settings.title">Einstellungen</h1>
     <div class="settings-list">
       <div class="settings-group">
-        <div class="settings-row">
+        <div class="settings-row" id="row-language">
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zm-1-7h2V7h-2zm0 4h2v-2h-2z"/></svg></div>
-          <div class="label">Sprache</div>
-          <div class="val">Deutsch ›</div>
+          <div class="label" data-i18n="settings.lang">Sprache</div>
+          <div class="val"><span id="lang-current">Deutsch</span> ›</div>
         </div>
         <div class="settings-row">
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 8l3 4-3 4M9 6l3 6-3 6m6-12l3 6-3 6"/></svg></div>
-          <div class="label">Vibrationen</div>
+          <div class="label" data-i18n="settings.vibrate">Vibrationen</div>
           <div class="toggle on" data-setting="vibrate"></div>
         </div>
         <div class="settings-row">
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 00-2.5-4v8a4.5 4.5 0 002.5-4z"/></svg></div>
-          <div class="label">Geräusche</div>
+          <div class="label" data-i18n="settings.sound">Geräusche</div>
           <div class="toggle on" data-setting="sound"></div>
         </div>
         <div class="settings-row">
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M21 13a9 9 0 01-12-12 9 9 0 1012 12z"/></svg></div>
-          <div class="label">Dunkelmodus</div>
+          <div class="label" data-i18n="settings.dark">Dunkelmodus</div>
           <div class="toggle" data-setting="dark"></div>
         </div>
         <div class="settings-row" id="row-tutorial">
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 4h12a4 4 0 014 4v12H8a4 4 0 01-4-4zm2 2v10a2 2 0 002 2h10V8a2 2 0 00-2-2zm3 3h6v2H9zm0 4h6v2H9z"/></svg></div>
-          <div class="label">Anleitung anzeigen</div>
+          <div class="label" data-i18n="settings.tutorial">Anleitung anzeigen</div>
           <div class="val">›</div>
         </div>
         <div class="settings-row">
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zM8.5 11a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm7 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM12 17.5c2 0 3.7-1.2 4.4-3H7.6c.7 1.8 2.4 3 4.4 3z"/></svg></div>
           <div class="label">
-            Kleinkind-Modus
-            <span class="label-sub">Hebt gleiche Zahlen automatisch hervor.</span>
+            <span data-i18n="settings.kleinkind">Kleinkind-Modus</span>
+            <span class="label-sub" data-i18n="settings.kleinkindDesc">Hebt gleiche Zahlen automatisch hervor.</span>
           </div>
           <div class="toggle" data-setting="kleinkindMode"></div>
         </div>
@@ -1682,12 +1703,12 @@
       <div class="settings-group">
         <div class="settings-row">
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 22a2 2 0 002-2h-4a2 2 0 002 2zm6-6V11a6 6 0 10-12 0v5l-2 2v1h16v-1z"/></svg></div>
-          <div class="label">Tägliche Erinnerung</div>
+          <div class="label" data-i18n="settings.reminder">Tägliche Erinnerung</div>
           <div class="toggle" data-setting="reminderEnabled" id="toggle-reminder"></div>
         </div>
         <div class="settings-row" id="row-reminder-time">
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zm.5-13H11v6l5 3 .8-1.3-4.3-2.5z"/></svg></div>
-          <div class="label">Erinnerungszeit</div>
+          <div class="label" data-i18n="settings.reminderTime">Erinnerungszeit</div>
           <input type="time" id="reminder-time" class="time-input" />
         </div>
       </div>
@@ -1695,24 +1716,24 @@
       <div class="settings-group">
         <div class="settings-row">
           <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></div>
-          <div class="label">Werbung entfernen</div>
+          <div class="label" data-i18n="settings.removeAds">Werbung entfernen</div>
           <div id="adfree-status" class="val">9,99 € ›</div>
         </div>
         <div class="settings-row" id="restore-purchase">
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6a6 6 0 11-6 6H4a8 8 0 108-8z"/></svg></div>
-          <div class="label">Käufe wiederherstellen</div>
+          <div class="label" data-i18n="settings.restore">Käufe wiederherstellen</div>
         </div>
       </div>
 
       <div class="settings-group">
         <div class="settings-row" id="row-rate">
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></div>
-          <div class="label">Bewerte uns</div>
+          <div class="label" data-i18n="settings.rate">Bewerte uns</div>
           <div class="val">›</div>
         </div>
         <div class="settings-row" id="row-contact">
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.8 9.95l-3.75-3.75z"/></svg></div>
-          <div class="label">Schreib uns</div>
+          <div class="label" data-i18n="settings.contact">Schreib uns</div>
           <div class="val">›</div>
         </div>
       </div>
@@ -1720,7 +1741,7 @@
       <div class="settings-group">
         <div class="settings-row" id="row-privacy">
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div>
-          <div class="label">Datenschutz</div>
+          <div class="label" data-i18n="settings.privacy">Datenschutz</div>
           <div class="val">›</div>
         </div>
       </div>
@@ -1729,19 +1750,19 @@
     <div class="nav nav-4">
       <div class="nav-item" data-tab="home">
         <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3z"/></svg>
-        Startseite
+        <span data-i18n="nav.home">Startseite</span>
       </div>
       <div class="nav-item" data-tab="sammlung">
         <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7L12 16l-6.3 4.3 2.3-7L2 8.9h7.6z"/></svg>
-        Sammlung
+        <span data-i18n="nav.sammlung">Sammlung</span>
       </div>
       <div class="nav-item" data-tab="shop">
         <svg viewBox="0 0 24 24"><path d="M5 9h14l-1.5 11h-11zM8 8a4 4 0 118 0h-2a2 2 0 10-4 0z"/></svg>
-        Shop
+        <span data-i18n="nav.shop">Shop</span>
       </div>
       <div class="nav-item active" data-tab="settings">
         <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.4 4l1.5-2.4-2-3.4-2.8.6c-.5-.4-1-.7-1.6-.9L15.6 3h-4l-.9 2.9c-.6.2-1.1.5-1.6.9l-2.8-.6-2 3.4L5.8 12l-1.5 2.4 2 3.4 2.8-.6c.5.4 1 .7 1.6.9l.9 2.9h4l.9-2.9c.6-.2 1.1-.5 1.6-.9l2.8.6 2-3.4L21.4 12z"/></svg>
-        Einstellungen
+        <span data-i18n="nav.settings">Einstellungen</span>
       </div>
     </div>
   </section>
@@ -1749,44 +1770,44 @@
   <!-- ============================ OVERLAYS ============================ -->
   <div class="overlay" id="overlay-win">
     <div class="modal">
-      <h2>Geschafft! 🎉</h2>
+      <h2 data-i18n="win.title">Geschafft! 🎉</h2>
       <p id="win-text">Du hast das Sudoku gelöst.</p>
       <div class="modal-buttons">
-        <button class="btn-primary" id="btn-win-next">Nächstes Spiel</button>
-        <button class="btn-secondary" id="btn-win-home">Zur Startseite</button>
+        <button class="btn-primary" id="btn-win-next" data-i18n="win.next">Nächstes Spiel</button>
+        <button class="btn-secondary" id="btn-win-home" data-i18n="win.home">Zur Startseite</button>
       </div>
     </div>
   </div>
 
   <div class="overlay" id="overlay-lose">
     <div class="modal">
-      <h2>Schade!</h2>
-      <p>Keine Leben mehr. Magst du es nochmal versuchen?</p>
+      <h2 data-i18n="lose.title">Schade!</h2>
+      <p data-i18n="lose.text">Keine Leben mehr. Magst du es nochmal versuchen?</p>
       <div class="modal-buttons">
-        <button class="btn-primary" id="btn-lose-retry">Nochmal</button>
-        <button class="btn-secondary" id="btn-lose-home">Zur Startseite</button>
+        <button class="btn-primary" id="btn-lose-retry" data-i18n="lose.retry">Nochmal</button>
+        <button class="btn-secondary" id="btn-lose-home" data-i18n="lose.home">Zur Startseite</button>
       </div>
     </div>
   </div>
 
   <div class="overlay" id="overlay-purchase">
     <div class="modal">
-      <h2>Werbefrei für 9,99 €</h2>
-      <p>Keine Werbung mehr — dauerhaft. Einmal zahlen, ungestört knobeln.</p>
+      <h2 data-i18n="purchase.title">Werbefrei für 9,99 €</h2>
+      <p data-i18n="purchase.text">Keine Werbung mehr — dauerhaft. Einmal zahlen, ungestört knobeln.</p>
       <div class="modal-buttons">
-        <button class="btn-primary" id="btn-buy-confirm">Jetzt kaufen</button>
-        <button class="btn-secondary" id="btn-buy-cancel">Später</button>
+        <button class="btn-primary" id="btn-buy-confirm" data-i18n="purchase.buy">Jetzt kaufen</button>
+        <button class="btn-secondary" id="btn-buy-cancel" data-i18n="purchase.later">Später</button>
       </div>
     </div>
   </div>
 
   <div class="overlay" id="overlay-tipp">
     <div class="modal">
-      <h2>Tipp gegen Werbung</h2>
-      <p>Schau dir ein kurzes Video an und du bekommst einen Tipp geschenkt.</p>
+      <h2 data-i18n="tipp.title">Tipp gegen Werbung</h2>
+      <p data-i18n="tipp.text">Schau dir ein kurzes Video an und du bekommst einen Tipp geschenkt.</p>
       <div class="modal-buttons">
-        <button class="btn-primary" id="btn-tipp-watch">Video ansehen</button>
-        <button class="btn-secondary" id="btn-tipp-cancel">Vielleicht später</button>
+        <button class="btn-primary" id="btn-tipp-watch" data-i18n="tipp.watch">Video ansehen</button>
+        <button class="btn-secondary" id="btn-tipp-cancel" data-i18n="tipp.later">Vielleicht später</button>
       </div>
     </div>
   </div>
@@ -1817,6 +1838,21 @@
 
   <div class="toast-wrap" id="toast-wrap"></div>
 
+  <div class="overlay" id="overlay-language">
+    <div class="modal" style="max-width:320px;">
+      <h2 data-i18n="settings.langPick">Sprache wählen</h2>
+      <div class="lang-list" id="lang-list">
+        <button class="lang-option" data-lang="de"><span class="lang-flag">🇩🇪</span> <span data-i18n="lang.de">Deutsch</span></button>
+        <button class="lang-option" data-lang="en"><span class="lang-flag">🇬🇧</span> <span data-i18n="lang.en">English</span></button>
+        <button class="lang-option" data-lang="ru"><span class="lang-flag">🇷🇺</span> <span data-i18n="lang.ru">Русский</span></button>
+        <button class="lang-option" data-lang="tr"><span class="lang-flag">🇹🇷</span> <span data-i18n="lang.tr">Türkçe</span></button>
+      </div>
+      <div class="modal-buttons">
+        <button class="btn-secondary" id="btn-lang-close" data-i18n="gen.close">Schließen</button>
+      </div>
+    </div>
+  </div>
+
   <div class="overlay" id="overlay-info">
     <div class="modal" style="text-align:left; max-width:380px;">
       <h2 id="info-title" style="text-align:center;">Info</h2>
@@ -1829,11 +1865,11 @@
 
   <div class="overlay" id="overlay-login">
     <div class="modal">
-      <h2>Tägliches Geschenk 🎁</h2>
-      <p>Komm jeden Tag wieder und sammle Bonus-Coins.</p>
+      <h2 data-i18n="login.title">Tägliches Geschenk 🎁</h2>
+      <p data-i18n="login.text">Komm jeden Tag wieder und sammle Bonus-Coins.</p>
       <div class="login-grid" id="login-grid"></div>
       <div class="modal-buttons">
-        <button class="btn-primary" id="btn-login-claim">Abholen</button>
+        <button class="btn-primary" id="btn-login-claim" data-i18n="login.claim">Abholen</button>
       </div>
     </div>
   </div>
@@ -1841,24 +1877,24 @@
   <div class="overlay" id="overlay-revive">
     <div class="modal">
       <div class="revive-icon">❤️</div>
-      <h2>Noch ein Leben?</h2>
-      <p>Schau ein kurzes Video oder zahle <strong>150 🪙</strong> für ein zusätzliches Leben und spiel weiter.</p>
+      <h2 data-i18n="revive.title">Noch ein Leben?</h2>
+      <p data-i18n-html="revive.text">Schau ein kurzes Video oder zahle <strong>150 🪙</strong> für ein zusätzliches Leben und spiel weiter.</p>
       <div class="modal-buttons">
-        <button class="btn-primary btn-with-cost" id="btn-revive-watch">Video ansehen</button>
-        <button class="btn-secondary btn-with-cost" id="btn-revive-coins">Mit Coins zahlen <span class="cost-tag">150 🪙</span></button>
-        <button class="btn-secondary" id="btn-revive-cancel">Aufgeben</button>
+        <button class="btn-primary btn-with-cost" id="btn-revive-watch" data-i18n="revive.watch">Video ansehen</button>
+        <button class="btn-secondary btn-with-cost" id="btn-revive-coins"><span data-i18n="revive.coins">Mit Coins zahlen</span> <span class="cost-tag">150 🪙</span></button>
+        <button class="btn-secondary" id="btn-revive-cancel" data-i18n="revive.cancel">Aufgeben</button>
       </div>
     </div>
   </div>
 
   <div class="overlay" id="overlay-email-auth">
     <div class="modal">
-      <h2>E-Mail-Anmeldung</h2>
-      <p>Wir senden dir einen Login-Link per E-Mail.</p>
-      <input type="email" class="email-input" id="email-input" placeholder="deine@email.de" autocomplete="email" />
+      <h2 data-i18n="email.title">E-Mail-Anmeldung</h2>
+      <p data-i18n="email.text">Wir senden dir einen Login-Link per E-Mail.</p>
+      <input type="email" class="email-input" id="email-input" data-i18n-placeholder="email.placeholder" placeholder="deine@email.de" autocomplete="email" />
       <div class="modal-buttons" style="margin-top:14px;">
-        <button class="btn-primary" id="btn-email-send">Link senden</button>
-        <button class="btn-secondary" id="btn-email-cancel">Abbrechen</button>
+        <button class="btn-primary" id="btn-email-send" data-i18n="email.send">Link senden</button>
+        <button class="btn-secondary" id="btn-email-cancel" data-i18n="email.cancel">Abbrechen</button>
       </div>
     </div>
   </div>
@@ -1866,26 +1902,26 @@
   <div class="overlay" id="overlay-shield">
     <div class="modal">
       <div class="revive-icon">🛡</div>
-      <h2>Streak-Schild</h2>
-      <p>Verpasst du einen Tag, schützt dich ein Schild davor, deine Streak zu verlieren. Maximal 3 Schilde gleichzeitig.</p>
+      <h2 data-i18n="shield.title">Streak-Schild</h2>
+      <p data-i18n="shield.text">Verpasst du einen Tag, schützt dich ein Schild davor, deine Streak zu verlieren. Maximal 3 Schilde gleichzeitig.</p>
       <div class="modal-buttons">
-        <button class="btn-primary btn-with-cost" id="btn-shield-watch">Video ansehen</button>
-        <button class="btn-secondary btn-with-cost" id="btn-shield-coins">Mit Coins zahlen <span class="cost-tag">300 🪙</span></button>
-        <button class="btn-secondary" id="btn-shield-cancel">Schließen</button>
+        <button class="btn-primary btn-with-cost" id="btn-shield-watch" data-i18n="shield.watch">Video ansehen</button>
+        <button class="btn-secondary btn-with-cost" id="btn-shield-coins"><span data-i18n="shield.coins">Mit Coins zahlen</span> <span class="cost-tag">300 🪙</span></button>
+        <button class="btn-secondary" id="btn-shield-cancel" data-i18n="shield.close">Schließen</button>
       </div>
     </div>
   </div>
 
   <div class="overlay" id="overlay-rate">
     <div class="modal">
-      <h2>Gefällt dir Brainoku?</h2>
-      <p>Eine Bewertung im App Store hilft uns enorm — und kostet nur einen Moment.</p>
+      <h2 data-i18n="rate.title">Gefällt dir Brainoku?</h2>
+      <p data-i18n="rate.text">Eine Bewertung im App Store hilft uns enorm — und kostet nur einen Moment.</p>
       <div id="rate-stars" style="display:flex; justify-content:center; gap:6px; font-size:36px; margin-bottom:18px; cursor:pointer;">
         <span data-s="1">☆</span><span data-s="2">☆</span><span data-s="3">☆</span><span data-s="4">☆</span><span data-s="5">☆</span>
       </div>
       <div class="modal-buttons">
-        <button class="btn-primary" id="btn-rate-go">Im App Store bewerten</button>
-        <button class="btn-secondary" id="btn-rate-later">Später</button>
+        <button class="btn-primary" id="btn-rate-go" data-i18n="rate.go">Im App Store bewerten</button>
+        <button class="btn-secondary" id="btn-rate-later" data-i18n="rate.later">Später</button>
       </div>
     </div>
   </div>
@@ -1896,8 +1932,8 @@
       <div id="tut-slide" class="tutorial-slide"></div>
       <div class="tutorial-dots" id="tut-dots"></div>
       <div class="modal-buttons tutorial-footer">
-        <button class="btn-secondary" id="btn-tut-skip">Überspringen</button>
-        <button class="btn-primary" id="btn-tut-next">Weiter</button>
+        <button class="btn-secondary" id="btn-tut-skip" data-i18n="tut.skip">Überspringen</button>
+        <button class="btn-primary" id="btn-tut-next" data-i18n="tut.next">Weiter</button>
       </div>
     </div>
   </div>
@@ -1934,6 +1970,7 @@ function loadState() {
       hintCredits: 0,
       account: null,
       authSeen: false,
+      lang: null,
       adFree: false,
       sound: true,
       vibrate: true,
@@ -1949,6 +1986,318 @@ function loadState() {
   } catch { return { streak:0, longestStreak:0, lastPlayedDate:null, completed:0, currentWinStreak:0, longestWinStreak:0, perfectGames:0, xp:0, coins:0, streakFreezes:0, lastLoginBonusDate:null, loginBonusDay:0, savedGame:null, adFree:false, sound:true, vibrate:true, dark:false, tutorialSeen:false, lastDifficulty:'mittel', kleinkindMode:false, achievements:{}, reminderEnabled:false, reminderTime:'19:00', lastReminderSent:null }; }
 }
 function saveState() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+
+/* =========================================================
+   i18n  —  DE / EN / RU / TR
+========================================================= */
+const LANG = {
+  de: {
+    'lang.de': 'Deutsch', 'lang.en': 'English', 'lang.ru': 'Русский', 'lang.tr': 'Türkçe',
+    'nav.home':'Startseite','nav.sammlung':'Sammlung','nav.shop':'Shop','nav.settings':'Einstellungen',
+    'home.subtitle':'Sudoku · Täglich knobeln','home.play':'Spielen',
+    'home.day':'Tag','home.days':'Tage','home.lvl':'Level','home.xp':'XP',
+    'home.resumeTitle':'Spielstand fortsetzen',
+    'home.reminder':'⏰ Heute schon Sudoku gespielt? Ein Spiel hält die Streak am Leben.',
+    'diff.title':'Schwierigkeit','diff.choose':'Wähle dein Level',
+    'diff.leicht':'Leicht','diff.mittel':'Mittel','diff.schwer':'Schwer','diff.experte':'Experte',
+    'game.lvl':'Lvl','game.spiel':'Spiel','game.erase':'Löschen','game.notes':'Notizen','game.hint':'Tipp','game.new':'Neu','game.tipp':'Tipp',
+    'win.title':'Geschafft! 🎉','win.next':'Nächstes Spiel','win.home':'Zur Startseite',
+    'win.solved':'Spiel {n} gelöst.','win.streakAdd':' Tagesserie: {n} {label}.','win.adNext':' Kurze Werbung folgt.',
+    'lose.title':'Schade!','lose.text':'Keine Leben mehr. Magst du es nochmal versuchen?','lose.retry':'Nochmal','lose.home':'Zur Startseite',
+    'revive.title':'Noch ein Leben?','revive.text':'Schau ein kurzes Video oder zahle <strong>150 🪙</strong> für ein zusätzliches Leben und spiel weiter.',
+    'revive.watch':'Video ansehen','revive.coins':'Mit Coins zahlen','revive.cancel':'Aufgeben',
+    'revive.ok.title':'Wiederbelebt','revive.ok.sub':'Du hast wieder ein Leben.',
+    'shield.title':'Streak-Schild','shield.text':'Verpasst du einen Tag, schützt dich ein Schild davor, deine Streak zu verlieren. Maximal 3 Schilde gleichzeitig.',
+    'shield.watch':'Video ansehen','shield.coins':'Mit Coins zahlen','shield.close':'Schließen',
+    'shield.bought':'Schild gekauft','shield.have':'Du hast jetzt {n} Schild{s}.','shield.max':'Maximum erreicht','shield.maxSub':'Du hast schon 3 Schilde.','shield.used.title':'Schild verbraucht','shield.used.sub':'Deine Streak ist gerettet.',
+    'login.title':'Tägliches Geschenk 🎁','login.text':'Komm jeden Tag wieder und sammle Bonus-Coins.','login.day':'Tag','login.claim':'Abholen','login.close':'Schließen',
+    'tipp.title':'Tipp gegen Werbung','tipp.text':'Schau dir ein kurzes Video an und du bekommst einen Tipp geschenkt.','tipp.watch':'Video ansehen','tipp.later':'Vielleicht später',
+    'tipp.pack':'Pack-Tipp','tipp.packLeft':'{n} übrig.',
+    'purchase.title':'Werbefrei für 9,99 €','purchase.text':'Keine Werbung mehr — dauerhaft. Einmal zahlen, ungestört knobeln.','purchase.buy':'Jetzt kaufen','purchase.later':'Später',
+    'rate.title':'Gefällt dir Brainoku?','rate.text':'Eine Bewertung im App Store hilft uns enorm — und kostet nur einen Moment.','rate.go':'Im App Store bewerten','rate.later':'Später','rate.thanks':'Danke!','rate.toAppStore':'Du wirst zum App Store geleitet.',
+    'auth.google':'Mit Google fortfahren','auth.apple':'Mit Apple fortfahren','auth.facebook':'Mit Facebook fortfahren','auth.email':'Mit E-Mail fortfahren','auth.or':'oder','auth.skip':'Ohne Konto fortfahren',
+    'auth.legal':'Mit dem Anmelden akzeptierst du unsere Nutzungsbedingungen und die Datenschutzerklärung.','auth.welcome':'Angemeldet',
+    'email.title':'E-Mail-Anmeldung','email.text':'Wir senden dir einen Login-Link per E-Mail.','email.placeholder':'deine@email.de','email.send':'Link senden','email.cancel':'Abbrechen','email.sent':'E-Mail unterwegs','email.sentSub':'Klick den Link in deinem Postfach.','email.invalid':'Ungültige E-Mail','email.invalidSub':'Bitte eine gültige Adresse eingeben.','email.fail':'Login fehlgeschlagen',
+    'settings.title':'Einstellungen','settings.lang':'Sprache','settings.vibrate':'Vibrationen','settings.sound':'Geräusche','settings.dark':'Dunkelmodus','settings.tutorial':'Anleitung anzeigen','settings.kleinkind':'Kleinkind-Modus','settings.kleinkindDesc':'Hebt gleiche Zahlen automatisch hervor.',
+    'settings.reminder':'Tägliche Erinnerung','settings.reminderTime':'Erinnerungszeit',
+    'settings.removeAds':'Werbung entfernen','settings.adFreeOn':'Aktiv ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Käufe wiederherstellen','settings.restoreOk':'Werbefrei aktiv.','settings.restoreNone':'Keine Käufe gefunden.',
+    'settings.rate':'Bewerte uns','settings.contact':'Schreib uns','settings.privacy':'Datenschutz',
+    'settings.langPick':'Sprache wählen',
+    'sammlung.title':'Sammlung','sammlung.records':'Rekorde','sammlung.streak':'Tagesserie','sammlung.winStreak':'Siegesserie','sammlung.wins':'Siege','sammlung.achievements':'Auszeichnungen',
+    'shop.title':'Shop','shop.coins':'Coins','shop.designs':'🎨 Designs','shop.boosters':'⚡ Booster','shop.premium':'⭐ Premium',
+    'shop.shieldName':'Streak-Schild','shop.shieldDesc':'Schützt deine Streak bei einem verpassten Tag.',
+    'shop.hintPackName':'Tipp-Paket','shop.hintPackDesc':'3 Tipps fürs nächste Spiel direkt einsetzbar.','shop.hintBought':'Tipp-Paket gekauft','shop.hintAdded':'+{n} Tipps verfügbar.',
+    'shop.adFreeName':'Werbung entfernen','shop.adFreeDesc':'Keine Werbung mehr — dauerhaft, einmalige Zahlung.',
+    'shop.notEnough':'Zu wenig Coins','shop.notEnoughSub':'Du brauchst {n} Coins.','shop.themeBought':'Design gekauft','shop.themeActive':'„{name}" aktiviert.',
+    'shop.themeOwned':'Im Besitz','shop.themeActiveLabel':'✓ Aktiv','shop.confirm':'„{name}" für {price} Coins kaufen?',
+    'level.up':'Level {n} erreicht','level.upSub':'Weiter so!',
+    'ach.unlock':'Errungenschaft',
+    'tut.skip':'Überspringen','tut.next':'Weiter','tut.go':"Los geht's",
+    'tut.s1.t':'Willkommen bei Brainoku','tut.s1.h':'Bereit für ein Sudoku? In wenigen Sekunden zeigen wir dir die Regeln und alle Funktionen.<br><br>Du kennst Sudoku schon? Tippe einfach <strong>„Überspringen"</strong>.',
+    'tut.s2.t':'Das Ziel','tut.s2.h':'Fülle das 9×9-Gitter mit den Zahlen 1 bis 9. In <strong>jeder Reihe</strong>, <strong>jeder Spalte</strong> und <strong>jeder 3×3-Box</strong> muss jede Zahl genau einmal vorkommen — keine Wiederholungen.',
+    'tut.s3.t':'So spielst du','tut.s3.h':'Tippe auf eine leere Zelle, dann auf eine Zahl unten. Stimmt sie nicht, verlierst du <strong>ein Herz</strong> — nach drei Fehlern ist die Runde vorbei.',
+    'tut.s4.t':'Notizen-Modus','tut.s4.h':'Nicht sicher? Aktiviere <strong>Notizen</strong> und merke dir mögliche Zahlen klein in einer Zelle. Nochmal tippen wechselt zurück in den Eingabe-Modus.',
+    'tut.s5.t':'Löschen & Rückgängig','tut.s5.h':'Vertippt? Mit <strong>Löschen</strong> entfernst du deinen Eintrag, mit <strong>Rückgängig</strong> (oben links) machst du den letzten Zug ungeschehen.',
+    'tut.s6.t':'Tipp-Hilfe','tut.s6.h':'Wenn du <strong>10 Sekunden</strong> nicht weiter weißt, erscheint oben rechts die <strong>Tipp-Pille</strong>. Schau dir ein kurzes Video an und eine Zelle wird für dich gelöst.',
+    'tut.s7.t':'Werbefrei spielen','tut.s7.h':'Das Spiel ist <strong>kostenlos</strong>. Alle 20 Runden kommt eine kurze Werbung. Für <strong>9,99 €</strong> (einmalig) kannst du Werbung dauerhaft entfernen — Einstellungen → <em>Werbung entfernen</em>.',
+    'ach.first_win.t':'Erstes Spiel','ach.first_win.d':'Löse dein erstes Sudoku.',
+    'ach.wins_10.t':'Geübter Spieler','ach.wins_10.d':'10 Sudokus gewonnen.',
+    'ach.wins_50.t':'Sudoku-Profi','ach.wins_50.d':'50 Sudokus gewonnen.',
+    'ach.wins_100.t':'Sudoku-Meister','ach.wins_100.d':'100 Sudokus gewonnen.',
+    'ach.perfect_1.t':'Perfektionist','ach.perfect_1.d':'1 Spiel ohne Fehler.',
+    'ach.perfect_10.t':'Makellos','ach.perfect_10.d':'10 Spiele ohne Fehler.',
+    'ach.no_hint.t':'Tipp-Verzichter','ach.no_hint.d':'Spiel ohne Tipp gelöst.',
+    'ach.streak_7.t':'Eiserner Wille','ach.streak_7.d':'7 Tage in Folge gespielt.',
+    'ach.streak_30.t':'Unaufhaltsam','ach.streak_30.d':'30 Tage in Folge gespielt.',
+    'ach.level_10.t':'Level-Legende','ach.level_10.d':'Level 10 erreicht.',
+    'ach.speed_demon.t':'Schnelldenker','ach.speed_demon.d':'Spiel unter 5 Min gelöst.',
+    'ach.expert_win.t':'Experten-Sieg','ach.expert_win.d':'Ein Experten-Sudoku gewonnen.',
+    'splash':[
+      "Trainiert dein Gehirn!","Schärft die Logik!","Wissenschaftlich erwiesen!","Steigert die Konzentration!","Schützt vor Demenz!","100 % Brainfood!","Macht klüger!","Pro-Logik aktiviert!","Beste Hirngymnastik!","Aktiviert beide Hirnhälften!","Reduziert Stress!","Stärkt das Gedächtnis!","Tägliches Hirntraining!","Knobeln statt Scrollen!","Hirn-Workout!","Mehr als nur Zahlen!","Konzentration auf Profi-Niveau!","Logik schlägt Glück!","Kein Zufall, nur Köpfchen!","Studien lieben es!","Anti-Aging fürs Gehirn!","Macht süchtig (gesund)!","Für alle ab 8 bis 99!","Schon Sherlock liebte es!"
+    ],
+    'gen.close':'Schließen','gen.back':'Zurück','gen.confirm':'OK','gen.cancel':'Abbrechen',
+  },
+  en: {
+    'lang.de':'Deutsch','lang.en':'English','lang.ru':'Русский','lang.tr':'Türkçe',
+    'nav.home':'Home','nav.sammlung':'Collection','nav.shop':'Shop','nav.settings':'Settings',
+    'home.subtitle':'Sudoku · Daily brain training','home.play':'Play',
+    'home.day':'day','home.days':'days','home.lvl':'Level','home.xp':'XP',
+    'home.resumeTitle':'Resume game',
+    'home.reminder':"⏰ Played Sudoku today? One game keeps your streak alive.",
+    'diff.title':'Difficulty','diff.choose':'Pick your level',
+    'diff.leicht':'Easy','diff.mittel':'Medium','diff.schwer':'Hard','diff.experte':'Expert',
+    'game.lvl':'Lvl','game.spiel':'Game','game.erase':'Erase','game.notes':'Notes','game.hint':'Hint','game.new':'New','game.tipp':'Hint',
+    'win.title':'Solved! 🎉','win.next':'Next game','win.home':'Home',
+    'win.solved':'Game {n} solved.','win.streakAdd':' Daily streak: {n} {label}.','win.adNext':' A short ad will follow.',
+    'lose.title':'Oh no!','lose.text':'No lives left. Want to try again?','lose.retry':'Retry','lose.home':'Home',
+    'revive.title':'One more life?','revive.text':'Watch a short video or pay <strong>150 🪙</strong> for an extra life and keep playing.',
+    'revive.watch':'Watch video','revive.coins':'Pay with coins','revive.cancel':'Give up',
+    'revive.ok.title':'Revived','revive.ok.sub':'You have a life again.',
+    'shield.title':'Streak shield','shield.text':"Miss a day? A shield protects your streak. Up to 3 shields at once.",
+    'shield.watch':'Watch video','shield.coins':'Pay with coins','shield.close':'Close',
+    'shield.bought':'Shield bought','shield.have':'You now have {n} shield{s}.','shield.max':'Maximum reached','shield.maxSub':'You already have 3 shields.','shield.used.title':'Shield used','shield.used.sub':'Your streak is safe.',
+    'login.title':'Daily gift 🎁','login.text':'Come back every day and collect bonus coins.','login.day':'Day','login.claim':'Claim','login.close':'Close',
+    'tipp.title':'Hint via ad','tipp.text':'Watch a short video and get a hint.','tipp.watch':'Watch video','tipp.later':'Maybe later',
+    'tipp.pack':'Pack hint','tipp.packLeft':'{n} left.',
+    'purchase.title':'Ad-free for €9.99','purchase.text':'No more ads — forever. One-time purchase, undisturbed puzzling.','purchase.buy':'Buy now','purchase.later':'Later',
+    'rate.title':'Enjoying Brainoku?','rate.text':'A review in the App Store helps a lot — and only takes a moment.','rate.go':'Rate on App Store','rate.later':'Later','rate.thanks':'Thanks!','rate.toAppStore':'Sending you to the App Store.',
+    'auth.google':'Continue with Google','auth.apple':'Continue with Apple','auth.facebook':'Continue with Facebook','auth.email':'Continue with Email','auth.or':'or','auth.skip':'Continue without account',
+    'auth.legal':'By signing in you accept our Terms of Service and Privacy Policy.','auth.welcome':'Signed in',
+    'email.title':'Email sign-in','email.text':"We'll send you a login link by email.",'email.placeholder':'your@email.com','email.send':'Send link','email.cancel':'Cancel','email.sent':'Email on the way','email.sentSub':'Tap the link in your inbox.','email.invalid':'Invalid email','email.invalidSub':'Please enter a valid address.','email.fail':'Sign-in failed',
+    'settings.title':'Settings','settings.lang':'Language','settings.vibrate':'Vibrations','settings.sound':'Sounds','settings.dark':'Dark mode','settings.tutorial':'Show tutorial','settings.kleinkind':'Toddler mode','settings.kleinkindDesc':'Highlights matching numbers automatically.',
+    'settings.reminder':'Daily reminder','settings.reminderTime':'Reminder time',
+    'settings.removeAds':'Remove ads','settings.adFreeOn':'Active ✓','settings.adFreePrice':'€9.99 ›','settings.restore':'Restore purchases','settings.restoreOk':'Ad-free is active.','settings.restoreNone':'No purchases found.',
+    'settings.rate':'Rate us','settings.contact':'Contact us','settings.privacy':'Privacy',
+    'settings.langPick':'Choose language',
+    'sammlung.title':'Collection','sammlung.records':'Records','sammlung.streak':'Daily streak','sammlung.winStreak':'Win streak','sammlung.wins':'Wins','sammlung.achievements':'Achievements',
+    'shop.title':'Shop','shop.coins':'Coins','shop.designs':'🎨 Designs','shop.boosters':'⚡ Boosters','shop.premium':'⭐ Premium',
+    'shop.shieldName':'Streak shield','shop.shieldDesc':'Protects your streak if you miss a day.',
+    'shop.hintPackName':'Hint pack','shop.hintPackDesc':'3 hints ready to use in your next game.','shop.hintBought':'Hint pack purchased','shop.hintAdded':'+{n} hints available.',
+    'shop.adFreeName':'Remove ads','shop.adFreeDesc':'No more ads — forever, one-time payment.',
+    'shop.notEnough':'Not enough coins','shop.notEnoughSub':'You need {n} coins.','shop.themeBought':'Theme purchased','shop.themeActive':'"{name}" activated.',
+    'shop.themeOwned':'Owned','shop.themeActiveLabel':'✓ Active','shop.confirm':'Buy "{name}" for {price} coins?',
+    'level.up':'Level {n} reached','level.upSub':'Keep going!',
+    'ach.unlock':'Achievement',
+    'tut.skip':'Skip','tut.next':'Next','tut.go':"Let's go",
+    'tut.s1.t':'Welcome to Brainoku','tut.s1.h':'Ready for a Sudoku? In a few seconds we will show you the rules and all features.<br><br>Already know Sudoku? Just tap <strong>"Skip"</strong>.',
+    'tut.s2.t':'The goal','tut.s2.h':'Fill the 9×9 grid with numbers 1 to 9. In <strong>every row</strong>, <strong>every column</strong> and <strong>every 3×3 box</strong> each number must appear exactly once — no repeats.',
+    'tut.s3.t':'How to play','tut.s3.h':'Tap an empty cell, then a number below. Wrong? You lose <strong>a heart</strong> — after three mistakes the round ends.',
+    'tut.s4.t':'Notes mode','tut.s4.h':'Not sure? Activate <strong>Notes</strong> and jot possible numbers small in a cell. Tap again to switch back to entry mode.',
+    'tut.s5.t':'Erase & Undo','tut.s5.h':'Wrong tap? <strong>Erase</strong> removes your entry, <strong>Undo</strong> (top left) reverts the last move.',
+    'tut.s6.t':'Hint help','tut.s6.h':'After <strong>10 seconds</strong> idle the <strong>Hint pill</strong> appears top-right. Watch a short video and a cell gets solved for you.',
+    'tut.s7.t':'Ad-free play','tut.s7.h':'The game is <strong>free</strong>. Every 20 rounds a short ad appears. For <strong>€9.99</strong> (one-time) you can remove ads forever — Settings → <em>Remove ads</em>.',
+    'ach.first_win.t':'First win','ach.first_win.d':'Solve your first Sudoku.',
+    'ach.wins_10.t':'Practiced player','ach.wins_10.d':'Win 10 Sudokus.',
+    'ach.wins_50.t':'Sudoku pro','ach.wins_50.d':'Win 50 Sudokus.',
+    'ach.wins_100.t':'Sudoku master','ach.wins_100.d':'Win 100 Sudokus.',
+    'ach.perfect_1.t':'Perfectionist','ach.perfect_1.d':'1 game without errors.',
+    'ach.perfect_10.t':'Flawless','ach.perfect_10.d':'10 games without errors.',
+    'ach.no_hint.t':'Hint-free','ach.no_hint.d':'Solve a game without hints.',
+    'ach.streak_7.t':'Iron will','ach.streak_7.d':'7 days in a row.',
+    'ach.streak_30.t':'Unstoppable','ach.streak_30.d':'30 days in a row.',
+    'ach.level_10.t':'Level legend','ach.level_10.d':'Reach level 10.',
+    'ach.speed_demon.t':'Quick thinker','ach.speed_demon.d':'Solve in under 5 minutes.',
+    'ach.expert_win.t':'Expert win','ach.expert_win.d':'Win an expert Sudoku.',
+    'splash':[
+      "Trains your brain!","Sharpens logic!","Scientifically proven!","Boosts focus!","Fights dementia!","100 % brainfood!","Makes you smarter!","Pro-logic engaged!","Best brain workout!","Activates both hemispheres!","Reduces stress!","Strengthens memory!","Daily brain training!","Puzzle, don't scroll!","Mental gym!","More than just numbers!","Pro-level focus!","Logic beats luck!","Skill, not chance!","Studies love it!","Anti-aging for the brain!","Healthily addictive!","For ages 8 to 99!","Even Sherlock loved it!"
+    ],
+    'gen.close':'Close','gen.back':'Back','gen.confirm':'OK','gen.cancel':'Cancel',
+  },
+  ru: {
+    'lang.de':'Deutsch','lang.en':'English','lang.ru':'Русский','lang.tr':'Türkçe',
+    'nav.home':'Главная','nav.sammlung':'Коллекция','nav.shop':'Магазин','nav.settings':'Настройки',
+    'home.subtitle':'Судоку · Ежедневная тренировка','home.play':'Играть',
+    'home.day':'день','home.days':'дней','home.lvl':'Уровень','home.xp':'XP',
+    'home.resumeTitle':'Продолжить игру',
+    'home.reminder':'⏰ Уже играли сегодня? Одна игра поддержит ваш стрик.',
+    'diff.title':'Сложность','diff.choose':'Выберите уровень',
+    'diff.leicht':'Лёгкий','diff.mittel':'Средний','diff.schwer':'Сложный','diff.experte':'Эксперт',
+    'game.lvl':'Ур.','game.spiel':'Игра','game.erase':'Стереть','game.notes':'Заметки','game.hint':'Подсказка','game.new':'Новая','game.tipp':'Подсказка',
+    'win.title':'Решено! 🎉','win.next':'Следующая игра','win.home':'На главную',
+    'win.solved':'Игра {n} решена.','win.streakAdd':' Серия: {n} {label}.','win.adNext':' Сейчас будет реклама.',
+    'lose.title':'Жаль!','lose.text':'Жизни закончились. Попробовать ещё раз?','lose.retry':'Ещё раз','lose.home':'На главную',
+    'revive.title':'Ещё одну жизнь?','revive.text':'Посмотри короткое видео или заплати <strong>150 🪙</strong> за дополнительную жизнь.',
+    'revive.watch':'Смотреть видео','revive.coins':'Заплатить монетами','revive.cancel':'Сдаться',
+    'revive.ok.title':'Возрождение','revive.ok.sub':'У тебя снова есть жизнь.',
+    'shield.title':'Щит серии','shield.text':'Пропустил день? Щит спасёт твою серию. До 3 щитов одновременно.',
+    'shield.watch':'Смотреть видео','shield.coins':'Заплатить монетами','shield.close':'Закрыть',
+    'shield.bought':'Щит куплен','shield.have':'Теперь у тебя {n} щит{s}.','shield.max':'Максимум','shield.maxSub':'У тебя уже 3 щита.','shield.used.title':'Щит использован','shield.used.sub':'Серия спасена.',
+    'login.title':'Ежедневный подарок 🎁','login.text':'Возвращайся каждый день и собирай бонусные монеты.','login.day':'День','login.claim':'Забрать','login.close':'Закрыть',
+    'tipp.title':'Подсказка за рекламу','tipp.text':'Посмотри короткое видео и получи подсказку.','tipp.watch':'Смотреть видео','tipp.later':'Позже',
+    'tipp.pack':'Подсказка из набора','tipp.packLeft':'Осталось: {n}.',
+    'purchase.title':'Без рекламы за 9,99 €','purchase.text':'Никакой рекламы — навсегда. Один раз заплатил, играй спокойно.','purchase.buy':'Купить','purchase.later':'Позже',
+    'rate.title':'Нравится Brainoku?','rate.text':'Оценка в App Store очень помогает — и займёт всего минуту.','rate.go':'Оценить в App Store','rate.later':'Позже','rate.thanks':'Спасибо!','rate.toAppStore':'Открываем App Store.',
+    'auth.google':'Войти через Google','auth.apple':'Войти через Apple','auth.facebook':'Войти через Facebook','auth.email':'Войти по E-Mail','auth.or':'или','auth.skip':'Продолжить без аккаунта',
+    'auth.legal':'Входя, ты принимаешь Условия использования и Политику конфиденциальности.','auth.welcome':'Вход выполнен',
+    'email.title':'Вход по E-Mail','email.text':'Мы пришлём тебе ссылку для входа.','email.placeholder':'твой@email.com','email.send':'Отправить ссылку','email.cancel':'Отмена','email.sent':'Письмо отправлено','email.sentSub':'Открой ссылку из письма.','email.invalid':'Неверный E-Mail','email.invalidSub':'Введи корректный адрес.','email.fail':'Не удалось войти',
+    'settings.title':'Настройки','settings.lang':'Язык','settings.vibrate':'Вибрация','settings.sound':'Звуки','settings.dark':'Тёмная тема','settings.tutorial':'Показать обучение','settings.kleinkind':'Режим новичка','settings.kleinkindDesc':'Подсвечивает одинаковые числа автоматически.',
+    'settings.reminder':'Ежедневное напоминание','settings.reminderTime':'Время напоминания',
+    'settings.removeAds':'Убрать рекламу','settings.adFreeOn':'Активно ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Восстановить покупки','settings.restoreOk':'Без рекламы активно.','settings.restoreNone':'Покупки не найдены.',
+    'settings.rate':'Оцените нас','settings.contact':'Связаться','settings.privacy':'Конфиденциальность',
+    'settings.langPick':'Выбери язык',
+    'sammlung.title':'Коллекция','sammlung.records':'Рекорды','sammlung.streak':'Серия дней','sammlung.winStreak':'Серия побед','sammlung.wins':'Победы','sammlung.achievements':'Достижения',
+    'shop.title':'Магазин','shop.coins':'Монеты','shop.designs':'🎨 Темы','shop.boosters':'⚡ Бустеры','shop.premium':'⭐ Премиум',
+    'shop.shieldName':'Щит серии','shop.shieldDesc':'Защитит серию при пропуске дня.',
+    'shop.hintPackName':'Набор подсказок','shop.hintPackDesc':'3 подсказки для следующей игры.','shop.hintBought':'Набор куплен','shop.hintAdded':'+{n} подсказок.',
+    'shop.adFreeName':'Убрать рекламу','shop.adFreeDesc':'Больше никакой рекламы — навсегда.',
+    'shop.notEnough':'Мало монет','shop.notEnoughSub':'Нужно {n} монет.','shop.themeBought':'Тема куплена','shop.themeActive':'«{name}» активирована.',
+    'shop.themeOwned':'Куплено','shop.themeActiveLabel':'✓ Активна','shop.confirm':'Купить «{name}» за {price} монет?',
+    'level.up':'Достигнут уровень {n}','level.upSub':'Так держать!',
+    'ach.unlock':'Достижение',
+    'tut.skip':'Пропустить','tut.next':'Дальше','tut.go':'Поехали',
+    'tut.s1.t':'Добро пожаловать','tut.s1.h':'Готов к судоку? Сейчас покажем правила и все функции.<br><br>Уже знаешь судоку? Жми <strong>«Пропустить»</strong>.',
+    'tut.s2.t':'Цель','tut.s2.h':'Заполни сетку 9×9 числами от 1 до 9. В <strong>каждой строке</strong>, <strong>каждом столбце</strong> и <strong>каждом блоке 3×3</strong> цифра встречается ровно раз.',
+    'tut.s3.t':'Как играть','tut.s3.h':'Тапни пустую клетку, потом число снизу. Ошибся — теряешь <strong>сердце</strong>. Три ошибки — и раунд окончен.',
+    'tut.s4.t':'Заметки','tut.s4.h':'Не уверен? Включи <strong>Заметки</strong> и помечай возможные числа мелким шрифтом.',
+    'tut.s5.t':'Стереть и Отмена','tut.s5.h':'Промахнулся? <strong>Стереть</strong> уберёт ввод, <strong>Отмена</strong> отменит последний ход.',
+    'tut.s6.t':'Подсказки','tut.s6.h':'Через <strong>10 секунд</strong> бездействия справа сверху появится <strong>Подсказка</strong>. Видео — и одна клетка решена.',
+    'tut.s7.t':'Без рекламы','tut.s7.h':'Игра <strong>бесплатная</strong>. Раз в 20 раундов — короткая реклама. За <strong>9,99 €</strong> можно убрать её навсегда.',
+    'ach.first_win.t':'Первая победа','ach.first_win.d':'Реши первое судоку.',
+    'ach.wins_10.t':'Опытный игрок','ach.wins_10.d':'10 побед.',
+    'ach.wins_50.t':'Профи судоку','ach.wins_50.d':'50 побед.',
+    'ach.wins_100.t':'Мастер судоку','ach.wins_100.d':'100 побед.',
+    'ach.perfect_1.t':'Перфекционист','ach.perfect_1.d':'1 игра без ошибок.',
+    'ach.perfect_10.t':'Безупречно','ach.perfect_10.d':'10 игр без ошибок.',
+    'ach.no_hint.t':'Без подсказок','ach.no_hint.d':'Игра без подсказок.',
+    'ach.streak_7.t':'Железная воля','ach.streak_7.d':'7 дней подряд.',
+    'ach.streak_30.t':'Неудержимый','ach.streak_30.d':'30 дней подряд.',
+    'ach.level_10.t':'Легенда','ach.level_10.d':'Достичь 10 уровня.',
+    'ach.speed_demon.t':'Быстрый ум','ach.speed_demon.d':'Решено меньше чем за 5 минут.',
+    'ach.expert_win.t':'Победа эксперта','ach.expert_win.d':'Победа в режиме «Эксперт».',
+    'splash':[
+      "Тренирует мозг!","Точит логику!","Научно доказано!","Усиливает концентрацию!","Защищает от деменции!","100 % пища для ума!","Делает умнее!","Про-логика!","Лучшая зарядка для ума!","Активирует оба полушария!","Снижает стресс!","Укрепляет память!","Ежедневная тренировка!","Думай, а не скролль!","Тренажёр мозга!","Больше чем числа!","Концентрация про-уровня!","Логика побеждает удачу!","Не везение, а ум!","Учёные одобряют!","Анти-эйджинг для мозга!","Полезная зависимость!","Для всех 8-99!","Шерлок одобряет!"
+    ],
+    'gen.close':'Закрыть','gen.back':'Назад','gen.confirm':'ОК','gen.cancel':'Отмена',
+  },
+  tr: {
+    'lang.de':'Deutsch','lang.en':'English','lang.ru':'Русский','lang.tr':'Türkçe',
+    'nav.home':'Ana sayfa','nav.sammlung':'Koleksiyon','nav.shop':'Mağaza','nav.settings':'Ayarlar',
+    'home.subtitle':'Sudoku · Günlük beyin antrenmanı','home.play':'Oyna',
+    'home.day':'gün','home.days':'gün','home.lvl':'Seviye','home.xp':'XP',
+    'home.resumeTitle':'Oyuna devam et',
+    'home.reminder':'⏰ Bugün Sudoku oynadın mı? Bir oyun serini canlı tutar.',
+    'diff.title':'Zorluk','diff.choose':'Seviyeni seç',
+    'diff.leicht':'Kolay','diff.mittel':'Orta','diff.schwer':'Zor','diff.experte':'Uzman',
+    'game.lvl':'Sv.','game.spiel':'Oyun','game.erase':'Sil','game.notes':'Notlar','game.hint':'İpucu','game.new':'Yeni','game.tipp':'İpucu',
+    'win.title':'Tamamlandı! 🎉','win.next':'Sonraki oyun','win.home':'Ana sayfa',
+    'win.solved':'Oyun {n} çözüldü.','win.streakAdd':' Günlük seri: {n} {label}.','win.adNext':' Kısa bir reklam gelecek.',
+    'lose.title':'Vah!','lose.text':'Can kalmadı. Tekrar denemek ister misin?','lose.retry':'Tekrar','lose.home':'Ana sayfa',
+    'revive.title':'Bir can daha?','revive.text':'Kısa bir video izle ya da <strong>150 🪙</strong> öde, ekstra canla devam et.',
+    'revive.watch':'Video izle','revive.coins':'Coin ile öde','revive.cancel':'Vazgeç',
+    'revive.ok.title':'Diriltildin','revive.ok.sub':'Yeniden bir canın var.',
+    'shield.title':'Seri kalkanı','shield.text':'Bir gün kaçırırsan kalkan serini korur. En fazla 3 kalkan.',
+    'shield.watch':'Video izle','shield.coins':'Coin ile öde','shield.close':'Kapat',
+    'shield.bought':'Kalkan alındı','shield.have':'Artık {n} kalkanın var.','shield.max':'Maks. ulaşıldı','shield.maxSub':'Zaten 3 kalkanın var.','shield.used.title':'Kalkan kullanıldı','shield.used.sub':'Serin kurtuldu.',
+    'login.title':'Günlük hediye 🎁','login.text':'Her gün gel ve bonus coin topla.','login.day':'Gün','login.claim':'Al','login.close':'Kapat',
+    'tipp.title':'Reklam karşılığı ipucu','tipp.text':'Kısa bir video izle, ipucu kazan.','tipp.watch':'Video izle','tipp.later':'Belki sonra',
+    'tipp.pack':'Paket ipucu','tipp.packLeft':'{n} kaldı.',
+    'purchase.title':'Reklamsız 9,99 €','purchase.text':'Reklamsız — sonsuza dek. Tek seferlik ödeme.','purchase.buy':'Şimdi al','purchase.later':'Sonra',
+    'rate.title':'Brainoku hoşuna gitti mi?','rate.text':"App Store'da puan vermek bize çok yardımcı olur — sadece bir saniye sürer.",'rate.go':"App Store'da puan ver",'rate.later':'Sonra','rate.thanks':'Teşekkürler!','rate.toAppStore':"App Store'a yönlendiriliyorsun.",
+    'auth.google':'Google ile devam et','auth.apple':'Apple ile devam et','auth.facebook':'Facebook ile devam et','auth.email':'E-posta ile devam et','auth.or':'veya','auth.skip':'Hesapsız devam et',
+    'auth.legal':'Giriş yaparak Kullanım Şartları ve Gizlilik Politikası kabul edilir.','auth.welcome':'Giriş yapıldı',
+    'email.title':'E-posta ile giriş','email.text':'Sana bir giriş bağlantısı göndereceğiz.','email.placeholder':'senin@eposta.com','email.send':'Bağlantı gönder','email.cancel':'İptal','email.sent':'E-posta yolda','email.sentSub':'Gelen kutusundaki bağlantıya tıkla.','email.invalid':'Geçersiz e-posta','email.invalidSub':'Geçerli bir adres gir.','email.fail':'Giriş başarısız',
+    'settings.title':'Ayarlar','settings.lang':'Dil','settings.vibrate':'Titreşim','settings.sound':'Sesler','settings.dark':'Karanlık mod','settings.tutorial':'Eğitimi göster','settings.kleinkind':'Çocuk modu','settings.kleinkindDesc':'Aynı sayıları otomatik vurgular.',
+    'settings.reminder':'Günlük hatırlatıcı','settings.reminderTime':'Hatırlatma saati',
+    'settings.removeAds':'Reklamları kaldır','settings.adFreeOn':'Aktif ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Satın alımları geri yükle','settings.restoreOk':'Reklamsız aktif.','settings.restoreNone':'Satın alma bulunamadı.',
+    'settings.rate':'Bizi puanla','settings.contact':'İletişim','settings.privacy':'Gizlilik',
+    'settings.langPick':'Dil seç',
+    'sammlung.title':'Koleksiyon','sammlung.records':'Rekorlar','sammlung.streak':'Günlük seri','sammlung.winStreak':'Galibiyet serisi','sammlung.wins':'Galibiyetler','sammlung.achievements':'Başarılar',
+    'shop.title':'Mağaza','shop.coins':'Coin','shop.designs':'🎨 Tasarımlar','shop.boosters':'⚡ Güçlendirici','shop.premium':'⭐ Premium',
+    'shop.shieldName':'Seri kalkanı','shop.shieldDesc':'Bir gün kaçırınca serini korur.',
+    'shop.hintPackName':'İpucu paketi','shop.hintPackDesc':'Sonraki oyunda 3 ipucu kullanıma hazır.','shop.hintBought':'İpucu paketi alındı','shop.hintAdded':'+{n} ipucu mevcut.',
+    'shop.adFreeName':'Reklamları kaldır','shop.adFreeDesc':'Reklamsız — sonsuza dek, tek seferlik ödeme.',
+    'shop.notEnough':'Yeterli coin yok','shop.notEnoughSub':'{n} coine ihtiyacın var.','shop.themeBought':'Tasarım alındı','shop.themeActive':'„{name}" etkin.',
+    'shop.themeOwned':'Sahip','shop.themeActiveLabel':'✓ Aktif','shop.confirm':'„{name}" {price} coine alınsın mı?',
+    'level.up':'{n}. seviyeye ulaşıldı','level.upSub':'Devam!',
+    'ach.unlock':'Başarı',
+    'tut.skip':'Atla','tut.next':'İleri','tut.go':'Hadi başlayalım',
+    'tut.s1.t':"Brainoku'ya hoş geldin",'tut.s1.h':'Sudoku için hazır mısın? Birkaç saniyede kuralları ve özellikleri göstereceğiz.<br><br>Sudoku biliyorsan <strong>„Atla"</strong> tuşuna bas.',
+    'tut.s2.t':'Hedef','tut.s2.h':'9×9 ızgarayı 1-9 sayılarıyla doldur. <strong>Her satırda</strong>, <strong>her sütunda</strong> ve <strong>her 3×3 kutuda</strong> her sayı tam bir kez geçmeli.',
+    'tut.s3.t':'Nasıl oynanır','tut.s3.h':'Boş bir hücreye dokun, ardından alttaki sayıya. Yanlışsa <strong>bir kalp</strong> kaybedersin — üç hata sonunda raund biter.',
+    'tut.s4.t':'Notlar modu','tut.s4.h':'Emin değilsen <strong>Notlar</strong> modunu aç ve olası sayıları küçük yaz.',
+    'tut.s5.t':'Sil ve Geri al','tut.s5.h':'<strong>Sil</strong> girdiyi kaldırır, <strong>Geri al</strong> son hamleyi geri alır.',
+    'tut.s6.t':'İpucu yardımı','tut.s6.h':'<strong>10 saniye</strong> hareketsiz kalırsan sağ üstte <strong>İpucu</strong> belirir. Kısa videoyla bir hücre çözülür.',
+    'tut.s7.t':'Reklamsız oyna','tut.s7.h':'Oyun <strong>ücretsiz</strong>. 20 turda bir kısa reklam. <strong>9,99 €</strong> ile reklamları kaldırabilirsin.',
+    'ach.first_win.t':'İlk galibiyet','ach.first_win.d':'İlk Sudoku\'yu çöz.',
+    'ach.wins_10.t':'Antrenmanlı','ach.wins_10.d':'10 galibiyet.',
+    'ach.wins_50.t':'Sudoku ustası','ach.wins_50.d':'50 galibiyet.',
+    'ach.wins_100.t':'Büyük usta','ach.wins_100.d':'100 galibiyet.',
+    'ach.perfect_1.t':'Mükemmeliyetçi','ach.perfect_1.d':'1 hatasız oyun.',
+    'ach.perfect_10.t':'Kusursuz','ach.perfect_10.d':'10 hatasız oyun.',
+    'ach.no_hint.t':'İpucusuz','ach.no_hint.d':'İpucusuz çözüm.',
+    'ach.streak_7.t':'Demir irade','ach.streak_7.d':'7 gün üst üste.',
+    'ach.streak_30.t':'Durdurulamaz','ach.streak_30.d':'30 gün üst üste.',
+    'ach.level_10.t':'Seviye efsanesi','ach.level_10.d':'10. seviye.',
+    'ach.speed_demon.t':'Hızlı düşünür','ach.speed_demon.d':'5 dakikadan kısa sürede çöz.',
+    'ach.expert_win.t':'Uzman galibiyeti','ach.expert_win.d':'Uzman Sudoku galibiyeti.',
+    'splash':[
+      "Beyni çalıştırır!","Mantığı keskinleştirir!","Bilimsel olarak kanıtlandı!","Konsantrasyonu artırır!","Demansa karşı koruyucu!","100 % beyin gıdası!","Daha akıllı yapar!","Pro-mantık aktif!","En iyi beyin egzersizi!","Her iki beyin yarımküresini aktive eder!","Stresi azaltır!","Hafızayı güçlendirir!","Günlük beyin antrenmanı!","Kaydırma yerine düşün!","Beyin spor salonu!","Sayılardan fazlası!","Pro seviyede odak!","Mantık şanstan üstündür!","Şans değil, beyin!","Bilim seviyor!","Beyin için anti-aging!","Sağlıklı bağımlılık!","8'den 99'a herkese!","Sherlock bile severdi!"
+    ],
+    'gen.close':'Kapat','gen.back':'Geri','gen.confirm':'Tamam','gen.cancel':'İptal',
+  },
+};
+
+function detectLang() {
+  const code = (navigator.language || 'de').slice(0, 2).toLowerCase();
+  return LANG[code] ? code : 'en';
+}
+let currentLang = state.lang || detectLang();
+
+function t(key, vars) {
+  let s = LANG[currentLang]?.[key] ?? LANG.en[key] ?? LANG.de[key] ?? key;
+  if (vars && typeof s === 'string') {
+    for (const k in vars) s = s.split('{'+k+'}').join(vars[k]);
+  }
+  return s;
+}
+
+function applyLanguage() {
+  document.documentElement.lang = currentLang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    el.textContent = t(key);
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.dataset.i18nHtml;
+    el.innerHTML = t(key);
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    el.placeholder = t(key);
+  });
+  // Refresh dynamic UI that holds translated text
+  if (typeof refreshHome === 'function') refreshHome();
+  if (typeof refreshSammlung === 'function' && document.getElementById('screen-sammlung')?.classList.contains('active')) refreshSammlung();
+  if (typeof refreshShop === 'function' && document.getElementById('screen-shop')?.classList.contains('active')) refreshShop();
+}
+
+function setLanguage(lang) {
+  if (!LANG[lang]) return;
+  currentLang = lang;
+  state.lang = lang;
+  saveState();
+  applyLanguage();
+}
 
 /* =========================================================
    SUPABASE / AUTH
@@ -2196,8 +2545,7 @@ function startGame(diff) {
   game.finished = false;
   clearSavedGame();
 
-  document.getElementById('game-diff').textContent =
-    diff[0].toUpperCase() + diff.slice(1);
+  document.getElementById('game-diff').textContent = t('diff.' + diff);
   document.getElementById('game-level').textContent = levelOf(state.xp);
   document.getElementById('game-num').textContent = completedFor(diff) + 1;
   document.getElementById('act-notes').classList.remove('active');
@@ -2546,9 +2894,9 @@ function winGame() {
   };
   checkAchievements(ctx);
 
-  let msg = `Spiel ${state.completed} gelöst.`;
-  if (newDay) msg += ` Tagesserie: ${state.streak} ${state.streak === 1 ? 'Tag' : 'Tage'}.`;
-  if (state.completed % 20 === 0 && !state.adFree) msg += ' Kurze Werbung folgt.';
+  let msg = t('win.solved', { n: state.completed });
+  if (newDay) msg += t('win.streakAdd', { n: state.streak, label: state.streak === 1 ? t('home.day') : t('home.days') });
+  if (state.completed % 20 === 0 && !state.adFree) msg += t('win.adNext');
   document.getElementById('win-text').textContent = msg;
   document.getElementById('overlay-win').classList.add('active');
   playSfx('win');
@@ -2625,6 +2973,8 @@ function applySettings() {
   document.body.classList.toggle('dark', !!state.dark);
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', state.dark ? '#10142A' : '#F2F3F9');
   applyTheme(state.theme || 'classic');
+  const cur = document.getElementById('lang-current');
+  if (cur) cur.textContent = t('lang.' + currentLang);
   refreshAdFreeUI();
 }
 document.querySelectorAll('.toggle').forEach(t => {
@@ -2707,7 +3057,7 @@ document.getElementById('btn-rate-later').addEventListener('click', () => {
 });
 
 function refreshAdFreeUI() {
-  document.getElementById('adfree-status').textContent = state.adFree ? 'Aktiv ✓' : '9,99 € ›';
+  document.getElementById('adfree-status').textContent = state.adFree ? t('settings.adFreeOn') : t('settings.adFreePrice');
 }
 
 function vibrate(ms) {
@@ -2887,6 +3237,30 @@ document.getElementById('shop-hint-pack').addEventListener('click', () => {
 
 document.getElementById('shop-adfree').addEventListener('click', () => {
   document.getElementById('overlay-purchase').classList.add('active');
+});
+
+/* =========================================================
+   LANGUAGE PICKER
+========================================================= */
+function openLanguagePicker() {
+  document.querySelectorAll('#lang-list .lang-option').forEach(el => {
+    el.classList.toggle('active', el.dataset.lang === currentLang);
+  });
+  document.getElementById('overlay-language').classList.add('active');
+}
+document.getElementById('row-language').addEventListener('click', openLanguagePicker);
+document.getElementById('btn-lang-close').addEventListener('click', () => {
+  document.getElementById('overlay-language').classList.remove('active');
+});
+document.querySelectorAll('#lang-list .lang-option').forEach(el => {
+  el.addEventListener('click', () => {
+    setLanguage(el.dataset.lang);
+    document.getElementById('overlay-language').classList.remove('active');
+    // Update label below "Sprache" row
+    const cur = document.getElementById('lang-current');
+    if (cur) cur.textContent = t('lang.' + currentLang);
+    playSfx('toggle');
+  });
 });
 
 /* =========================================================
@@ -3092,7 +3466,7 @@ function loadSavedGame() {
   game.reviveUsed = g.reviveUsed || false;
   game.finished = false;
 
-  document.getElementById('game-diff').textContent = g.difficulty[0].toUpperCase() + g.difficulty.slice(1);
+  document.getElementById('game-diff').textContent = t('diff.' + g.difficulty);
   document.getElementById('game-level').textContent = levelOf(state.xp);
   document.getElementById('game-num').textContent = completedFor(g.difficulty) + 1;
   document.getElementById('act-notes').classList.remove('active');
@@ -3142,37 +3516,15 @@ document.getElementById('btn-revive-cancel').addEventListener('click', () => {
 /* =========================================================
    SPLASH TEXTS  (Minecraft-Style)
 ========================================================= */
-const splashTexts = [
-  "Trainiert dein Gehirn!",
-  "Schärft die Logik!",
-  "Wissenschaftlich erwiesen!",
-  "Steigert die Konzentration!",
-  "Schützt vor Demenz!",
-  "100 % Brainfood!",
-  "Macht klüger!",
-  "Pro-Logik aktiviert!",
-  "Beste Hirngymnastik!",
-  "Aktiviert beide Hirnhälften!",
-  "Reduziert Stress!",
-  "Stärkt das Gedächtnis!",
-  "Tägliches Hirntraining!",
-  "Knobeln statt Scrollen!",
-  "Hirn-Workout!",
-  "Mehr als nur Zahlen!",
-  "Konzentration auf Profi-Niveau!",
-  "Logik schlägt Glück!",
-  "Kein Zufall, nur Köpfchen!",
-  "Studien lieben es!",
-  "Anti-Aging fürs Gehirn!",
-  "Macht süchtig (gesund)!",
-  "Für alle ab 8 bis 99!",
-  "Schon Sherlock liebte es!",
-];
+function getSplashTexts() {
+  return LANG[currentLang]?.splash || LANG.en.splash;
+}
 function initSplash() {
   const el = document.getElementById('splash');
   if (!el) return;
-  const idx = Math.floor(Math.random() * splashTexts.length);
-  el.textContent = splashTexts[idx];
+  const arr = getSplashTexts();
+  const idx = Math.floor(Math.random() * arr.length);
+  el.textContent = arr[idx];
 }
 
 /* =========================================================
@@ -3241,18 +3593,18 @@ function bumpDailyStreak() {
    ACHIEVEMENTS
 ========================================================= */
 const ACHIEVEMENTS = [
-  { id: 'first_win',   emoji: '🎯', title: 'Erstes Spiel',       desc: 'Löse dein erstes Sudoku.',          check: () => state.completed >= 1 },
-  { id: 'wins_10',     emoji: '🥉', title: 'Geübter Spieler',    desc: '10 Sudokus gewonnen.',              check: () => state.completed >= 10 },
-  { id: 'wins_50',     emoji: '🥈', title: 'Sudoku-Profi',       desc: '50 Sudokus gewonnen.',              check: () => state.completed >= 50 },
-  { id: 'wins_100',    emoji: '🥇', title: 'Sudoku-Meister',     desc: '100 Sudokus gewonnen.',             check: () => state.completed >= 100 },
-  { id: 'perfect_1',   emoji: '✨', title: 'Perfektionist',      desc: '1 Spiel ohne Fehler.',              check: () => state.perfectGames >= 1 },
-  { id: 'perfect_10',  emoji: '🌟', title: 'Makellos',           desc: '10 Spiele ohne Fehler.',            check: () => state.perfectGames >= 10 },
-  { id: 'no_hint',     emoji: '🧠', title: 'Tipp-Verzichter',    desc: 'Spiel ohne Tipp gelöst.',           check: ctx => !!ctx?.noHint },
-  { id: 'streak_7',    emoji: '🔥', title: 'Eiserner Wille',     desc: '7 Tage in Folge gespielt.',         check: () => state.streak >= 7 },
-  { id: 'streak_30',   emoji: '👑', title: 'Unaufhaltsam',       desc: '30 Tage in Folge gespielt.',        check: () => state.streak >= 30 },
-  { id: 'level_10',    emoji: '⭐', title: 'Level-Legende',      desc: 'Level 10 erreicht.',                check: () => levelOf(state.xp) >= 10 },
-  { id: 'speed_demon', emoji: '⚡', title: 'Schnelldenker',      desc: 'Spiel unter 5 Min gelöst.',         check: ctx => ctx?.timeSec && ctx.timeSec < 300 },
-  { id: 'expert_win',  emoji: '🏆', title: 'Experten-Sieg',      desc: 'Ein Experten-Sudoku gewonnen.',     check: ctx => ctx?.difficulty === 'experte' },
+  { id: 'first_win',   emoji: '🎯', check: () => state.completed >= 1 },
+  { id: 'wins_10',     emoji: '🥉', check: () => state.completed >= 10 },
+  { id: 'wins_50',     emoji: '🥈', check: () => state.completed >= 50 },
+  { id: 'wins_100',    emoji: '🥇', check: () => state.completed >= 100 },
+  { id: 'perfect_1',   emoji: '✨', check: () => state.perfectGames >= 1 },
+  { id: 'perfect_10',  emoji: '🌟', check: () => state.perfectGames >= 10 },
+  { id: 'no_hint',     emoji: '🧠', check: ctx => !!ctx?.noHint },
+  { id: 'streak_7',    emoji: '🔥', check: () => state.streak >= 7 },
+  { id: 'streak_30',   emoji: '👑', check: () => state.streak >= 30 },
+  { id: 'level_10',    emoji: '⭐', check: () => levelOf(state.xp) >= 10 },
+  { id: 'speed_demon', emoji: '⚡', check: ctx => ctx?.timeSec && ctx.timeSec < 300 },
+  { id: 'expert_win',  emoji: '🏆', check: ctx => ctx?.difficulty === 'experte' },
 ];
 
 function checkAchievements(ctx) {
@@ -3267,7 +3619,7 @@ function checkAchievements(ctx) {
   if (newly.length) {
     saveState();
     newly.forEach((a, i) => setTimeout(() => {
-      showToast(a.emoji, 'Errungenschaft', a.title);
+      showToast(a.emoji, t('ach.unlock'), t('ach.' + a.id + '.t'));
       playSfx('achieve');
     }, i * 600));
   }
@@ -3321,8 +3673,7 @@ function refreshHome() {
       }
     }
     const pct = total ? Math.round(filled / total * 100) : 0;
-    const diffName = g.difficulty[0].toUpperCase() + g.difficulty.slice(1);
-    document.getElementById('resume-sub').textContent = `${diffName} · ${pct} %`;
+    document.getElementById('resume-sub').textContent = `${t('diff.' + g.difficulty)} · ${pct} %`;
     resume.classList.remove('hidden');
   } else {
     resume.classList.add('hidden');
@@ -3341,8 +3692,8 @@ function refreshSammlung() {
     el.className = 'ach-card' + (unlocked ? ' unlocked' : '');
     el.innerHTML = `
       <div class="ach-icon">${unlocked ? a.emoji : '🔒'}</div>
-      <div class="ach-title">${a.title}</div>
-      <div class="ach-desc">${a.desc}</div>`;
+      <div class="ach-title">${t('ach.' + a.id + '.t')}</div>
+      <div class="ach-desc">${t('ach.' + a.id + '.d')}</div>`;
     grid.appendChild(el);
   });
 }
@@ -3410,41 +3761,13 @@ function checkReminder() {
    TUTORIAL
 ========================================================= */
 const tutorialSlides = [
-  {
-    icon: '🧩',
-    title: 'Willkommen bei Brainoku',
-    html: 'Bereit für ein Sudoku? In wenigen Sekunden zeigen wir dir die Regeln und alle Funktionen.<br><br>Du kennst Sudoku schon? Tippe einfach <strong>„Überspringen"</strong>.'
-  },
-  {
-    icon: 'GRID',
-    title: 'Das Ziel',
-    html: 'Fülle das 9×9-Gitter mit den Zahlen 1 bis 9. In <strong>jeder Reihe</strong>, <strong>jeder Spalte</strong> und <strong>jeder 3×3-Box</strong> muss jede Zahl genau einmal vorkommen — keine Wiederholungen.'
-  },
-  {
-    icon: '👆',
-    title: 'So spielst du',
-    html: 'Tippe auf eine leere Zelle, dann auf eine Zahl unten. Stimmt sie nicht, verlierst du <strong>ein Herz</strong> — nach drei Fehlern ist die Runde vorbei.'
-  },
-  {
-    icon: '✏️',
-    title: 'Notizen-Modus',
-    html: 'Nicht sicher? Aktiviere <strong>Notizen</strong> und merke dir mögliche Zahlen klein in einer Zelle. Nochmal tippen wechselt zurück in den Eingabe-Modus.'
-  },
-  {
-    icon: '↺',
-    title: 'Löschen & Rückgängig',
-    html: 'Vertippt? Mit <strong>Löschen</strong> entfernst du deinen Eintrag, mit <strong>Rückgängig</strong> (oben links) machst du den letzten Zug ungeschehen.'
-  },
-  {
-    icon: '🎬',
-    title: 'Tipp-Hilfe',
-    html: 'Wenn du <strong>10 Sekunden</strong> nicht weiter weißt, erscheint oben rechts die <strong>Tipp-Pille</strong>. Schau dir ein kurzes Video an und eine Zelle wird für dich gelöst.'
-  },
-  {
-    icon: '⭐',
-    title: 'Werbefrei spielen',
-    html: 'Das Spiel ist <strong>kostenlos</strong>. Alle 20 Runden kommt eine kurze Werbung. Für <strong>9,99 €</strong> (einmalig) kannst du Werbung dauerhaft entfernen — Einstellungen → <em>Werbung entfernen</em>.'
-  },
+  { icon: '🧩',  tKey: 'tut.s1' },
+  { icon: 'GRID', tKey: 'tut.s2' },
+  { icon: '👆',  tKey: 'tut.s3' },
+  { icon: '✏️',  tKey: 'tut.s4' },
+  { icon: '↺',   tKey: 'tut.s5' },
+  { icon: '🎬',  tKey: 'tut.s6' },
+  { icon: '⭐',  tKey: 'tut.s7' },
 ];
 
 function buildMiniGrid() {
@@ -3475,14 +3798,14 @@ function renderTutSlide() {
     : `<div class="icon-bubble">${slide.icon}</div>`;
   document.getElementById('tut-slide').innerHTML = `
     ${iconHtml}
-    <h2>${slide.title}</h2>
-    <p>${slide.html}</p>
+    <h2>${t(slide.tKey + '.t')}</h2>
+    <p>${t(slide.tKey + '.h')}</p>
   `;
   const dots = tutorialSlides.map((_, i) => `<span class="${i === tutStep ? 'active' : ''}"></span>`).join('');
   document.getElementById('tut-dots').innerHTML = dots;
   document.getElementById('btn-tut-back').classList.toggle('hidden', tutStep === 0);
   document.getElementById('btn-tut-next').textContent =
-    tutStep === tutorialSlides.length - 1 ? "Los geht's" : 'Weiter';
+    tutStep === tutorialSlides.length - 1 ? t('tut.go') : t('tut.next');
 }
 
 function openTutorial() {
@@ -3511,6 +3834,7 @@ document.getElementById('row-tutorial').addEventListener('click', openTutorial);
 /* =========================================================
    INIT
 ========================================================= */
+applyLanguage();
 applySettings();
 initSplash();
 setupReminderInputs();
