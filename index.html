@@ -53,23 +53,26 @@
     overscroll-behavior: none;
     user-select: none;
     -webkit-user-select: none;
-    overflow-x: hidden;
+    /* Body komplett am Viewport festtackern — kein Body-Scroll, kein Rubber-Band */
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
   }
   body {
-    min-height: 100vh;
-    min-height: 100dvh;
     display: flex;
     justify-content: center;
   }
   #app {
     width: 100%;
     max-width: 480px;
-    min-height: 100vh;
-    min-height: 100dvh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     position: relative;
     padding-top: env(safe-area-inset-top);
+    overflow: hidden;
   }
   /* compact spacing on phones up to iPhone-SE-class */
   @media (max-width: 380px) {
@@ -130,14 +133,19 @@
     flex: 1;
     flex-direction: column;
     padding: 18px 20px 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden; /* kein Scroll standardmäßig */
     overscroll-behavior: none;
-    overscroll-behavior-y: none;
     min-height: 0;
   }
   .screen.active { display: flex; }
+  /* nur diese Screens dürfen scrollen, weil ihr Inhalt naturgemäß länger werden kann */
+  #screen-sammlung,
+  #screen-shop,
+  #screen-settings {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
 
   /* ---------- HOME ---------- */
   .home-top { display: flex; justify-content: flex-end; padding: 6px 0 0; }
