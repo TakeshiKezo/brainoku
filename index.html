@@ -2800,11 +2800,23 @@ function inputDigit(n) {
     return;
   }
 
-  game.history.push({ type: 'value', r, c, prev: game.board[r][c], prevNotes: new Set(game.notes[r][c]) });
+  const historyEntry = { type: 'value', r, c, prev: game.board[r][c], prevNotes: new Set(game.notes[r][c]), peerNotes: [] };
   game.board[r][c] = n;
   game.notes[r][c].clear();
 
   const correct = game.solved[r][c] === n;
+  if (correct) {
+    // Smart-Notizen: Zahl aus Reihe/Spalte/Box-Notizen entfernen
+    for (let i = 0; i < 9; i++) for (let j = 0; j < 9; j++) {
+      if (i === r && j === c) continue;
+      const isPeer = i === r || j === c || (Math.floor(i/3) === Math.floor(r/3) && Math.floor(j/3) === Math.floor(c/3));
+      if (isPeer && game.notes[i][j].has(n)) {
+        historyEntry.peerNotes.push({ r: i, c: j, prev: new Set(game.notes[i][j]) });
+        game.notes[i][j].delete(n);
+      }
+    }
+  }
+  game.history.push(historyEntry);
   renderBoard();
 
   if (!correct) {
@@ -2840,6 +2852,10 @@ function undo() {
   if (last.type === 'value') {
     game.board[last.r][last.c] = last.prev;
     game.notes[last.r][last.c] = last.prevNotes;
+    // Peer-Notizen wiederherstellen (Smart-Notes-Aufräumung rückgängig)
+    if (last.peerNotes) {
+      last.peerNotes.forEach(p => { game.notes[p.r][p.c] = p.prev; });
+    }
   } else {
     game.notes[last.r][last.c] = last.prev;
     game.board[last.r][last.c] = last.prevVal;
@@ -2917,9 +2933,20 @@ function applyHint() {
   }
   if (!empty.length) return;
   const [r, c] = empty[Math.floor(Math.random() * empty.length)];
-  game.history.push({ type: 'value', r, c, prev: game.board[r][c], prevNotes: new Set(game.notes[r][c]) });
-  game.board[r][c] = game.solved[r][c];
+  const n = game.solved[r][c];
+  const historyEntry = { type: 'value', r, c, prev: game.board[r][c], prevNotes: new Set(game.notes[r][c]), peerNotes: [] };
+  game.board[r][c] = n;
   game.notes[r][c].clear();
+  // Smart-Notizen auch beim Tipp anwenden
+  for (let i = 0; i < 9; i++) for (let j = 0; j < 9; j++) {
+    if (i === r && j === c) continue;
+    const isPeer = i === r || j === c || (Math.floor(i/3) === Math.floor(r/3) && Math.floor(j/3) === Math.floor(c/3));
+    if (isPeer && game.notes[i][j].has(n)) {
+      historyEntry.peerNotes.push({ r: i, c: j, prev: new Set(game.notes[i][j]) });
+      game.notes[i][j].delete(n);
+    }
+  }
+  game.history.push(historyEntry);
   renderBoard();
   const cell = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
   cell.classList.add('hint-flash');
