@@ -1,58 +1,54 @@
-# Legal Pages für isukato.com
+# isukato.com — komplette Mini-Site
 
-Generische Legal-Pages für **alle Apps** von Nico Heidrich.
+Drop-in für **isukato.com** — Hosting empfohlen über Vercel.
 
 ## Inhalt
 
-- `datenschutz.html` → soll unter `https://isukato.com/datenschutz` erreichbar sein
-- `impressum.html` → `https://isukato.com/impressum`
-- `agb.html` → `https://isukato.com/agb`
+| Datei | Wird URL |
+|-------|----------|
+| `index.html` | `https://isukato.com/` (Homepage mit Apps-Übersicht) |
+| `apps/brainoku.html` | `https://isukato.com/apps/brainoku` (Brainoku-Detail) |
+| `datenschutz.html` | `https://isukato.com/datenschutz` |
+| `impressum.html` | `https://isukato.com/impressum` |
+| `agb.html` | `https://isukato.com/agb` |
+| `vercel.json` | Routing-Config für Clean-URLs |
 
-## Vor dem Veröffentlichen ausfüllen
+Bei künftigen Apps einfach eine neue Datei in `apps/` anlegen (z.B. `apps/meine-app.html`) und auf der Homepage in der `.app-grid` als `<a class="app-card" href="/apps/meine-app">…</a>` verlinken.
 
-In allen drei Dateien sind Platzhalter, die du noch ersetzen musst:
+## Vor dem Hochladen ausfüllen
 
-| Platzhalter | Wo? | Was rein? |
-|-------------|-----|-----------|
-| `[Anschrift einfügen]` | Datenschutz | Vollständige Adresse |
-| `[Straße + Hausnummer einfügen]` | Impressum | Straße + Nummer |
-| `[PLZ + Ort einfügen]` | Impressum | Postleitzahl und Ort |
-| `[Bundesland einfügen]` | Datenschutz | Dein Bundesland (für die Datenschutzbehörde) |
+In den Legal-Files ersetzen:
+- `[Anschrift einfügen]` / `[Straße + Hausnummer]` / `[PLZ + Ort]` → deine Adresse
+- `[Bundesland einfügen]` → Bundesland für Datenschutzbehörde
+- E-Mail `hallo@isukato.com` einrichten oder durch deine echte ersetzen
 
-Außerdem: die E-Mail `hallo@isukato.com` musst du einrichten (oder durch deine echte Mail ersetzen).
+In `apps/brainoku.html`:
+- `https://brainoku.vercel.app` → durch deine echte Brainoku-Deploy-URL ersetzen (oder lassen)
 
-## Hosting
+## Hosting auf Vercel (empfohlen, kostenlos)
 
-Drei einfache Wege:
-
-**1. Vercel** (empfohlen, kostenlos)
-- Lade `legal-pages/` als eigenes Repo auf GitHub hoch
-- Verbinde mit Vercel
-- Custom Domain `isukato.com` eintragen
-- Vercel serviert die HTML-Files unter den Routes automatisch
-
-**2. GitHub Pages**
-- Repo auf GitHub Pages aktivieren
-- Custom Domain konfigurieren
-
-**3. Klassisches Webhosting**
-- Per FTP hochladen, fertig
-
-## URL-Schema
-
-Empfehlung: `https://isukato.com/datenschutz` (ohne `.html`-Endung). Das geht bei Vercel automatisch via `vercel.json`:
-
-```json
-{
-  "cleanUrls": true
-}
+```bash
+cd legal-pages
+git init
+git add .
+git commit -m "init isukato site"
+gh repo create isukato --public --source=. --push
 ```
+
+Dann auf vercel.com → New Project → das Repo importieren → Custom Domain `isukato.com` einrichten.
+
+`vercel.json` sorgt automatisch für:
+- `/datenschutz` (statt `/datenschutz.html`)
+- `/impressum`
+- `/agb`
+- `/apps/brainoku`
+- Redirect `/privacy → /datenschutz`, `/terms → /agb`, `/imprint → /impressum` für englische Direktanfragen
 
 ## Was die Apps damit machen
 
-Alle Apps (Brainoku Sudoku, künftige) verlinken auf:
-- `/datenschutz` → Settings → Datenschutz, Auth-Screen-Legal
-- `/impressum` → Settings → Impressum
-- `/agb` → Auth-Screen-Legal
+Brainoku Sudoku verlinkt aus dem Auth-Screen-Legal und den Settings auf:
+- `isukato.com/datenschutz`
+- `isukato.com/impressum`
+- `isukato.com/agb`
 
-Beim Linkklick öffnet sich isukato.com im externen Browser/Safari (`target="_blank"`), nicht inline in der App.
+Künftige Apps machen das genauso — alles auf einer zentralen Domain, einmal pflegen, überall gültig.

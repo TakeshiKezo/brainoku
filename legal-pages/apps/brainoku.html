@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Brainoku Sudoku — isukato</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Brainoku Sudoku — modernes Sudoku-Spiel mit Streak, Bestzeiten, 11 Designs und 5 Sprachen. Tägliches Hirntraining im Browser oder als PWA auf dem Handy.">
+<style>
+  :root {
+    --bg: #F2F3F9;
+    --card: #FFFFFF;
+    --primary: #5C5CF0;
+    --primary-soft: #EAEAFD;
+    --text: #1F2A44;
+    --text-mute: #6B7398;
+    --border: #E0E2EC;
+    --success: #4ED387;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 880px; margin: 0 auto; padding: 28px 24px 80px; }
+
+  .back {
+    color: var(--text-mute);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 0;
+  }
+  .back:hover { color: var(--primary); }
+
+  .hero {
+    background: linear-gradient(135deg, #5C5CF0 0%, #8B6CF6 100%);
+    border-radius: 28px;
+    padding: 48px 32px 40px;
+    color: white;
+    text-align: center;
+    margin: 12px 0 32px;
+    box-shadow: 0 12px 36px rgba(92, 92, 240, 0.28);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><g fill='%23FFFFFF' opacity='0.06'><circle cx='10' cy='14' r='1.2'/><circle cx='32' cy='20' r='1.6'/><circle cx='58' cy='10' r='1.2'/><circle cx='72' cy='28' r='1.4'/><circle cx='18' cy='42' r='1.2'/><circle cx='44' cy='38' r='1.6'/><circle cx='66' cy='52' r='1.2'/><circle cx='12' cy='62' r='1.4'/></g></svg>");
+  }
+  .hero > * { position: relative; }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(8px);
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 5px 12px;
+    border-radius: 999px;
+    letter-spacing: 1.2px;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 52px;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -2px;
+  }
+  .hero h1 .accent { color: #FFD24D; }
+  .hero .sub {
+    font-size: 17px;
+    margin: 10px 0 26px;
+    opacity: 0.92;
+    font-weight: 500;
+  }
+  .hero .ctas { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary, .btn-secondary {
+    text-decoration: none;
+    border-radius: 999px;
+    padding: 14px 24px;
+    font-weight: 700;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform .15s ease;
+  }
+  .btn-primary { background: white; color: var(--primary); }
+  .btn-primary:hover { transform: translateY(-1px); }
+  .btn-secondary { background: rgba(255,255,255,0.18); color: white; backdrop-filter: blur(6px); }
+  .btn-secondary:hover { background: rgba(255,255,255,0.25); }
+
+  .section { margin-bottom: 40px; }
+  .section h2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-mute);
+    font-weight: 700;
+    margin: 0 0 14px;
+    padding-left: 4px;
+  }
+  .text-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 22px 24px;
+    box-shadow: 0 2px 14px rgba(30, 42, 74, 0.05);
+    font-size: 16px;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .feature {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 2px 14px rgba(30, 42, 74, 0.05);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .feature .ico {
+    font-size: 22px;
+    flex-shrink: 0;
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--primary-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .feature h3 { font-size: 14px; margin: 0 0 2px; font-weight: 700; }
+  .feature p { font-size: 13px; color: var(--text-mute); margin: 0; line-height: 1.4; }
+
+  .install-steps {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 22px 24px;
+    box-shadow: 0 2px 14px rgba(30, 42, 74, 0.05);
+  }
+  .install-steps ol { padding-left: 18px; margin: 8px 0 0; }
+  .install-steps li { margin: 4px 0; font-size: 14px; }
+  .install-steps strong { color: var(--primary); }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    margin-top: 48px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-mute);
+  }
+  footer a { color: var(--text-mute); text-decoration: none; margin: 0 8px; }
+  footer a:hover { color: var(--primary); }
+
+  @media (max-width: 480px) {
+    .hero { padding: 36px 22px 30px; border-radius: 22px; }
+    .hero h1 { font-size: 38px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back" href="/">‹ Alle Apps</a>
+
+  <div class="hero">
+    <span class="hero-badge">Handyspiel</span>
+    <h1>Brain<span class="accent">o</span>ku</h1>
+    <p class="sub">Tägliches Sudoku-Hirntraining</p>
+    <div class="ctas">
+      <a class="btn-primary" href="https://brainoku.vercel.app">Im Browser spielen</a>
+      <a class="btn-secondary" href="#install">Aufs Handy laden</a>
+    </div>
+  </div>
+
+  <section class="section">
+    <h2>Über das Spiel</h2>
+    <div class="text-card">
+      <p style="margin:0;">Brainoku ist ein modernes Sudoku-Spiel mit täglichen Levels, Bestzeiten-Jagd und einem cleveren Tipp-System. Jedes Level ist für alle Spieler weltweit identisch — vergleich dich mit anderen oder schlag deinen eigenen Rekord. Das Spiel läuft komplett im Browser, ist aber so gebaut, dass es sich auf dem Handy wie eine native App anfühlt.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Was drinsteckt</h2>
+    <div class="features">
+      <div class="feature"><div class="ico">🎯</div><div><h3>4 Schwierigkeiten</h3><p>Leicht, Mittel, Schwer, Experte</p></div></div>
+      <div class="feature"><div class="ico">🔥</div><div><h3>Tagesserie</h3><p>Streak wie bei Duolingo, mit Schild-System</p></div></div>
+      <div class="feature"><div class="ico">⏱</div><div><h3>Bestzeiten</h3><p>Pro Level + global vergleichbar dank festem Seed</p></div></div>
+      <div class="feature"><div class="ico">🏆</div><div><h3>12 Errungenschaften</h3><p>Vom Erstes Spiel bis Sudoku-Meister</p></div></div>
+      <div class="feature"><div class="ico">🎨</div><div><h3>11 Designs</h3><p>Inklusive 5 Premium-Patterns (Blüten, Sterne, Gold, …)</p></div></div>
+      <div class="feature"><div class="ico">🌍</div><div><h3>5 Sprachen</h3><p>Deutsch, Englisch, Russisch, Türkisch, Japanisch</p></div></div>
+      <div class="feature"><div class="ico">☁️</div><div><h3>Cloud-Sync</h3><p>Mit Konto auf allen Geräten synchron</p></div></div>
+      <div class="feature"><div class="ico">🌙</div><div><h3>Dunkelmodus</h3><p>Schont die Augen am Abend</p></div></div>
+      <div class="feature"><div class="ico">🚫</div><div><h3>Werbefrei-Option</h3><p>Einmalig 9,99 € — keine Werbung mehr</p></div></div>
+    </div>
+  </section>
+
+  <section class="section" id="install">
+    <h2>Auf dem Handy</h2>
+    <div class="install-steps">
+      <p style="margin:0 0 10px;">Brainoku ist eine <strong>Progressive Web App</strong>. Das heißt: keine Installation aus dem Store nötig — du kannst sie direkt aus dem Browser zum Home-Bildschirm hinzufügen und sie läuft wie eine richtige App.</p>
+      <p style="margin:14px 0 6px;"><strong>iPhone (Safari)</strong></p>
+      <ol>
+        <li><a href="https://brainoku.vercel.app">brainoku.vercel.app</a> öffnen</li>
+        <li>Teilen-Button (Pfeil-hoch) tippen</li>
+        <li><strong>„Zum Home-Bildschirm"</strong> wählen</li>
+      </ol>
+      <p style="margin:14px 0 6px;"><strong>Android (Chrome)</strong></p>
+      <ol>
+        <li>Seite öffnen</li>
+        <li>Drei-Punkte-Menü → <strong>„App installieren"</strong></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Tech</h2>
+    <div class="text-card" style="font-size:14px; color:var(--text-mute);">
+      Brainoku ist eine reine Web-App in HTML, CSS und JavaScript — kein Framework. Sounds werden über die Web Audio API live synthetisiert (kein Asset-Bundle), Themes bestehen aus CSS-Custom-Properties + SVG-Patterns als Data-URIs. Optionale Cloud-Synchronisation via <a href="https://supabase.com" target="_blank" rel="noopener">Supabase</a>. Hosted auf <a href="https://vercel.com" target="_blank" rel="noopener">Vercel</a>.
+    </div>
+  </section>
+
+  <footer>
+    <a href="/datenschutz">Datenschutz</a>
+    <a href="/impressum">Impressum</a>
+    <a href="/agb">Nutzungsbedingungen</a>
+    <div style="margin-top:12px; font-size:12px;">© <span id="y"></span> Nico Heidrich · isukato.com</div>
+  </footer>
+</div>
+
+<script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>
