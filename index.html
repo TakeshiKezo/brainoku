@@ -251,6 +251,12 @@
     font-weight: 600;
     line-height: 1;
     margin-bottom: 2px;
+    white-space: nowrap;
+  }
+  .status .game-best {
+    color: #FFB400;
+    font-weight: 700;
+    margin-left: 4px;
   }
   .status .difficulty-label {
     color: var(--primary);
@@ -666,6 +672,50 @@
 
   .hidden { display: none !important; }
   .pop { animation: pop .25s ease; }
+
+  /* ---------- WIN STATS ---------- */
+  .win-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin: 8px 0 14px;
+  }
+  .win-stat {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 10px 6px;
+    text-align: center;
+  }
+  .win-stat .ws-label { font-size: 11px; color: var(--text-mute); font-weight: 600; }
+  .win-stat .ws-val   { font-size: 20px; color: var(--text); font-weight: 800; margin-top: 2px; line-height: 1; }
+  .win-record {
+    background: linear-gradient(135deg, #FFE9A5, #FFC857);
+    color: #5C3A00;
+    border-radius: var(--radius-pill);
+    padding: 8px 14px;
+    font-weight: 800;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 12px;
+    animation: pop .35s ease;
+  }
+
+  /* ---------- KONFETTI ---------- */
+  .confetti-piece {
+    position: fixed;
+    top: -20px;
+    width: 10px;
+    height: 14px;
+    z-index: 9999;
+    border-radius: 2px;
+    pointer-events: none;
+    will-change: transform, opacity;
+    animation: confetti-fall linear forwards;
+  }
+  @keyframes confetti-fall {
+    0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0.5; }
+  }
 
   /* ---------- LANDSCAPE BLOCKER (für Browser/PWA — iOS App ist via Info.plist gelockt) ---------- */
   .rotate-overlay {
@@ -1234,6 +1284,56 @@
     gap: 10px;
     padding-bottom: 16px;
   }
+
+  .best-times {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .bt-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: transform .08s ease;
+    border: 0;
+    color: var(--text);
+    font-family: inherit;
+    text-align: left;
+    width: 100%;
+  }
+  .bt-card:active { transform: scale(0.97); }
+  .bt-diff { font-size: 14px; font-weight: 700; color: var(--primary); }
+  .bt-time { font-size: 22px; font-weight: 800; margin-top: 2px; line-height: 1; }
+  .bt-meta { font-size: 11px; color: var(--text-mute); margin-top: 4px; }
+  .bt-empty { color: var(--text-faint); font-size: 18px; }
+
+  .level-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin: 10px 0 16px;
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .level-tile {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 10px 6px;
+    text-align: center;
+    cursor: pointer;
+    border: 0;
+    color: var(--text);
+    font-family: inherit;
+    transition: transform .08s ease, background .15s ease;
+  }
+  .level-tile:active { transform: scale(0.96); }
+  .level-tile.current { background: var(--primary-soft); border: 2px solid var(--primary); }
+  .level-tile.locked { opacity: 0.35; cursor: not-allowed; }
+  .lt-num { font-size: 16px; font-weight: 800; }
+  .lt-time { font-size: 11px; color: var(--text-mute); margin-top: 2px; }
   .ach-card {
     background: var(--card);
     border-radius: var(--radius);
@@ -1558,6 +1658,9 @@
       </div>
     </div>
 
+    <h2 class="section-h" data-i18n="sammlung.bestTimes">Bestzeiten</h2>
+    <div class="best-times" id="best-times"></div>
+
     <h2 class="section-h" data-i18n="sammlung.achievements">Auszeichnungen</h2>
     <div class="ach-grid" id="ach-grid"></div>
 
@@ -1651,7 +1754,7 @@
         <svg viewBox="0 0 24 24"><path d="M12.5 8c-2.6 0-5 1-6.8 2.7L3 8v7h7l-2.8-2.8a6.9 6.9 0 015.3-2.4 7 7 0 110 14 7 7 0 01-6.7-5H3.6A9 9 0 1012.5 8z"/></svg>
       </button>
       <div class="status">
-        <div class="game-meta">Lvl <span id="game-level">1</span> · Spiel #<span id="game-num">1</span></div>
+        <div class="game-meta"><span data-i18n="game.level">Level</span> <span id="game-level">1</span> · ⏱ <span id="game-timer">0:00</span> <span id="game-best" class="game-best"></span></div>
         <div class="difficulty-label" id="game-diff">Schwer</div>
         <div class="hearts" id="hearts"></div>
       </div>
@@ -1801,9 +1904,16 @@
   <div class="overlay" id="overlay-win">
     <div class="modal">
       <h2 data-i18n="win.title">Geschafft! 🎉</h2>
+      <div class="win-stats">
+        <div class="win-stat"><div class="ws-label" data-i18n="win.lblTime">Zeit</div><div class="ws-val" id="win-time">0:00</div></div>
+        <div class="win-stat"><div class="ws-label" data-i18n="win.lblErrors">Fehler</div><div class="ws-val" id="win-errors">0</div></div>
+        <div class="win-stat"><div class="ws-label" data-i18n="win.lblHints">Tipps</div><div class="ws-val" id="win-hints">0</div></div>
+      </div>
+      <div class="win-record hidden" id="win-record" data-i18n="win.newRecord">⭐ Neue Bestzeit!</div>
       <p id="win-text">Du hast das Sudoku gelöst.</p>
       <div class="modal-buttons">
-        <button class="btn-primary" id="btn-win-next" data-i18n="win.next">Nächstes Spiel</button>
+        <button class="btn-primary" id="btn-win-next" data-i18n="win.next">Nächstes Level</button>
+        <button class="btn-secondary" id="btn-win-retry" data-i18n="win.retry">Wiederholen</button>
         <button class="btn-secondary" id="btn-win-home" data-i18n="win.home">Zur Startseite</button>
       </div>
     </div>
@@ -1872,6 +1982,17 @@
     <div class="rot-icon">📱</div>
     <h2>Bitte aufrecht halten</h2>
     <p>Brainoku läuft im Hochformat. Dreh dein Handy zurück und lass uns weiterknobeln.</p>
+  </div>
+
+  <div class="overlay" id="overlay-levels">
+    <div class="modal" style="max-width:380px;">
+      <h2 id="levels-title">Level</h2>
+      <p id="levels-sub" style="color:var(--text-mute); font-weight:500; font-size:13px;">Tap auf ein Level zum Wiederholen — schlag deine Bestzeit.</p>
+      <div class="level-list" id="level-list"></div>
+      <div class="modal-buttons">
+        <button class="btn-secondary" id="btn-levels-close" data-i18n="gen.close">Schließen</button>
+      </div>
+    </div>
   </div>
 
   <div class="overlay" id="overlay-language">
@@ -1993,6 +2114,9 @@ function loadState() {
       lastPlayedDate: null,
       completed: 0,
       completedByDifficulty: { leicht: 0, mittel: 0, schwer: 0, experte: 0 },
+      levels: { leicht: 1, mittel: 1, schwer: 1, experte: 1 },
+      bestTimesByLevel: { leicht: {}, mittel: {}, schwer: {}, experte: {} },
+      bestOverall: { leicht: null, mittel: null, schwer: null, experte: null },
       currentWinStreak: 0,
       longestWinStreak: 0,
       perfectGames: 0,
@@ -2037,8 +2161,9 @@ const LANG = {
     'home.reminder':'⏰ Heute schon Sudoku gespielt? Ein Spiel hält die Streak am Leben.',
     'diff.title':'Schwierigkeit','diff.choose':'Wähle dein Level',
     'diff.leicht':'Leicht','diff.mittel':'Mittel','diff.schwer':'Schwer','diff.experte':'Experte',
-    'game.lvl':'Lvl','game.spiel':'Spiel','game.erase':'Löschen','game.notes':'Notizen','game.hint':'Tipp','game.new':'Neu','game.tipp':'Tipp',
-    'win.title':'Geschafft! 🎉','win.next':'Nächstes Spiel','win.home':'Zur Startseite',
+    'game.lvl':'Lvl','game.level':'Level','game.spiel':'Spiel','game.erase':'Löschen','game.notes':'Notizen','game.hint':'Tipp','game.new':'Neu','game.tipp':'Tipp',
+    'win.title':'Geschafft! 🎉','win.next':'Nächstes Level','win.home':'Zur Startseite','win.retry':'Wiederholen',
+    'win.lblTime':'Zeit','win.lblErrors':'Fehler','win.lblHints':'Tipps','win.newRecord':'⭐ Neue Bestzeit!',
     'win.solved':'Spiel {n} gelöst.','win.streakAdd':' Tagesserie: {n} {label}.','win.adNext':' Kurze Werbung folgt.',
     'lose.title':'Schade!','lose.text':'Keine Leben mehr. Magst du es nochmal versuchen?','lose.retry':'Nochmal','lose.home':'Zur Startseite',
     'revive.title':'Noch ein Leben?','revive.text':'Schau ein kurzes Video oder zahle <strong>150 🪙</strong> für ein zusätzliches Leben und spiel weiter.',
@@ -2060,7 +2185,7 @@ const LANG = {
     'settings.removeAds':'Werbung entfernen','settings.adFreeOn':'Aktiv ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Käufe wiederherstellen','settings.restoreOk':'Werbefrei aktiv.','settings.restoreNone':'Keine Käufe gefunden.',
     'settings.rate':'Bewerte uns','settings.contact':'Schreib uns','settings.privacy':'Datenschutz',
     'settings.langPick':'Sprache wählen',
-    'sammlung.title':'Sammlung','sammlung.records':'Rekorde','sammlung.streak':'Tagesserie','sammlung.winStreak':'Siegesserie','sammlung.wins':'Siege','sammlung.achievements':'Auszeichnungen',
+    'sammlung.title':'Sammlung','sammlung.records':'Rekorde','sammlung.streak':'Tagesserie','sammlung.winStreak':'Siegesserie','sammlung.wins':'Siege','sammlung.achievements':'Auszeichnungen','sammlung.bestTimes':'Bestzeiten',
     'shop.title':'Shop','shop.coins':'Coins','shop.designs':'🎨 Designs','shop.boosters':'⚡ Booster','shop.premium':'⭐ Premium',
     'shop.shieldName':'Streak-Schild','shop.shieldDesc':'Schützt deine Streak bei einem verpassten Tag.',
     'shop.hintPackName':'Tipp-Paket','shop.hintPackDesc':'3 Tipps fürs nächste Spiel direkt einsetzbar.','shop.hintBought':'Tipp-Paket gekauft','shop.hintAdded':'+{n} Tipps verfügbar.',
@@ -2103,8 +2228,9 @@ const LANG = {
     'home.reminder':"⏰ Played Sudoku today? One game keeps your streak alive.",
     'diff.title':'Difficulty','diff.choose':'Pick your level',
     'diff.leicht':'Easy','diff.mittel':'Medium','diff.schwer':'Hard','diff.experte':'Expert',
-    'game.lvl':'Lvl','game.spiel':'Game','game.erase':'Erase','game.notes':'Notes','game.hint':'Hint','game.new':'New','game.tipp':'Hint',
-    'win.title':'Solved! 🎉','win.next':'Next game','win.home':'Home',
+    'game.lvl':'Lvl','game.level':'Level','game.spiel':'Game','game.erase':'Erase','game.notes':'Notes','game.hint':'Hint','game.new':'New','game.tipp':'Hint',
+    'win.title':'Solved! 🎉','win.next':'Next level','win.home':'Home','win.retry':'Retry',
+    'win.lblTime':'Time','win.lblErrors':'Errors','win.lblHints':'Hints','win.newRecord':'⭐ New best time!',
     'win.solved':'Game {n} solved.','win.streakAdd':' Daily streak: {n} {label}.','win.adNext':' A short ad will follow.',
     'lose.title':'Oh no!','lose.text':'No lives left. Want to try again?','lose.retry':'Retry','lose.home':'Home',
     'revive.title':'One more life?','revive.text':'Watch a short video or pay <strong>150 🪙</strong> for an extra life and keep playing.',
@@ -2126,7 +2252,7 @@ const LANG = {
     'settings.removeAds':'Remove ads','settings.adFreeOn':'Active ✓','settings.adFreePrice':'€9.99 ›','settings.restore':'Restore purchases','settings.restoreOk':'Ad-free is active.','settings.restoreNone':'No purchases found.',
     'settings.rate':'Rate us','settings.contact':'Contact us','settings.privacy':'Privacy',
     'settings.langPick':'Choose language',
-    'sammlung.title':'Collection','sammlung.records':'Records','sammlung.streak':'Daily streak','sammlung.winStreak':'Win streak','sammlung.wins':'Wins','sammlung.achievements':'Achievements',
+    'sammlung.title':'Collection','sammlung.records':'Records','sammlung.streak':'Daily streak','sammlung.winStreak':'Win streak','sammlung.wins':'Wins','sammlung.achievements':'Achievements','sammlung.bestTimes':'Best times',
     'shop.title':'Shop','shop.coins':'Coins','shop.designs':'🎨 Designs','shop.boosters':'⚡ Boosters','shop.premium':'⭐ Premium',
     'shop.shieldName':'Streak shield','shop.shieldDesc':'Protects your streak if you miss a day.',
     'shop.hintPackName':'Hint pack','shop.hintPackDesc':'3 hints ready to use in your next game.','shop.hintBought':'Hint pack purchased','shop.hintAdded':'+{n} hints available.',
@@ -2169,8 +2295,9 @@ const LANG = {
     'home.reminder':'⏰ Уже играли сегодня? Одна игра поддержит ваш стрик.',
     'diff.title':'Сложность','diff.choose':'Выберите уровень',
     'diff.leicht':'Лёгкий','diff.mittel':'Средний','diff.schwer':'Сложный','diff.experte':'Эксперт',
-    'game.lvl':'Ур.','game.spiel':'Игра','game.erase':'Стереть','game.notes':'Заметки','game.hint':'Подсказка','game.new':'Новая','game.tipp':'Подсказка',
-    'win.title':'Решено! 🎉','win.next':'Следующая игра','win.home':'На главную',
+    'game.lvl':'Ур.','game.level':'Уровень','game.spiel':'Игра','game.erase':'Стереть','game.notes':'Заметки','game.hint':'Подсказка','game.new':'Новая','game.tipp':'Подсказка',
+    'win.title':'Решено! 🎉','win.next':'Следующий уровень','win.home':'На главную','win.retry':'Повторить',
+    'win.lblTime':'Время','win.lblErrors':'Ошибки','win.lblHints':'Подсказки','win.newRecord':'⭐ Новый рекорд!',
     'win.solved':'Игра {n} решена.','win.streakAdd':' Серия: {n} {label}.','win.adNext':' Сейчас будет реклама.',
     'lose.title':'Жаль!','lose.text':'Жизни закончились. Попробовать ещё раз?','lose.retry':'Ещё раз','lose.home':'На главную',
     'revive.title':'Ещё одну жизнь?','revive.text':'Посмотри короткое видео или заплати <strong>150 🪙</strong> за дополнительную жизнь.',
@@ -2192,7 +2319,7 @@ const LANG = {
     'settings.removeAds':'Убрать рекламу','settings.adFreeOn':'Активно ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Восстановить покупки','settings.restoreOk':'Без рекламы активно.','settings.restoreNone':'Покупки не найдены.',
     'settings.rate':'Оцените нас','settings.contact':'Связаться','settings.privacy':'Конфиденциальность',
     'settings.langPick':'Выбери язык',
-    'sammlung.title':'Коллекция','sammlung.records':'Рекорды','sammlung.streak':'Серия дней','sammlung.winStreak':'Серия побед','sammlung.wins':'Победы','sammlung.achievements':'Достижения',
+    'sammlung.title':'Коллекция','sammlung.records':'Рекорды','sammlung.streak':'Серия дней','sammlung.winStreak':'Серия побед','sammlung.wins':'Победы','sammlung.achievements':'Достижения','sammlung.bestTimes':'Лучшие времена',
     'shop.title':'Магазин','shop.coins':'Монеты','shop.designs':'🎨 Темы','shop.boosters':'⚡ Бустеры','shop.premium':'⭐ Премиум',
     'shop.shieldName':'Щит серии','shop.shieldDesc':'Защитит серию при пропуске дня.',
     'shop.hintPackName':'Набор подсказок','shop.hintPackDesc':'3 подсказки для следующей игры.','shop.hintBought':'Набор куплен','shop.hintAdded':'+{n} подсказок.',
@@ -2235,8 +2362,9 @@ const LANG = {
     'home.reminder':'⏰ Bugün Sudoku oynadın mı? Bir oyun serini canlı tutar.',
     'diff.title':'Zorluk','diff.choose':'Seviyeni seç',
     'diff.leicht':'Kolay','diff.mittel':'Orta','diff.schwer':'Zor','diff.experte':'Uzman',
-    'game.lvl':'Sv.','game.spiel':'Oyun','game.erase':'Sil','game.notes':'Notlar','game.hint':'İpucu','game.new':'Yeni','game.tipp':'İpucu',
-    'win.title':'Tamamlandı! 🎉','win.next':'Sonraki oyun','win.home':'Ana sayfa',
+    'game.lvl':'Sv.','game.level':'Seviye','game.spiel':'Oyun','game.erase':'Sil','game.notes':'Notlar','game.hint':'İpucu','game.new':'Yeni','game.tipp':'İpucu',
+    'win.title':'Tamamlandı! 🎉','win.next':'Sonraki seviye','win.home':'Ana sayfa','win.retry':'Tekrar',
+    'win.lblTime':'Süre','win.lblErrors':'Hata','win.lblHints':'İpucu','win.newRecord':'⭐ Yeni rekor!',
     'win.solved':'Oyun {n} çözüldü.','win.streakAdd':' Günlük seri: {n} {label}.','win.adNext':' Kısa bir reklam gelecek.',
     'lose.title':'Vah!','lose.text':'Can kalmadı. Tekrar denemek ister misin?','lose.retry':'Tekrar','lose.home':'Ana sayfa',
     'revive.title':'Bir can daha?','revive.text':'Kısa bir video izle ya da <strong>150 🪙</strong> öde, ekstra canla devam et.',
@@ -2258,7 +2386,7 @@ const LANG = {
     'settings.removeAds':'Reklamları kaldır','settings.adFreeOn':'Aktif ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Satın alımları geri yükle','settings.restoreOk':'Reklamsız aktif.','settings.restoreNone':'Satın alma bulunamadı.',
     'settings.rate':'Bizi puanla','settings.contact':'İletişim','settings.privacy':'Gizlilik',
     'settings.langPick':'Dil seç',
-    'sammlung.title':'Koleksiyon','sammlung.records':'Rekorlar','sammlung.streak':'Günlük seri','sammlung.winStreak':'Galibiyet serisi','sammlung.wins':'Galibiyetler','sammlung.achievements':'Başarılar',
+    'sammlung.title':'Koleksiyon','sammlung.records':'Rekorlar','sammlung.streak':'Günlük seri','sammlung.winStreak':'Galibiyet serisi','sammlung.wins':'Galibiyetler','sammlung.achievements':'Başarılar','sammlung.bestTimes':'En iyi süreler',
     'shop.title':'Mağaza','shop.coins':'Coin','shop.designs':'🎨 Tasarımlar','shop.boosters':'⚡ Güçlendirici','shop.premium':'⭐ Premium',
     'shop.shieldName':'Seri kalkanı','shop.shieldDesc':'Bir gün kaçırınca serini korur.',
     'shop.hintPackName':'İpucu paketi','shop.hintPackDesc':'Sonraki oyunda 3 ipucu kullanıma hazır.','shop.hintBought':'İpucu paketi alındı','shop.hintAdded':'+{n} ipucu mevcut.',
@@ -2301,8 +2429,9 @@ const LANG = {
     'home.reminder':'⏰ 今日まだプレイしていません。連続記録を絶やさないために一局どうぞ。',
     'diff.title':'難易度','diff.choose':'レベルを選択',
     'diff.leicht':'簡単','diff.mittel':'普通','diff.schwer':'難しい','diff.experte':'エキスパート',
-    'game.lvl':'Lv','game.spiel':'ゲーム','game.erase':'消去','game.notes':'メモ','game.hint':'ヒント','game.new':'新規','game.tipp':'ヒント',
-    'win.title':'クリア！🎉','win.next':'次のゲーム','win.home':'ホームへ',
+    'game.lvl':'Lv','game.level':'レベル','game.spiel':'ゲーム','game.erase':'消去','game.notes':'メモ','game.hint':'ヒント','game.new':'新規','game.tipp':'ヒント',
+    'win.title':'クリア！🎉','win.next':'次のレベル','win.home':'ホームへ','win.retry':'もう一度',
+    'win.lblTime':'タイム','win.lblErrors':'ミス','win.lblHints':'ヒント','win.newRecord':'⭐ ベスト記録！',
     'win.solved':'ゲーム {n} クリア。','win.streakAdd':' 連続: {n}{label}。','win.adNext':' 短い広告が流れます。',
     'lose.title':'残念！','lose.text':'ライフがありません。もう一度挑戦しますか？','lose.retry':'もう一度','lose.home':'ホームへ',
     'revive.title':'もう1つライフ？','revive.text':'短い動画を見るか、<strong>150 🪙</strong> を払って追加ライフを獲得してください。',
@@ -2324,7 +2453,7 @@ const LANG = {
     'settings.removeAds':'広告を削除','settings.adFreeOn':'有効 ✓','settings.adFreePrice':'9.99€ ›','settings.restore':'購入を復元','settings.restoreOk':'広告非表示が有効。','settings.restoreNone':'購入は見つかりませんでした。',
     'settings.rate':'評価する','settings.contact':'お問い合わせ','settings.privacy':'プライバシー',
     'settings.langPick':'言語を選択',
-    'sammlung.title':'コレクション','sammlung.records':'記録','sammlung.streak':'連続記録','sammlung.winStreak':'連勝記録','sammlung.wins':'勝利','sammlung.achievements':'実績',
+    'sammlung.title':'コレクション','sammlung.records':'記録','sammlung.streak':'連続記録','sammlung.winStreak':'連勝記録','sammlung.wins':'勝利','sammlung.achievements':'実績','sammlung.bestTimes':'ベストタイム',
     'shop.title':'ショップ','shop.coins':'コイン','shop.designs':'🎨 デザイン','shop.boosters':'⚡ ブースター','shop.premium':'⭐ プレミアム',
     'shop.shieldName':'ストリーク・シールド','shop.shieldDesc':'日を逃したときストリークを守ります。',
     'shop.hintPackName':'ヒントパック','shop.hintPackDesc':'次のゲームですぐ使える3つのヒント。','shop.hintBought':'ヒントパック購入','shop.hintAdded':'+{n} ヒント獲得。',
@@ -2618,21 +2747,34 @@ document.querySelectorAll('.difficulty-option').forEach(el => {
 /* =========================================================
    SUDOKU GENERATOR  (shuffled-base; quick & good enough)
 ========================================================= */
-function shuffleArr(a) {
+// Deterministischer Hash + LCG-RNG für reproduzierbare Puzzles
+function hashSeed(str) {
+  let h = 5381;
+  for (let i = 0; i < str.length; i++) h = (((h << 5) + h) ^ str.charCodeAt(i)) >>> 0;
+  return h >>> 0;
+}
+function seededRng(seed) {
+  let s = (seed >>> 0) || 1;
+  return function() {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 4294967296;
+  };
+}
+function shuffleArr(a, rand) {
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(rand() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
 }
 
-function generateSolved() {
+function generateSolved(rand) {
   const base = 3, side = 9;
   const pattern = (r, c) => (base * (r % base) + Math.floor(r / base) + c) % side;
   const rBase = [0, 1, 2];
-  const rows = shuffleArr(rBase.slice()).flatMap(g => shuffleArr(rBase.slice()).map(r => g * base + r));
-  const cols = shuffleArr(rBase.slice()).flatMap(g => shuffleArr(rBase.slice()).map(c => g * base + c));
-  const nums = shuffleArr([1,2,3,4,5,6,7,8,9]);
+  const rows = shuffleArr(rBase.slice(), rand).flatMap(g => shuffleArr(rBase.slice(), rand).map(r => g * base + r));
+  const cols = shuffleArr(rBase.slice(), rand).flatMap(g => shuffleArr(rBase.slice(), rand).map(c => g * base + c));
+  const nums = shuffleArr([1,2,3,4,5,6,7,8,9], rand);
   const board = [];
   for (let r = 0; r < 9; r++) {
     const row = [];
@@ -2644,12 +2786,14 @@ function generateSolved() {
 
 const HOLES = { leicht: 38, mittel: 46, schwer: 52, experte: 58 };
 
-function generatePuzzle(difficulty) {
-  const solved = generateSolved();
+function generatePuzzle(difficulty, levelNum) {
+  // Gleicher Seed = identisches Puzzle für alle Spieler
+  const rand = seededRng(hashSeed(`${difficulty}-v1-${levelNum}`));
+  const solved = generateSolved(rand);
   const puzzle = solved.map(r => r.slice());
   const positions = [];
   for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++) positions.push([r, c]);
-  shuffleArr(positions);
+  shuffleArr(positions, rand);
   const holes = HOLES[difficulty] || 46;
   for (let i = 0; i < holes; i++) {
     const [r, c] = positions[i];
@@ -2663,6 +2807,7 @@ function generatePuzzle(difficulty) {
 ========================================================= */
 const game = {
   difficulty: 'mittel',
+  levelNum: 1,
   solved: null,
   start: null,         // initial puzzle
   board: null,         // current board
@@ -2674,13 +2819,36 @@ const game = {
   hintsUsedThisGame: 0,
   errorsThisGame: 0,
   startTime: null,
+  timer: 0,            // seconds elapsed
+  timerInt: null,
   finished: false,
 };
 
-function startGame(diff) {
-  state.lastDifficulty = diff; saveState();
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${m}:${String(sec).padStart(2, '0')}`;
+}
+function startTimer() {
+  stopTimer();
+  game.timerInt = setInterval(() => {
+    game.timer++;
+    const el = document.getElementById('game-timer');
+    if (el) el.textContent = formatTime(game.timer);
+  }, 1000);
+}
+function stopTimer() {
+  if (game.timerInt) clearInterval(game.timerInt);
+  game.timerInt = null;
+}
+
+function startGame(diff, levelNum) {
+  state.lastDifficulty = diff;
+  if (levelNum == null) levelNum = (state.levels && state.levels[diff]) || 1;
+  saveState();
   game.difficulty = diff;
-  const { solved, puzzle } = generatePuzzle(diff);
+  game.levelNum = levelNum;
+  const { solved, puzzle } = generatePuzzle(diff, levelNum);
   game.solved = solved;
   game.start = puzzle.map(r => r.slice());
   game.board = puzzle.map(r => r.slice());
@@ -2692,13 +2860,18 @@ function startGame(diff) {
   game.hintsUsedThisGame = 0;
   game.errorsThisGame = 0;
   game.startTime = Date.now();
+  game.timer = 0;
   game.reviveUsed = false;
   game.finished = false;
   clearSavedGame();
 
   document.getElementById('game-diff').textContent = t('diff.' + diff);
-  document.getElementById('game-level').textContent = levelOf(state.xp);
-  document.getElementById('game-num').textContent = completedFor(diff) + 1;
+  document.getElementById('game-level').textContent = levelNum;
+  document.getElementById('game-timer').textContent = '0:00';
+  // Bestzeit dieses Levels anzeigen falls vorhanden
+  const best = state.bestTimesByLevel?.[diff]?.[levelNum];
+  const bestEl = document.getElementById('game-best');
+  if (bestEl) bestEl.textContent = best ? `★ ${formatTime(best)}` : '';
   document.getElementById('act-notes').classList.remove('active');
 
   buildBoard();
@@ -2707,6 +2880,7 @@ function startGame(diff) {
   updateProgress();
   show('game');
   resetIdleTimer();
+  startTimer();
 }
 
 function buildBoard() {
@@ -3050,6 +3224,8 @@ function winGame() {
   if (game.finished) return;
   game.finished = true;
   stopIdleTimer();
+  stopTimer();
+  const finalTime = game.timer;
 
   state.completed++;
   state.completedByDifficulty = state.completedByDifficulty || { leicht: 0, mittel: 0, schwer: 0, experte: 0 };
@@ -3060,6 +3236,24 @@ function winGame() {
   const isPerfect = game.errorsThisGame === 0;
   if (isPerfect) state.perfectGames = (state.perfectGames || 0) + 1;
 
+  // Bestzeit pro Level + insgesamt
+  state.bestTimesByLevel = state.bestTimesByLevel || { leicht: {}, mittel: {}, schwer: {}, experte: {} };
+  state.bestTimesByLevel[game.difficulty] = state.bestTimesByLevel[game.difficulty] || {};
+  const oldLevelBest = state.bestTimesByLevel[game.difficulty][game.levelNum];
+  const isNewLevelRecord = !oldLevelBest || finalTime < oldLevelBest;
+  if (isNewLevelRecord) state.bestTimesByLevel[game.difficulty][game.levelNum] = finalTime;
+
+  state.bestOverall = state.bestOverall || { leicht: null, mittel: null, schwer: null, experte: null };
+  const oldOverallBest = state.bestOverall[game.difficulty];
+  const isNewOverallBest = !oldOverallBest || finalTime < oldOverallBest;
+  if (isNewOverallBest) state.bestOverall[game.difficulty] = finalTime;
+
+  // Level inkrementieren wenn dieses das aktuelle/höchste war
+  state.levels = state.levels || { leicht: 1, mittel: 1, schwer: 1, experte: 1 };
+  if (game.levelNum >= state.levels[game.difficulty]) {
+    state.levels[game.difficulty] = game.levelNum + 1;
+  }
+
   awardXP(game.difficulty);
   const newDay = bumpDailyStreak();
   clearSavedGame();
@@ -3068,9 +3262,18 @@ function winGame() {
   const ctx = {
     difficulty: game.difficulty,
     noHint: game.hintsUsedThisGame === 0,
-    timeSec: Math.floor((Date.now() - (game.startTime || Date.now())) / 1000),
+    timeSec: finalTime,
   };
   checkAchievements(ctx);
+
+  // Win-Modal-Stats füllen
+  document.getElementById('win-time').textContent = formatTime(finalTime);
+  document.getElementById('win-errors').textContent = game.errorsThisGame;
+  document.getElementById('win-hints').textContent = game.hintsUsedThisGame;
+  const recEl = document.getElementById('win-record');
+  if (recEl) recEl.classList.toggle('hidden', !isNewLevelRecord);
+  const nextBtn = document.getElementById('btn-win-next');
+  if (nextBtn) nextBtn.textContent = t('win.next') + ' (' + (game.levelNum + 1) + ')';
 
   let msg = t('win.solved', { n: state.completed });
   if (newDay) msg += t('win.streakAdd', { n: state.streak, label: state.streak === 1 ? t('home.day') : t('home.days') });
@@ -3078,6 +3281,7 @@ function winGame() {
   document.getElementById('win-text').textContent = msg;
   document.getElementById('overlay-win').classList.add('active');
   playSfx('win');
+  fireConfetti();
 }
 
 function actuallyLoseGame() {
@@ -3087,13 +3291,20 @@ function actuallyLoseGame() {
   clearSavedGame();
   saveState();
   stopIdleTimer();
+  stopTimer();
   document.getElementById('overlay-lose').classList.add('active');
   playSfx('lose');
 }
 
 document.getElementById('btn-win-next').addEventListener('click', () => {
   document.getElementById('overlay-win').classList.remove('active');
-  maybeShowInterstitial(() => startGame(game.difficulty));
+  const next = game.levelNum + 1;
+  maybeShowInterstitial(() => startGame(game.difficulty, next));
+});
+document.getElementById('btn-win-retry').addEventListener('click', () => {
+  document.getElementById('overlay-win').classList.remove('active');
+  const same = game.levelNum;
+  maybeShowInterstitial(() => startGame(game.difficulty, same));
 });
 document.getElementById('btn-win-home').addEventListener('click', () => {
   document.getElementById('overlay-win').classList.remove('active');
@@ -3101,7 +3312,7 @@ document.getElementById('btn-win-home').addEventListener('click', () => {
 });
 document.getElementById('btn-lose-retry').addEventListener('click', () => {
   document.getElementById('overlay-lose').classList.remove('active');
-  startGame(game.difficulty);
+  startGame(game.difficulty, game.levelNum);
 });
 document.getElementById('btn-lose-home').addEventListener('click', () => {
   document.getElementById('overlay-lose').classList.remove('active');
@@ -3607,6 +3818,7 @@ function saveCurrentGame() {
   if (!game.solved || game.finished) return;
   state.savedGame = {
     difficulty: game.difficulty,
+    levelNum: game.levelNum,
     solved: game.solved,
     start: game.start,
     board: game.board,
@@ -3615,6 +3827,7 @@ function saveCurrentGame() {
     errorsThisGame: game.errorsThisGame,
     hintsUsedThisGame: game.hintsUsedThisGame,
     startTime: game.startTime,
+    timer: game.timer,
     reviveUsed: game.reviveUsed || false,
   };
   saveState();
@@ -3630,6 +3843,7 @@ function loadSavedGame() {
   const g = state.savedGame;
   if (!g) return;
   game.difficulty = g.difficulty;
+  game.levelNum = g.levelNum || 1;
   game.solved = g.solved;
   game.start = g.start;
   game.board = g.board;
@@ -3641,12 +3855,16 @@ function loadSavedGame() {
   game.hintsUsedThisGame = g.hintsUsedThisGame || 0;
   game.errorsThisGame = g.errorsThisGame || 0;
   game.startTime = g.startTime || Date.now();
+  game.timer = g.timer || 0;
   game.reviveUsed = g.reviveUsed || false;
   game.finished = false;
 
   document.getElementById('game-diff').textContent = t('diff.' + g.difficulty);
-  document.getElementById('game-level').textContent = levelOf(state.xp);
-  document.getElementById('game-num').textContent = completedFor(g.difficulty) + 1;
+  document.getElementById('game-level').textContent = game.levelNum;
+  document.getElementById('game-timer').textContent = formatTime(game.timer);
+  const best = state.bestTimesByLevel?.[g.difficulty]?.[game.levelNum];
+  const bestEl = document.getElementById('game-best');
+  if (bestEl) bestEl.textContent = best ? `★ ${formatTime(best)}` : '';
   document.getElementById('act-notes').classList.remove('active');
   buildBoard();
   buildNumpad();
@@ -3654,6 +3872,7 @@ function loadSavedGame() {
   updateProgress();
   show('game');
   resetIdleTimer();
+  startTimer();
 }
 
 document.getElementById('resume-card').addEventListener('click', loadSavedGame);
@@ -3806,6 +4025,23 @@ function checkAchievements(ctx) {
 /* =========================================================
    TOAST
 ========================================================= */
+function fireConfetti() {
+  const colors = ['#5C5CF0', '#FFB400', '#FF6B7A', '#4ED387', '#A855F7', '#0EA5E9', '#F582AE'];
+  const root = document.body;
+  for (let i = 0; i < 70; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = (Math.random() * 100) + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDelay = (Math.random() * 0.4) + 's';
+    piece.style.animationDuration = (1.4 + Math.random() * 1.6) + 's';
+    piece.style.width = (6 + Math.random() * 8) + 'px';
+    piece.style.height = (10 + Math.random() * 8) + 'px';
+    root.appendChild(piece);
+    setTimeout(() => piece.remove(), 3500);
+  }
+}
+
 function showToast(emoji, title, sub, ms = 3500) {
   const wrap = document.getElementById('toast-wrap');
   const t = document.createElement('div');
@@ -3862,6 +4098,25 @@ function refreshSammlung() {
   document.getElementById('rec-streak').textContent = state.longestStreak || 0;
   document.getElementById('rec-winstreak').textContent = state.longestWinStreak || 0;
   document.getElementById('rec-wins').textContent = state.completed || 0;
+
+  // Bestzeiten pro Schwierigkeit
+  const bt = document.getElementById('best-times');
+  if (bt) {
+    bt.innerHTML = '';
+    ['leicht','mittel','schwer','experte'].forEach(diff => {
+      const best = state.bestOverall?.[diff];
+      const lvl = (state.levels?.[diff] || 1) - 1; // höchstes geschafftes Level
+      const card = document.createElement('button');
+      card.className = 'bt-card';
+      card.innerHTML = `
+        <div class="bt-diff">${t('diff.' + diff)}</div>
+        <div class="bt-time ${best ? '' : 'bt-empty'}">${best ? formatTime(best) : '–:––'}</div>
+        <div class="bt-meta">${t('home.lvl')} ${lvl > 0 ? lvl : '–'}</div>`;
+      card.addEventListener('click', () => openLevelBrowser(diff));
+      bt.appendChild(card);
+    });
+  }
+
   const grid = document.getElementById('ach-grid');
   grid.innerHTML = '';
   ACHIEVEMENTS.forEach(a => {
@@ -3875,6 +4130,42 @@ function refreshSammlung() {
     grid.appendChild(el);
   });
 }
+
+/* =========================================================
+   LEVEL-BROWSER  (Wiederholen + Bestzeit anzeigen)
+========================================================= */
+function openLevelBrowser(diff) {
+  const list = document.getElementById('level-list');
+  const title = document.getElementById('levels-title');
+  if (!list || !title) return;
+  title.textContent = `${t('diff.' + diff)} — ${t('home.lvl')}`;
+  const currentLevel = state.levels?.[diff] || 1;
+  const maxShow = Math.max(currentLevel + 4, 24);
+  const times = state.bestTimesByLevel?.[diff] || {};
+  list.innerHTML = '';
+  for (let i = 1; i <= maxShow; i++) {
+    const tile = document.createElement('button');
+    const isLocked = i > currentLevel;
+    const isCurrent = i === currentLevel;
+    tile.className = 'level-tile' + (isCurrent ? ' current' : '') + (isLocked ? ' locked' : '');
+    tile.innerHTML = `
+      <div class="lt-num">${i}${isLocked ? ' 🔒' : ''}</div>
+      <div class="lt-time">${times[i] ? '⏱ ' + formatTime(times[i]) : (isLocked ? '–' : '★ neu')}</div>
+    `;
+    if (!isLocked) {
+      tile.addEventListener('click', () => {
+        document.getElementById('overlay-levels').classList.remove('active');
+        startGame(diff, i);
+      });
+    }
+    list.appendChild(tile);
+  }
+  document.getElementById('overlay-levels').classList.add('active');
+}
+
+document.getElementById('btn-levels-close').addEventListener('click', () => {
+  document.getElementById('overlay-levels').classList.remove('active');
+});
 
 /* =========================================================
    REMINDER (Notification API + in-app)
