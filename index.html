@@ -1687,7 +1687,7 @@
       <div></div>
       <div></div>
     </div>
-    <div class="home-hero">
+    <div class="home-hero" style="justify-content: flex-start; padding-top: 8px; gap: 20px;">
       <h1 style="font-size:34px; margin:0;" data-i18n="diff.title">Schwierigkeit</h1>
       <div class="difficulty-card">
         <h3 data-i18n="diff.choose">Wähle dein Level</h3>
@@ -1778,8 +1778,8 @@
       <button class="icon-btn" id="btn-game-back" title="Zurück">
         <svg viewBox="0 0 24 24"><path d="M15.5 4l-8 8 8 8 1.4-1.4L10.3 12l6.6-6.6z"/></svg>
       </button>
-      <button class="icon-btn" id="btn-undo" title="Rückgängig">
-        <svg viewBox="0 0 24 24"><path d="M12.5 8c-2.6 0-5 1-6.8 2.7L3 8v7h7l-2.8-2.8a6.9 6.9 0 015.3-2.4 7 7 0 110 14 7 7 0 01-6.7-5H3.6A9 9 0 1012.5 8z"/></svg>
+      <button class="icon-btn" id="btn-restart" title="Neu starten">
+        <svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 11-5 5H5a7 7 0 107-7z"/></svg>
       </button>
       <div class="status">
         <div class="game-meta"><span data-i18n="game.level">Level</span> <span id="game-level">1</span> · ⏱ <span id="game-timer">0:00</span> <span id="game-best" class="game-best"></span></div>
@@ -1808,9 +1808,9 @@
         <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-4 12.7V17a2 2 0 002 2h4a2 2 0 002-2v-2.3A7 7 0 0012 2zm-2 19h4v1a1 1 0 01-1 1h-2a1 1 0 01-1-1z"/></svg>
         <span data-i18n="game.hint">Tipp</span>
       </button>
-      <button class="action" id="act-new">
-        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/></svg>
-        <span data-i18n="game.new">Neu</span>
+      <button class="action" id="act-undo">
+        <svg viewBox="0 0 24 24"><path d="M12.5 8c-2.6 0-5 1-6.8 2.7L3 8v7h7l-2.8-2.8a6.9 6.9 0 015.3-2.4 7 7 0 110 14 7 7 0 01-6.7-5H3.6A9 9 0 1012.5 8z"/></svg>
+        <span data-i18n="game.undo">Rückgängig</span>
       </button>
     </div>
     <div class="numpad" id="numpad"></div>
@@ -1818,10 +1818,11 @@
 
   <!-- ============================ SETTINGS ============================ -->
   <section id="screen-settings" class="screen">
-    <div class="home-top" style="justify-content:flex-start;">
-      <button class="settings-back" data-go="home">
+    <div class="game-header" style="grid-template-columns: auto 1fr;">
+      <button class="icon-btn" data-go="home" aria-label="Zurück">
         <svg viewBox="0 0 24 24"><path d="M15.5 4l-8 8 8 8 1.4-1.4L10.3 12l6.6-6.6z"/></svg>
       </button>
+      <div></div>
     </div>
     <h1 class="settings-title" data-i18n="settings.title">Einstellungen</h1>
     <div class="settings-list">
@@ -2201,7 +2202,7 @@ const LANG = {
     'home.reminder':'⏰ Heute schon Sudoku gespielt? Ein Spiel hält die Streak am Leben.',
     'diff.title':'Schwierigkeit','diff.choose':'Wähle dein Level',
     'diff.leicht':'Leicht','diff.mittel':'Mittel','diff.schwer':'Schwer','diff.experte':'Experte',
-    'game.lvl':'Lvl','game.level':'Level','game.spiel':'Spiel','game.erase':'Löschen','game.notes':'Notizen','game.hint':'Tipp','game.new':'Neu','game.tipp':'Tipp',
+    'game.lvl':'Lvl','game.level':'Level','game.spiel':'Spiel','game.erase':'Löschen','game.notes':'Notizen','game.hint':'Tipp','game.new':'Neu','game.tipp':'Tipp','game.undo':'Rückgängig','game.restart':'Neu starten','game.restartConfirm':'Aktuelles Level neu starten? Alle Eingaben, Zeit und Leben werden zurückgesetzt.',
     'win.title':'Geschafft! 🎉','win.next':'Nächstes Level','win.home':'Zur Startseite','win.retry':'Wiederholen',
     'win.lblTime':'Zeit','win.lblErrors':'Fehler','win.lblHints':'Tipps','win.newRecord':'⭐ Neue Bestzeit!',
     'win.solved':'Spiel {n} gelöst.','win.streakAdd':' Tagesserie: {n} {label}.','win.adNext':' Kurze Werbung folgt.',
@@ -2269,7 +2270,7 @@ const LANG = {
     'home.reminder':"⏰ Played Sudoku today? One game keeps your streak alive.",
     'diff.title':'Difficulty','diff.choose':'Pick your level',
     'diff.leicht':'Easy','diff.mittel':'Medium','diff.schwer':'Hard','diff.experte':'Expert',
-    'game.lvl':'Lvl','game.level':'Level','game.spiel':'Game','game.erase':'Erase','game.notes':'Notes','game.hint':'Hint','game.new':'New','game.tipp':'Hint',
+    'game.lvl':'Lvl','game.level':'Level','game.spiel':'Game','game.erase':'Erase','game.notes':'Notes','game.hint':'Hint','game.new':'New','game.tipp':'Hint','game.undo':'Undo','game.restart':'Restart','game.restartConfirm':'Restart current level? All entries, time and lives will be reset.',
     'win.title':'Solved! 🎉','win.next':'Next level','win.home':'Home','win.retry':'Retry',
     'win.lblTime':'Time','win.lblErrors':'Errors','win.lblHints':'Hints','win.newRecord':'⭐ New best time!',
     'win.solved':'Game {n} solved.','win.streakAdd':' Daily streak: {n} {label}.','win.adNext':' A short ad will follow.',
@@ -2337,7 +2338,7 @@ const LANG = {
     'home.reminder':'⏰ Уже играли сегодня? Одна игра поддержит ваш стрик.',
     'diff.title':'Сложность','diff.choose':'Выберите уровень',
     'diff.leicht':'Лёгкий','diff.mittel':'Средний','diff.schwer':'Сложный','diff.experte':'Эксперт',
-    'game.lvl':'Ур.','game.level':'Уровень','game.spiel':'Игра','game.erase':'Стереть','game.notes':'Заметки','game.hint':'Подсказка','game.new':'Новая','game.tipp':'Подсказка',
+    'game.lvl':'Ур.','game.level':'Уровень','game.spiel':'Игра','game.erase':'Стереть','game.notes':'Заметки','game.hint':'Подсказка','game.new':'Новая','game.tipp':'Подсказка','game.undo':'Отмена','game.restart':'Заново','game.restartConfirm':'Перезапустить уровень? Все записи, время и жизни будут сброшены.',
     'win.title':'Решено! 🎉','win.next':'Следующий уровень','win.home':'На главную','win.retry':'Повторить',
     'win.lblTime':'Время','win.lblErrors':'Ошибки','win.lblHints':'Подсказки','win.newRecord':'⭐ Новый рекорд!',
     'win.solved':'Игра {n} решена.','win.streakAdd':' Серия: {n} {label}.','win.adNext':' Сейчас будет реклама.',
@@ -2405,7 +2406,7 @@ const LANG = {
     'home.reminder':'⏰ Bugün Sudoku oynadın mı? Bir oyun serini canlı tutar.',
     'diff.title':'Zorluk','diff.choose':'Seviyeni seç',
     'diff.leicht':'Kolay','diff.mittel':'Orta','diff.schwer':'Zor','diff.experte':'Uzman',
-    'game.lvl':'Sv.','game.level':'Seviye','game.spiel':'Oyun','game.erase':'Sil','game.notes':'Notlar','game.hint':'İpucu','game.new':'Yeni','game.tipp':'İpucu',
+    'game.lvl':'Sv.','game.level':'Seviye','game.spiel':'Oyun','game.erase':'Sil','game.notes':'Notlar','game.hint':'İpucu','game.new':'Yeni','game.tipp':'İpucu','game.undo':'Geri al','game.restart':'Yeniden başla','game.restartConfirm':'Mevcut seviyeyi yeniden başlat? Tüm girdiler, süre ve canlar sıfırlanır.',
     'win.title':'Tamamlandı! 🎉','win.next':'Sonraki seviye','win.home':'Ana sayfa','win.retry':'Tekrar',
     'win.lblTime':'Süre','win.lblErrors':'Hata','win.lblHints':'İpucu','win.newRecord':'⭐ Yeni rekor!',
     'win.solved':'Oyun {n} çözüldü.','win.streakAdd':' Günlük seri: {n} {label}.','win.adNext':' Kısa bir reklam gelecek.',
@@ -2473,7 +2474,7 @@ const LANG = {
     'home.reminder':'⏰ 今日まだプレイしていません。連続記録を絶やさないために一局どうぞ。',
     'diff.title':'難易度','diff.choose':'レベルを選択',
     'diff.leicht':'簡単','diff.mittel':'普通','diff.schwer':'難しい','diff.experte':'エキスパート',
-    'game.lvl':'Lv','game.level':'レベル','game.spiel':'ゲーム','game.erase':'消去','game.notes':'メモ','game.hint':'ヒント','game.new':'新規','game.tipp':'ヒント',
+    'game.lvl':'Lv','game.level':'レベル','game.spiel':'ゲーム','game.erase':'消去','game.notes':'メモ','game.hint':'ヒント','game.new':'新規','game.tipp':'ヒント','game.undo':'戻す','game.restart':'リスタート','game.restartConfirm':'このレベルをリスタートしますか？入力・時間・ライフがすべてリセットされます。',
     'win.title':'クリア！🎉','win.next':'次のレベル','win.home':'ホームへ','win.retry':'もう一度',
     'win.lblTime':'タイム','win.lblErrors':'ミス','win.lblHints':'ヒント','win.newRecord':'⭐ ベスト記録！',
     'win.solved':'ゲーム {n} クリア。','win.streakAdd':' 連続: {n}{label}。','win.adNext':' 短い広告が流れます。',
@@ -3630,14 +3631,17 @@ document.getElementById('btn-lose-home').addEventListener('click', () => {
 /* =========================================================
    ACTION BAR
 ========================================================= */
-document.getElementById('btn-undo').addEventListener('click', undo);
+document.getElementById('act-undo').addEventListener('click', undo);
+document.getElementById('btn-restart').addEventListener('click', () => {
+  if (!confirm(t('game.restartConfirm'))) return;
+  startGame(game.difficulty, game.levelNum);
+});
 document.getElementById('act-erase').addEventListener('click', eraseSelected);
 document.getElementById('act-notes').addEventListener('click', () => {
   game.notesMode = !game.notesMode;
   document.getElementById('act-notes').classList.toggle('active', game.notesMode);
   resetIdleTimer();
 });
-document.getElementById('act-new').addEventListener('click', () => show('difficulty'));
 
 /* =========================================================
    KEYBOARD INPUT
