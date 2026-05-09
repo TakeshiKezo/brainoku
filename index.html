@@ -138,6 +138,16 @@
     min-height: 0;
   }
   .screen.active { display: flex; }
+  .screen.slide-in-right  { animation: slideInRight  .22s ease-out; }
+  .screen.slide-in-left   { animation: slideInLeft   .22s ease-out; }
+  @keyframes slideInRight {
+    from { transform: translateX(18px); opacity: 0.4; }
+    to   { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes slideInLeft {
+    from { transform: translateX(-18px); opacity: 0.4; }
+    to   { transform: translateX(0); opacity: 1; }
+  }
   /* nur diese Screens dürfen scrollen, weil ihr Inhalt naturgemäß länger werden kann */
   #screen-sammlung,
   #screen-shop,
@@ -364,6 +374,12 @@
   .cell.peer { background: var(--cell-peer); }
   .cell.same { background: var(--cell-same); }
   .cell.selected { background: var(--cell-selected); }
+  .cell.just-placed { animation: cell-pop .28s ease-out; }
+  @keyframes cell-pop {
+    0% { transform: scale(0.55); }
+    55% { transform: scale(1.18); }
+    100% { transform: scale(1); }
+  }
   .cell.hint-flash { animation: hint-flash 1.2s ease; }
 
   .notes {
@@ -1167,6 +1183,33 @@
     gap: 3px;
   }
   .booster-card.disabled .booster-buy { background: var(--card-strong); color: var(--text-faint); }
+
+  /* Pattern-Themes mit dunklem Untergrund: helle Texte */
+  body.theme-dark {
+    --text: #F1F5F9;
+    --text-mute: #94A3B8;
+    --text-faint: #475569;
+    --card: rgba(255,255,255,0.06);
+    --card-strong: rgba(255,255,255,0.10);
+    --heart-empty: #2A2A2A;
+  }
+  body.theme-dark .difficulty-option,
+  body.theme-dark .modal,
+  body.theme-dark .toast,
+  body.theme-dark .ach-card,
+  body.theme-dark .record-card,
+  body.theme-dark .level-card,
+  body.theme-dark .booster-card,
+  body.theme-dark .theme-card,
+  body.theme-dark .stats-pill,
+  body.theme-dark .login-day,
+  body.theme-dark .bt-card,
+  body.theme-dark .level-tile {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  body.theme-dark .nav { background: rgba(0,0,0,0.5); border-top-color: rgba(255,255,255,0.1); }
 
   /* Theme picker */
   .theme-grid {
@@ -2690,8 +2733,28 @@ document.getElementById('btn-email-cancel').addEventListener('click', () => {
    NAVIGATION
 ========================================================= */
 const screens = ['auth', 'home', 'difficulty', 'sammlung', 'shop', 'game', 'settings'];
+const TAB_ORDER_FOR_DIRECTION = ['home', 'sammlung', 'shop', 'settings'];
 function show(name) {
-  screens.forEach(s => document.getElementById('screen-'+s).classList.toggle('active', s === name));
+  // Slide-Direction für Tab-Wechsel ableiten
+  const cur = screens.find(s => document.getElementById('screen-'+s)?.classList.contains('active'));
+  let direction = null;
+  const oldIdx = TAB_ORDER_FOR_DIRECTION.indexOf(cur);
+  const newIdx = TAB_ORDER_FOR_DIRECTION.indexOf(name);
+  if (oldIdx !== -1 && newIdx !== -1 && oldIdx !== newIdx) {
+    direction = newIdx > oldIdx ? 'slide-in-right' : 'slide-in-left';
+  }
+  screens.forEach(s => {
+    const el = document.getElementById('screen-'+s);
+    if (!el) return;
+    el.classList.remove('slide-in-right', 'slide-in-left');
+    el.classList.toggle('active', s === name);
+  });
+  if (direction) {
+    const el = document.getElementById('screen-'+name);
+    // force reflow für saubere Re-Animation
+    void el.offsetWidth;
+    el.classList.add(direction);
+  }
   if (name !== 'game') stopIdleTimer();
   if (name === 'home') refreshHome();
   if (name === 'sammlung') refreshSammlung();
@@ -3034,6 +3097,11 @@ function inputDigit(n) {
   } else {
     vibrate(20);
     playSfx('correct');
+    const cellEl = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+    if (cellEl) {
+      cellEl.classList.add('just-placed');
+      setTimeout(() => cellEl.classList.remove('just-placed'), 300);
+    }
     updateProgress();
     if (isComplete()) winGame();
     else saveCurrentGame();
@@ -3574,13 +3642,27 @@ function playSfx(name) {
 /* =========================================================
    THEMES
 ========================================================= */
+// SVG-Patterns als data: URIs (URL-encoded). Werden auf dem App-Hintergrund
+// angezeigt; Cells/Cards bleiben opak, Muster scheint nur in Lücken durch.
+const PATTERN_FLOWERS = "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 90 90'><g fill='%23EC4899' opacity='0.16'><circle cx='22' cy='14' r='3.2'/><circle cx='14' cy='22' r='3.2'/><circle cx='30' cy='22' r='3.2'/><circle cx='17' cy='30' r='3.2'/><circle cx='27' cy='30' r='3.2'/><circle cx='22' cy='22' r='2' fill='%23FBCFE8'/><circle cx='66' cy='58' r='3.2'/><circle cx='58' cy='66' r='3.2'/><circle cx='74' cy='66' r='3.2'/><circle cx='61' cy='74' r='3.2'/><circle cx='71' cy='74' r='3.2'/><circle cx='66' cy='66' r='2' fill='%23FBCFE8'/></g></svg>\")";
+const PATTERN_STARS   = "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='%23FFFFFF' opacity='0.45'><circle cx='10' cy='14' r='1'/><circle cx='32' cy='20' r='1.5'/><circle cx='58' cy='10' r='1'/><circle cx='72' cy='28' r='1.2'/><circle cx='18' cy='42' r='1'/><circle cx='44' cy='38' r='1.5'/><circle cx='66' cy='52' r='1'/><circle cx='12' cy='62' r='1.2'/><circle cx='38' cy='68' r='1'/><circle cx='60' cy='74' r='1.4'/></g></svg>\")";
+const PATTERN_HEX     = "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='58' viewBox='0 0 100 58'><g fill='none' stroke='%238B5CF6' stroke-width='1.4' opacity='0.22'><polygon points='14,4 30,4 38,17 30,30 14,30 6,17'/><polygon points='64,4 80,4 88,17 80,30 64,30 56,17'/><polygon points='39,30 55,30 63,43 55,56 39,56 31,43'/></g></svg>\")";
+const PATTERN_MARBLE  = "linear-gradient(135deg, rgba(180,180,200,0.18) 0%, transparent 22%, transparent 50%, rgba(180,180,200,0.14) 70%, transparent 92%), linear-gradient(60deg, transparent 40%, rgba(140,150,180,0.10) 60%, transparent 80%)";
+const PATTERN_GOLD    = "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='70' height='70' viewBox='0 0 70 70'><g fill='%23D4AF37' opacity='0.45'><circle cx='12' cy='12' r='1.4'/><circle cx='38' cy='20' r='2'/><circle cx='58' cy='14' r='1.2'/><circle cx='22' cy='38' r='1.6'/><circle cx='50' cy='44' r='1.2'/><circle cx='8' cy='56' r='1.4'/><circle cx='32' cy='62' r='1.8'/><circle cx='62' cy='58' r='1.4'/></g></svg>\")";
+
 const THEMES = {
-  classic: { name: 'Classic', price: 0,    primary: '#5C5CF0', primarySoft: '#EAEAFD', primaryLight: '#A5A8E8', cellBg: '#fff',    cellPeer: '#EEF0FA', cellSelected: '#C8C9FA', cellSame: '#DEDFFB', cellUser: '#5C5CF0' },
-  sakura:  { name: 'Sakura',  price: 500,  primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4', cellBg: '#FFF8FB', cellPeer: '#FCE0EC', cellSelected: '#F9A8D4', cellSame: '#FBCFE8', cellUser: '#DB2777' },
-  ozean:   { name: 'Ozean',   price: 500,  primary: '#0EA5E9', primarySoft: '#E0F2FE', primaryLight: '#7DD3FC', cellBg: '#F8FCFF', cellPeer: '#D5EEFA', cellSelected: '#7DD3FC', cellSame: '#BAE6FD', cellUser: '#0284C7' },
-  wald:    { name: 'Wald',    price: 500,  primary: '#16A34A', primarySoft: '#DCFCE7', primaryLight: '#86EFAC', cellBg: '#F8FCF9', cellPeer: '#D2F0DA', cellSelected: '#86EFAC', cellSame: '#BBF7D0', cellUser: '#15803D' },
-  sunset:  { name: 'Sunset',  price: 700,  primary: '#F97316', primarySoft: '#FFEDD5', primaryLight: '#FDBA74', cellBg: '#FFFBF6', cellPeer: '#FFE0C2', cellSelected: '#FDBA74', cellSame: '#FED7AA', cellUser: '#EA580C' },
-  neon:    { name: 'Neon',    price: 1000, primary: '#A855F7', primarySoft: '#F3E8FF', primaryLight: '#D8B4FE', cellBg: '#FFFBFF', cellPeer: '#EDD5FE', cellSelected: '#D8B4FE', cellSame: '#E9D5FF', cellUser: '#9333EA' },
+  classic:      { name: 'Classic',     price: 0,    primary: '#5C5CF0', primarySoft: '#EAEAFD', primaryLight: '#A5A8E8', cellBg: '#fff',    cellPeer: '#EEF0FA', cellSelected: '#C8C9FA', cellSame: '#DEDFFB', cellUser: '#5C5CF0' },
+  sakura:       { name: 'Sakura',      price: 500,  primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4', cellBg: '#FFF8FB', cellPeer: '#FCE0EC', cellSelected: '#F9A8D4', cellSame: '#FBCFE8', cellUser: '#DB2777' },
+  ozean:        { name: 'Ozean',       price: 500,  primary: '#0EA5E9', primarySoft: '#E0F2FE', primaryLight: '#7DD3FC', cellBg: '#F8FCFF', cellPeer: '#D5EEFA', cellSelected: '#7DD3FC', cellSame: '#BAE6FD', cellUser: '#0284C7' },
+  wald:         { name: 'Wald',        price: 500,  primary: '#16A34A', primarySoft: '#DCFCE7', primaryLight: '#86EFAC', cellBg: '#F8FCF9', cellPeer: '#D2F0DA', cellSelected: '#86EFAC', cellSame: '#BBF7D0', cellUser: '#15803D' },
+  sunset:       { name: 'Sunset',      price: 700,  primary: '#F97316', primarySoft: '#FFEDD5', primaryLight: '#FDBA74', cellBg: '#FFFBF6', cellPeer: '#FFE0C2', cellSelected: '#FDBA74', cellSame: '#FED7AA', cellUser: '#EA580C' },
+  neon:         { name: 'Neon',        price: 1000, primary: '#A855F7', primarySoft: '#F3E8FF', primaryLight: '#D8B4FE', cellBg: '#FFFBFF', cellPeer: '#EDD5FE', cellSelected: '#D8B4FE', cellSame: '#E9D5FF', cellUser: '#9333EA' },
+  // Premium-Patterns
+  bluetenwiese: { name: 'Blütenwiese', price: 1500, primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4', cellBg: '#FFF8FB', cellPeer: '#FCE0EC', cellSelected: '#F9A8D4', cellSame: '#FBCFE8', cellUser: '#DB2777', bgPattern: PATTERN_FLOWERS, bgColor: '#FFF1F7' },
+  sternennacht: { name: 'Sternennacht',price: 1500, primary: '#FFB400', primarySoft: '#312E81', primaryLight: '#6366F1', cellBg: '#1E1B4B', cellPeer: '#312E81', cellSelected: '#4338CA', cellSame: '#3730A3', cellUser: '#FCD34D', cellGiven: '#F1F5F9', bgPattern: PATTERN_STARS,   bgColor: '#0F0E2C', dark: true },
+  geometrie:    { name: 'Geometrie',   price: 1800, primary: '#8B5CF6', primarySoft: '#EDE9FE', primaryLight: '#C4B5FD', cellBg: '#FBFAFF', cellPeer: '#EDE9FE', cellSelected: '#C4B5FD', cellSame: '#DDD6FE', cellUser: '#7C3AED', bgPattern: PATTERN_HEX,    bgColor: '#F5F3FF' },
+  marmor:       { name: 'Marmor',      price: 2000, primary: '#475569', primarySoft: '#E2E8F0', primaryLight: '#94A3B8', cellBg: '#FAFAFA', cellPeer: '#E2E8F0', cellSelected: '#CBD5E1', cellSame: '#E2E8F0', cellUser: '#1E293B', bgPattern: PATTERN_MARBLE, bgColor: '#F1F5F9' },
+  goldrausch:   { name: 'Gold',        price: 2500, primary: '#D4AF37', primarySoft: '#1A1A1A', primaryLight: '#FCD34D', cellBg: '#1C1C1C', cellPeer: '#262626', cellSelected: '#404040', cellSame: '#333333', cellUser: '#FCD34D', cellGiven: '#F5F5F4', bgPattern: PATTERN_GOLD,   bgColor: '#0A0A0A', dark: true },
 };
 
 function applyTheme(id) {
@@ -3594,6 +3676,21 @@ function applyTheme(id) {
   s.setProperty('--cell-selected', t.cellSelected);
   s.setProperty('--cell-same',     t.cellSame);
   s.setProperty('--cell-user',     t.cellUser);
+  if (t.cellGiven) s.setProperty('--cell-given', t.cellGiven);
+  else s.removeProperty('--cell-given');
+  if (t.bgColor) s.setProperty('--bg', t.bgColor);
+  else s.removeProperty('--bg');
+  // Pattern + dark-Theme-Markup
+  document.body.classList.toggle('theme-dark', !!t.dark);
+  const app = document.getElementById('app');
+  if (app) {
+    if (t.bgPattern) {
+      app.style.backgroundImage = t.bgPattern;
+      app.style.backgroundRepeat = 'repeat';
+    } else {
+      app.style.backgroundImage = '';
+    }
+  }
 }
 
 function buildThemeGrid() {
@@ -3607,9 +3704,12 @@ function buildThemeGrid() {
     const card = document.createElement('button');
     card.className = 'theme-card' + (active ? ' active' : '');
     card.dataset.id = id;
+    const previewBg = th.bgColor || th.cellBg;
+    const previewPattern = th.bgPattern ? `background-image:${th.bgPattern}; background-size:60px 60px;` : '';
+    const givenColor = th.cellGiven || '#1E2A4A';
     card.innerHTML = `
-      <div class="theme-preview" style="background:${th.cellBg};">
-        <span class="pv-cell-given" style="color:#1E2A4A;">3</span>
+      <div class="theme-preview" style="background:${previewBg}; ${previewPattern}">
+        <span class="pv-cell-given" style="color:${givenColor};">3</span>
         <span class="pv-cell-user" style="color:${th.cellUser};">7</span>
         <div class="pv-pill" style="background:${th.primary};"></div>
       </div>
