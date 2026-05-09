@@ -133,6 +133,8 @@
     overflow-x: hidden;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
     min-height: 0;
   }
   .screen.active { display: flex; }
@@ -2460,6 +2462,47 @@ function show(name) {
 document.querySelectorAll('[data-tab]').forEach(el => {
   el.addEventListener('click', () => show(el.dataset.tab));
 });
+
+/* =========================================================
+   SWIPE-NAVIGATION zwischen den Tabs
+========================================================= */
+const TAB_ORDER = ['home', 'sammlung', 'shop', 'settings'];
+let swStartX = 0, swStartY = 0, swStartT = 0, swActive = false;
+function isOverlayOpen() {
+  return !!document.querySelector('.overlay.active');
+}
+function activeScreenName() {
+  return screens.find(s => document.getElementById('screen-' + s)?.classList.contains('active'));
+}
+
+document.addEventListener('touchstart', (e) => {
+  if (e.touches.length !== 1) { swActive = false; return; }
+  const t = e.touches[0];
+  swStartX = t.clientX;
+  swStartY = t.clientY;
+  swStartT = Date.now();
+  swActive = true;
+}, { passive: true });
+
+document.addEventListener('touchend', (e) => {
+  if (!swActive) return;
+  swActive = false;
+  if (isOverlayOpen()) return;
+  const cur = activeScreenName();
+  if (!TAB_ORDER.includes(cur)) return; // nur auf Tab-Screens navigierbar
+  const t = e.changedTouches[0];
+  const dx = t.clientX - swStartX;
+  const dy = t.clientY - swStartY;
+  const dt = Date.now() - swStartT;
+  if (Math.abs(dx) < 70) return;                       // zu kurz
+  if (Math.abs(dy) > Math.abs(dx) * 0.6) return;       // zu vertikal
+  if (dt > 700) return;                                // zu langsam
+  const idx = TAB_ORDER.indexOf(cur);
+  const newIdx = dx < 0
+    ? Math.min(TAB_ORDER.length - 1, idx + 1)
+    : Math.max(0, idx - 1);
+  if (newIdx !== idx) show(TAB_ORDER[newIdx]);
+}, { passive: true });
 document.querySelectorAll('[data-go]').forEach(el => {
   el.addEventListener('click', () => show(el.dataset.go));
 });
