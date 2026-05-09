@@ -32,6 +32,13 @@ jobs:
           fi
           npx cap sync ios
 
+      - name: Lock Orientation to Portrait
+        run: |
+          PLIST="ios/App/App/Info.plist"
+          plutil -replace UISupportedInterfaceOrientations -json '["UIInterfaceOrientationPortrait"]' "$PLIST"
+          plutil -replace UISupportedInterfaceOrientations~ipad -json '["UIInterfaceOrientationPortrait"]' "$PLIST" || true
+          plutil -p "$PLIST" | grep -i orientation || true
+
       - name: Install CocoaPods
         run: |
           cd ios/App

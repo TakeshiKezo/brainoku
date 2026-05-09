@@ -667,6 +667,34 @@
   .hidden { display: none !important; }
   .pop { animation: pop .25s ease; }
 
+  /* ---------- LANDSCAPE BLOCKER (für Browser/PWA — iOS App ist via Info.plist gelockt) ---------- */
+  .rotate-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 24px;
+    text-align: center;
+    gap: 14px;
+  }
+  .rotate-overlay .rot-icon {
+    font-size: 64px;
+    animation: rot-bounce 1.4s ease-in-out infinite;
+  }
+  .rotate-overlay h2 { margin: 0; font-size: 22px; color: var(--text); }
+  .rotate-overlay p  { margin: 0; color: var(--text-mute); font-weight: 500; max-width: 320px; line-height: 1.4; }
+  @keyframes rot-bounce {
+    0%, 100% { transform: rotate(0deg); }
+    50%      { transform: rotate(-90deg); }
+  }
+  @media (orientation: landscape) and (max-height: 500px) {
+    .rotate-overlay { display: flex; }
+  }
+
   /* ---------- DARK MODE ---------- */
   body.dark {
     --bg:           #10142A;
@@ -1839,6 +1867,12 @@
   </div>
 
   <div class="toast-wrap" id="toast-wrap"></div>
+
+  <div class="rotate-overlay" aria-hidden="true">
+    <div class="rot-icon">📱</div>
+    <h2>Bitte aufrecht halten</h2>
+    <p>Brainoku läuft im Hochformat. Dreh dein Handy zurück und lass uns weiterknobeln.</p>
+  </div>
 
   <div class="overlay" id="overlay-language">
     <div class="modal" style="max-width:320px;">
