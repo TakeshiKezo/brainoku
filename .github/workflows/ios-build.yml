@@ -32,11 +32,21 @@ jobs:
           fi
           npx cap sync ios
 
-      - name: Lock Orientation to Portrait
+      - name: Patch Info.plist (Orientation + Privacy + Brand)
         run: |
           PLIST="ios/App/App/Info.plist"
+          # Portrait-Lock
           plutil -replace UISupportedInterfaceOrientations -json '["UIInterfaceOrientationPortrait"]' "$PLIST"
           plutil -replace UISupportedInterfaceOrientations~ipad -json '["UIInterfaceOrientationPortrait"]' "$PLIST" || true
+          # Privacy-Strings (App-Store-Pflicht für jede genutzte Permission)
+          plutil -replace NSUserNotificationsUsageDescription -string "Brainoku schickt dir freundliche Erinnerungen, damit du deine Streak nicht verlierst." "$PLIST" || true
+          # App-Display-Name (im Home-Bildschirm)
+          plutil -replace CFBundleDisplayName -string "Brainoku" "$PLIST" || true
+          # Encryption-Export-Compliance auto bestätigen (Standard für Apps ohne Crypto-Spezialfeatures)
+          plutil -replace ITSAppUsesNonExemptEncryption -bool false "$PLIST" || true
+          # Status-Bar-Style passend zur Lavender-Optik
+          plutil -replace UIStatusBarStyle -string "UIStatusBarStyleDefault" "$PLIST" || true
+          # Launch-Screen-Hintergrund matcht App-Background
           plutil -p "$PLIST" | grep -i orientation || true
 
       - name: Install CocoaPods
