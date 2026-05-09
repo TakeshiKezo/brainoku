@@ -4,7 +4,7 @@
   "webDir": "www",
   "ios": {
     "scheme": "Brainoku",
-    "contentInset": "always",
+    "contentInset": "never",
     "backgroundColor": "#F2F3F9"
   },
   "server": {
