@@ -527,9 +527,9 @@
   .settings-back svg { width: 18px; height: 18px; fill: currentColor; }
   .settings-title { font-size: 22px; margin: 14px 0 6px; }
 
-  /* ---------- BOTTOM NAV (Tinder-Style: flush, angeheftet) ---------- */
+  /* ---------- BOTTOM NAV (Tinder-Style: flush, angeheftet, GLOBAL) ---------- */
   .nav {
-    display: grid;
+    display: none; /* nur sichtbar wenn body.show-nav (Tab-Screens) */
     grid-template-columns: 1fr 1fr;
     background: var(--card);
     padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
@@ -543,6 +543,7 @@
     border-radius: 0;
     border-top: 1px solid var(--card-strong);
   }
+  body.show-nav #global-nav { display: grid; }
   body.dark .nav { border-top-color: rgba(255, 255, 255, 0.08); }
   /* Screens mit Nav brauchen Platz unten, damit Inhalt nicht hinter der Nav verschwindet */
   #screen-home, #screen-sammlung, #screen-shop, #screen-settings {
@@ -770,7 +771,9 @@
   }
 
   /* ---------- DARK MODE ---------- */
-  body.dark {
+  /* Auch auf html anwenden, damit html-Background im Safe-Area-Bereich
+     unten am iPhone nicht hell durchscheint */
+  body.dark, html.dark {
     --bg:           #10142A;
     --card:         #1A2042;
     --card-strong:  #242B55;
@@ -1615,24 +1618,6 @@
       ⏰ Heute schon Sudoku gespielt? Ein Spiel hält die Streak am Leben.
     </div>
     <button class="play-btn" id="btn-home-play" data-i18n="home.play">Spielen</button>
-    <div class="nav nav-4">
-      <div class="nav-item active" data-tab="home">
-        <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3z"/></svg>
-        <span data-i18n="nav.home">Startseite</span>
-      </div>
-      <div class="nav-item" data-tab="sammlung">
-        <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7L12 16l-6.3 4.3 2.3-7L2 8.9h7.6z"/></svg>
-        <span data-i18n="nav.sammlung">Sammlung</span>
-      </div>
-      <div class="nav-item" data-tab="shop">
-        <svg viewBox="0 0 24 24"><path d="M5 9h14l-1.5 11h-11zM8 8a4 4 0 118 0h-2a2 2 0 10-4 0z"/></svg>
-        <span data-i18n="nav.shop">Shop</span>
-      </div>
-      <div class="nav-item" data-tab="settings">
-        <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.4 4l1.5-2.4-2-3.4-2.8.6c-.5-.4-1-.7-1.6-.9L15.6 3h-4l-.9 2.9c-.6.2-1.1.5-1.6.9l-2.8-.6-2 3.4L5.8 12l-1.5 2.4 2 3.4 2.8-.6c.5.4 1 .7 1.6.9l.9 2.9h4l.9-2.9c.6-.2 1.1-.5 1.6-.9l2.8.6 2-3.4L21.4 12z"/></svg>
-        <span data-i18n="nav.settings">Einstellungen</span>
-      </div>
-    </div>
   </section>
 
   <!-- ============================ AUTH ============================ -->
@@ -1719,25 +1704,6 @@
 
     <h2 class="section-h" data-i18n="sammlung.achievements">Auszeichnungen</h2>
     <div class="ach-grid" id="ach-grid"></div>
-
-    <div class="nav nav-4">
-      <div class="nav-item" data-tab="home">
-        <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3z"/></svg>
-        <span data-i18n="nav.home">Startseite</span>
-      </div>
-      <div class="nav-item active" data-tab="sammlung">
-        <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7L12 16l-6.3 4.3 2.3-7L2 8.9h7.6z"/></svg>
-        <span data-i18n="nav.sammlung">Sammlung</span>
-      </div>
-      <div class="nav-item" data-tab="shop">
-        <svg viewBox="0 0 24 24"><path d="M5 9h14l-1.5 11h-11zM8 8a4 4 0 118 0h-2a2 2 0 10-4 0z"/></svg>
-        <span data-i18n="nav.shop">Shop</span>
-      </div>
-      <div class="nav-item" data-tab="settings">
-        <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.4 4l1.5-2.4-2-3.4-2.8.6c-.5-.4-1-.7-1.6-.9L15.6 3h-4l-.9 2.9c-.6.2-1.1.5-1.6.9l-2.8-.6-2 3.4L5.8 12l-1.5 2.4 2 3.4 2.8-.6c.5.4 1 .7 1.6.9l.9 2.9h4l.9-2.9c.6-.2 1.1-.5 1.6-.9l2.8.6 2-3.4L21.4 12z"/></svg>
-        <span data-i18n="nav.settings">Einstellungen</span>
-      </div>
-    </div>
   </section>
 
   <!-- ============================ SHOP ============================ -->
@@ -1777,25 +1743,6 @@
           <div class="booster-desc" data-i18n="shop.adFreeDesc">Keine Werbung mehr — dauerhaft, einmalige Zahlung.</div>
           <span class="booster-buy">9,99 €</span>
         </button>
-      </div>
-    </div>
-
-    <div class="nav nav-4">
-      <div class="nav-item" data-tab="home">
-        <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3z"/></svg>
-        <span data-i18n="nav.home">Startseite</span>
-      </div>
-      <div class="nav-item" data-tab="sammlung">
-        <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7L12 16l-6.3 4.3 2.3-7L2 8.9h7.6z"/></svg>
-        <span data-i18n="nav.sammlung">Sammlung</span>
-      </div>
-      <div class="nav-item active" data-tab="shop">
-        <svg viewBox="0 0 24 24"><path d="M5 9h14l-1.5 11h-11zM8 8a4 4 0 118 0h-2a2 2 0 10-4 0z"/></svg>
-        <span data-i18n="nav.shop">Shop</span>
-      </div>
-      <div class="nav-item" data-tab="settings">
-        <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.4 4l1.5-2.4-2-3.4-2.8.6c-.5-.4-1-.7-1.6-.9L15.6 3h-4l-.9 2.9c-.6.2-1.1.5-1.6.9l-2.8-.6-2 3.4L5.8 12l-1.5 2.4 2 3.4 2.8-.6c.5.4 1 .7 1.6.9l.9 2.9h4l.9-2.9c.6-.2 1.1-.5 1.6-.9l2.8.6 2-3.4L21.4 12z"/></svg>
-        <span data-i18n="nav.settings">Einstellungen</span>
       </div>
     </div>
   </section>
@@ -1941,25 +1888,27 @@
       </div>
     </div>
 
-    <div class="nav nav-4">
-      <div class="nav-item" data-tab="home">
-        <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3z"/></svg>
-        <span data-i18n="nav.home">Startseite</span>
-      </div>
-      <div class="nav-item" data-tab="sammlung">
-        <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7L12 16l-6.3 4.3 2.3-7L2 8.9h7.6z"/></svg>
-        <span data-i18n="nav.sammlung">Sammlung</span>
-      </div>
-      <div class="nav-item" data-tab="shop">
-        <svg viewBox="0 0 24 24"><path d="M5 9h14l-1.5 11h-11zM8 8a4 4 0 118 0h-2a2 2 0 10-4 0z"/></svg>
-        <span data-i18n="nav.shop">Shop</span>
-      </div>
-      <div class="nav-item active" data-tab="settings">
-        <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.4 4l1.5-2.4-2-3.4-2.8.6c-.5-.4-1-.7-1.6-.9L15.6 3h-4l-.9 2.9c-.6.2-1.1.5-1.6.9l-2.8-.6-2 3.4L5.8 12l-1.5 2.4 2 3.4 2.8-.6c.5.4 1 .7 1.6.9l.9 2.9h4l.9-2.9c.6-.2 1.1-.5 1.6-.9l2.8.6 2-3.4L21.4 12z"/></svg>
-        <span data-i18n="nav.settings">Einstellungen</span>
-      </div>
-    </div>
   </section>
+
+  <!-- ============================ GLOBAL NAV (außerhalb der Screens, damit Slide-Animationen sie nicht beeinflussen) ============================ -->
+  <nav class="nav nav-4" id="global-nav">
+    <div class="nav-item" data-tab="home">
+      <svg viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6H10v6H6v-9H3z"/></svg>
+      <span data-i18n="nav.home">Startseite</span>
+    </div>
+    <div class="nav-item" data-tab="sammlung">
+      <svg viewBox="0 0 24 24"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7L12 16l-6.3 4.3 2.3-7L2 8.9h7.6z"/></svg>
+      <span data-i18n="nav.sammlung">Sammlung</span>
+    </div>
+    <div class="nav-item" data-tab="shop">
+      <svg viewBox="0 0 24 24"><path d="M5 9h14l-1.5 11h-11zM8 8a4 4 0 118 0h-2a2 2 0 10-4 0z"/></svg>
+      <span data-i18n="nav.shop">Shop</span>
+    </div>
+    <div class="nav-item" data-tab="settings">
+      <svg viewBox="0 0 24 24"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm9.4 4l1.5-2.4-2-3.4-2.8.6c-.5-.4-1-.7-1.6-.9L15.6 3h-4l-.9 2.9c-.6.2-1.1.5-1.6.9l-2.8-.6-2 3.4L5.8 12l-1.5 2.4 2 3.4 2.8-.6c.5.4 1 .7 1.6.9l.9 2.9h4l.9-2.9c.6-.2 1.1-.5 1.6-.9l2.8.6 2-3.4L21.4 12z"/></svg>
+      <span data-i18n="nav.settings">Einstellungen</span>
+    </div>
+  </nav>
 
   <!-- ============================ OVERLAYS ============================ -->
   <div class="overlay" id="overlay-win">
@@ -2896,6 +2845,12 @@ function show(name) {
     void el.offsetWidth;
     el.classList.add(direction);
   }
+  // Global-Nav: nur auf Tab-Screens zeigen, aktiven Tab markieren
+  const isTabScreen = TAB_ORDER_FOR_DIRECTION.includes(name);
+  document.body.classList.toggle('show-nav', isTabScreen);
+  document.querySelectorAll('#global-nav .nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.tab === name);
+  });
   if (name !== 'game') stopIdleTimer();
   if (name === 'home') refreshHome();
   if (name === 'sammlung') refreshSammlung();
@@ -3634,6 +3589,7 @@ function applySettings() {
     if (state[key]) t.classList.add('on'); else t.classList.remove('on');
   });
   document.body.classList.toggle('dark', !!state.dark);
+  document.documentElement.classList.toggle('dark', !!state.dark);
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', state.dark ? '#10142A' : '#F2F3F9');
   applyTheme(state.theme || 'classic');
   const cur = document.getElementById('lang-current');
@@ -3842,7 +3798,9 @@ const THEMES = {
 
 function applyTheme(id) {
   const t = THEMES[id] || THEMES.classic;
-  const s = document.body.style;
+  // Vars auf documentElement (html) setzen — sonst hat html die :root-Defaults
+  // und Body-Vars, was im Safe-Area-Bereich unten einen weißen Balken erzeugt.
+  const s = document.documentElement.style;
   s.setProperty('--primary',       t.primary);
   s.setProperty('--primary-soft',  t.primarySoft);
   s.setProperty('--primary-light', t.primaryLight);
@@ -3855,8 +3813,10 @@ function applyTheme(id) {
   else s.removeProperty('--cell-given');
   if (t.bgColor) s.setProperty('--bg', t.bgColor);
   else s.removeProperty('--bg');
-  // Pattern + dark-Theme-Markup
+  // Pattern + dark-Theme-Markup auf BEIDEN — body für vorhandene Selektoren,
+  // documentElement zum Sicherstellen dass html-bg sich anpasst.
   document.body.classList.toggle('theme-dark', !!t.dark);
+  document.documentElement.classList.toggle('theme-dark', !!t.dark);
   const app = document.getElementById('app');
   if (app) {
     if (t.bgPattern) {
