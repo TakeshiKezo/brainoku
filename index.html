@@ -1119,6 +1119,9 @@
     align-items: stretch;
   }
   .daily-row .daily-card { margin-top: 0; flex: 1; }
+  #screen-sammlung .daily-row,
+  #screen-sammlung .quests-card { max-width: 100%; }
+  #screen-sammlung .daily-row { margin-top: 8px; }
   .daily-lb-btn {
     flex: 0 0 52px;
     background: var(--card);
@@ -1417,6 +1420,7 @@
   .theme-preview .pv-tag {
     position: absolute;
     top: 6px; left: 6px;
+    z-index: 3;
     font-size: 9px;
     font-weight: 800;
     letter-spacing: .4px;
@@ -1425,6 +1429,7 @@
     background: rgba(0,0,0,0.55);
     color: #fff;
     text-transform: uppercase;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
   }
   /* Statische Deko-Partikel pro Theme (Performance: kein perpetuum mobile) */
   .theme-preview .pv-deco {
@@ -2313,44 +2318,6 @@
         </div>
         <span class="resume-arrow">›</span>
       </button>
-      <div class="daily-row">
-        <button class="daily-card" id="daily-card">
-          <div class="daily-icon">📅</div>
-          <div class="daily-info">
-            <div class="daily-title" data-i18n="daily.title">Tages-Challenge</div>
-            <div class="daily-sub" id="daily-sub" data-i18n="daily.subOpen">Heute jeden Tag das gleiche Puzzle</div>
-          </div>
-          <span class="daily-streak" id="daily-streak"></span>
-        </button>
-        <button class="daily-lb-btn" id="daily-lb-btn">🏆</button>
-      </div>
-      <div class="daily-row">
-        <button class="daily-card challenge-weekly" id="weekly-card">
-          <div class="daily-icon">📆</div>
-          <div class="daily-info">
-            <div class="daily-title" data-i18n="weekly.title">Wochen-Challenge</div>
-            <div class="daily-sub" id="weekly-sub" data-i18n="weekly.subOpen">Diese Woche das gleiche Puzzle für alle</div>
-          </div>
-        </button>
-        <button class="daily-lb-btn" id="weekly-lb-btn">🏆</button>
-      </div>
-      <div class="daily-row">
-        <button class="daily-card challenge-monthly" id="monthly-card">
-          <div class="daily-icon">🗓️</div>
-          <div class="daily-info">
-            <div class="daily-title" data-i18n="monthly.title">Monats-Challenge</div>
-            <div class="daily-sub" id="monthly-sub" data-i18n="monthly.subOpen">Diesen Monat das gleiche Puzzle für alle</div>
-          </div>
-        </button>
-        <button class="daily-lb-btn" id="monthly-lb-btn">🏆</button>
-      </div>
-      <div class="quests-card" id="quests-card">
-        <div class="quests-head">
-          <span data-i18n="quests.title">🎯 Tagesaufgaben</span>
-          <span class="quests-reset" id="quests-reset"></span>
-        </div>
-        <div id="quests-list"></div>
-      </div>
     </div>
     <div id="reminder-banner" class="reminder-banner hidden" data-i18n="home.reminder">
       ⏰ Heute schon Sudoku gespielt? Ein Spiel hält die Streak am Leben.
@@ -2417,6 +2384,47 @@
   <!-- ============================ SAMMLUNG ============================ -->
   <section id="screen-sammlung" class="screen">
     <h1 class="settings-title sammlung-title" data-i18n="sammlung.title">Sammlung</h1>
+
+    <h2 class="section-h" data-i18n="sammlung.challenges">Challenges</h2>
+    <div class="daily-row">
+      <button class="daily-card" id="daily-card">
+        <div class="daily-icon">📅</div>
+        <div class="daily-info">
+          <div class="daily-title" data-i18n="daily.title">Tages-Challenge</div>
+          <div class="daily-sub" id="daily-sub" data-i18n="daily.subOpen">Heute jeden Tag das gleiche Puzzle</div>
+        </div>
+        <span class="daily-streak" id="daily-streak"></span>
+      </button>
+      <button class="daily-lb-btn" id="daily-lb-btn">🏆</button>
+    </div>
+    <div class="daily-row">
+      <button class="daily-card challenge-weekly" id="weekly-card">
+        <div class="daily-icon">📆</div>
+        <div class="daily-info">
+          <div class="daily-title" data-i18n="weekly.title">Wochen-Challenge</div>
+          <div class="daily-sub" id="weekly-sub" data-i18n="weekly.subOpen">Diese Woche das gleiche Puzzle für alle</div>
+        </div>
+      </button>
+      <button class="daily-lb-btn" id="weekly-lb-btn">🏆</button>
+    </div>
+    <div class="daily-row">
+      <button class="daily-card challenge-monthly" id="monthly-card">
+        <div class="daily-icon">🗓️</div>
+        <div class="daily-info">
+          <div class="daily-title" data-i18n="monthly.title">Monats-Challenge</div>
+          <div class="daily-sub" id="monthly-sub" data-i18n="monthly.subOpen">Diesen Monat das gleiche Puzzle für alle</div>
+        </div>
+      </button>
+      <button class="daily-lb-btn" id="monthly-lb-btn">🏆</button>
+    </div>
+
+    <h2 class="section-h" data-i18n="quests.title">🎯 Tagesaufgaben</h2>
+    <div class="quests-card" id="quests-card" style="margin-top:0;">
+      <div class="quests-head">
+        <span class="quests-reset" id="quests-reset"></span>
+      </div>
+      <div id="quests-list"></div>
+    </div>
 
     <h2 class="section-h" data-i18n="sammlung.records">Rekorde</h2>
     <div class="records-grid">
@@ -3052,7 +3060,7 @@ const LANG = {
     'settings.removeAds':'Werbung entfernen','settings.adFreeOn':'Aktiv ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Käufe wiederherstellen','settings.restoreOk':'Werbefrei aktiv.','settings.restoreNone':'Keine Käufe gefunden.',
     'settings.rate':'Bewerte uns','settings.contact':'Schreib uns','settings.privacy':'Datenschutz','settings.imprint':'Impressum',
     'settings.langPick':'Sprache wählen',
-    'sammlung.title':'Sammlung','sammlung.records':'Rekorde','sammlung.streak':'Tagesserie','sammlung.winStreak':'Siegesserie','sammlung.wins':'Siege','sammlung.achievements':'Auszeichnungen','sammlung.bestTimes':'Bestzeiten',
+    'sammlung.title':'Sammlung','sammlung.records':'Rekorde','sammlung.streak':'Tagesserie','sammlung.winStreak':'Siegesserie','sammlung.wins':'Siege','sammlung.achievements':'Auszeichnungen','sammlung.bestTimes':'Bestzeiten','sammlung.challenges':'Challenges',
     'shop.title':'Shop','shop.coins':'Coins','shop.designs':'🎨 Designs','shop.bundles':'🎁 Themen-Pakete','shop.boosters':'⚡ Booster','shop.premium':'⭐ Premium',
     'shop.shieldName':'Streak-Schild','shop.shieldDesc':'Schützt deine Streak bei einem verpassten Tag.',
     'shop.hintPackName':'Tipp-Paket','shop.hintPackDesc':'3 Tipps fürs nächste Spiel direkt einsetzbar.','shop.hintBought':'Tipp-Paket gekauft','shop.hintAdded':'+{n} Tipps verfügbar.',
@@ -3143,7 +3151,7 @@ const LANG = {
     'settings.removeAds':'Remove ads','settings.adFreeOn':'Active ✓','settings.adFreePrice':'€9.99 ›','settings.restore':'Restore purchases','settings.restoreOk':'Ad-free is active.','settings.restoreNone':'No purchases found.',
     'settings.rate':'Rate us','settings.contact':'Contact us','settings.privacy':'Privacy','settings.imprint':'Imprint',
     'settings.langPick':'Choose language',
-    'sammlung.title':'Collection','sammlung.records':'Records','sammlung.streak':'Daily streak','sammlung.winStreak':'Win streak','sammlung.wins':'Wins','sammlung.achievements':'Achievements','sammlung.bestTimes':'Best times',
+    'sammlung.title':'Collection','sammlung.records':'Records','sammlung.streak':'Daily streak','sammlung.winStreak':'Win streak','sammlung.wins':'Wins','sammlung.achievements':'Achievements','sammlung.bestTimes':'Best times','sammlung.challenges':'Challenges',
     'shop.title':'Shop','shop.coins':'Coins','shop.designs':'🎨 Designs','shop.bundles':'🎁 Theme Packs','shop.boosters':'⚡ Boosters','shop.premium':'⭐ Premium',
     'shop.shieldName':'Streak shield','shop.shieldDesc':'Protects your streak if you miss a day.',
     'shop.hintPackName':'Hint pack','shop.hintPackDesc':'3 hints ready to use in your next game.','shop.hintBought':'Hint pack purchased','shop.hintAdded':'+{n} hints available.',
@@ -3224,7 +3232,7 @@ const LANG = {
     'settings.removeAds':'Убрать рекламу','settings.adFreeOn':'Активно ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Восстановить покупки','settings.restoreOk':'Без рекламы активно.','settings.restoreNone':'Покупки не найдены.',
     'settings.rate':'Оцените нас','settings.contact':'Связаться','settings.privacy':'Конфиденциальность','settings.imprint':'Выходные данные',
     'settings.langPick':'Выбери язык',
-    'sammlung.title':'Коллекция','sammlung.records':'Рекорды','sammlung.streak':'Серия дней','sammlung.winStreak':'Серия побед','sammlung.wins':'Победы','sammlung.achievements':'Достижения','sammlung.bestTimes':'Лучшие времена',
+    'sammlung.title':'Коллекция','sammlung.records':'Рекорды','sammlung.streak':'Серия дней','sammlung.winStreak':'Серия побед','sammlung.wins':'Победы','sammlung.achievements':'Достижения','sammlung.bestTimes':'Лучшие времена','sammlung.challenges':'Челленджи',
     'shop.title':'Магазин','shop.coins':'Монеты','shop.designs':'🎨 Темы','shop.bundles':'🎁 Тематические наборы','shop.boosters':'⚡ Бустеры','shop.premium':'⭐ Премиум',
     'shop.shieldName':'Щит серии','shop.shieldDesc':'Защитит серию при пропуске дня.',
     'shop.hintPackName':'Набор подсказок','shop.hintPackDesc':'3 подсказки для следующей игры.','shop.hintBought':'Набор куплен','shop.hintAdded':'+{n} подсказок.',
@@ -3305,7 +3313,7 @@ const LANG = {
     'settings.removeAds':'Reklamları kaldır','settings.adFreeOn':'Aktif ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Satın alımları geri yükle','settings.restoreOk':'Reklamsız aktif.','settings.restoreNone':'Satın alma bulunamadı.',
     'settings.rate':'Bizi puanla','settings.contact':'İletişim','settings.privacy':'Gizlilik','settings.imprint':'Künye',
     'settings.langPick':'Dil seç',
-    'sammlung.title':'Koleksiyon','sammlung.records':'Rekorlar','sammlung.streak':'Günlük seri','sammlung.winStreak':'Galibiyet serisi','sammlung.wins':'Galibiyetler','sammlung.achievements':'Başarılar','sammlung.bestTimes':'En iyi süreler',
+    'sammlung.title':'Koleksiyon','sammlung.records':'Rekorlar','sammlung.streak':'Günlük seri','sammlung.winStreak':'Galibiyet serisi','sammlung.wins':'Galibiyetler','sammlung.achievements':'Başarılar','sammlung.bestTimes':'En iyi süreler','sammlung.challenges':'Mücadeleler',
     'shop.title':'Mağaza','shop.coins':'Coin','shop.designs':'🎨 Tasarımlar','shop.bundles':'🎁 Tema Paketleri','shop.boosters':'⚡ Güçlendirici','shop.premium':'⭐ Premium',
     'shop.shieldName':'Seri kalkanı','shop.shieldDesc':'Bir gün kaçırınca serini korur.',
     'shop.hintPackName':'İpucu paketi','shop.hintPackDesc':'Sonraki oyunda 3 ipucu kullanıma hazır.','shop.hintBought':'İpucu paketi alındı','shop.hintAdded':'+{n} ipucu mevcut.',
@@ -3386,7 +3394,7 @@ const LANG = {
     'settings.removeAds':'広告を削除','settings.adFreeOn':'有効 ✓','settings.adFreePrice':'9.99€ ›','settings.restore':'購入を復元','settings.restoreOk':'広告非表示が有効。','settings.restoreNone':'購入は見つかりませんでした。',
     'settings.rate':'評価する','settings.contact':'お問い合わせ','settings.privacy':'プライバシー','settings.imprint':'運営者情報',
     'settings.langPick':'言語を選択',
-    'sammlung.title':'コレクション','sammlung.records':'記録','sammlung.streak':'連続記録','sammlung.winStreak':'連勝記録','sammlung.wins':'勝利','sammlung.achievements':'実績','sammlung.bestTimes':'ベストタイム',
+    'sammlung.title':'コレクション','sammlung.records':'記録','sammlung.streak':'連続記録','sammlung.winStreak':'連勝記録','sammlung.wins':'勝利','sammlung.achievements':'実績','sammlung.bestTimes':'ベストタイム','sammlung.challenges':'チャレンジ',
     'shop.title':'ショップ','shop.coins':'コイン','shop.designs':'🎨 デザイン','shop.bundles':'🎁 テーマパック','shop.boosters':'⚡ ブースター','shop.premium':'⭐ プレミアム',
     'shop.shieldName':'ストリーク・シールド','shop.shieldDesc':'日を逃したときストリークを守ります。',
     'shop.hintPackName':'ヒントパック','shop.hintPackDesc':'次のゲームですぐ使える3つのヒント。','shop.hintBought':'ヒントパック購入','shop.hintAdded':'+{n} ヒント獲得。',
