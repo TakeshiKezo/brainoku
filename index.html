@@ -1267,25 +1267,56 @@
   .theme-card:active { transform: scale(0.97); }
   .theme-card.active { border-color: var(--primary); }
   .theme-preview {
-    height: 70px;
-    border-radius: 10px;
+    height: 110px;
+    border-radius: 12px;
     margin-bottom: 8px;
     position: relative;
     overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
   }
-  .theme-preview .pv-cell-given,
-  .theme-preview .pv-cell-user {
+  /* Mini-Sudoku-Grid in der Vorschau (3x3 Sample) */
+  .theme-preview .pv-mini {
     position: absolute;
-    font-size: 18px;
-    font-weight: 800;
+    inset: 14px 14px 22px 14px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(0,0,0,0.06);
+    padding: 2px;
+    border-radius: 6px;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
   }
-  .theme-preview .pv-cell-given { top: 14px; left: 14px; }
-  .theme-preview .pv-cell-user  { bottom: 14px; right: 14px; }
+  .theme-preview .pv-mini > div {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800;
+    border-radius: 3px;
+  }
   .theme-preview .pv-pill {
     position: absolute;
-    bottom: 8px; left: 8px;
-    width: 28px; height: 6px;
+    bottom: 6px; left: 8px;
+    height: 5px;
+    width: 36px;
     border-radius: 3px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  }
+  .theme-preview .pv-tag {
+    position: absolute;
+    top: 6px; left: 6px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .4px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    text-transform: uppercase;
+  }
+  /* Statische Deko-Partikel pro Theme (Performance: kein perpetuum mobile) */
+  .theme-preview .pv-deco {
+    position: absolute;
+    pointer-events: none;
   }
   .theme-name { font-size: 13px; font-weight: 700; color: var(--text); }
   .theme-price {
@@ -1319,15 +1350,47 @@
   .bundle-card {
     background: var(--card);
     border-radius: var(--radius);
-    padding: 14px;
+    padding: 0;
     cursor: pointer;
     border: 2px solid transparent;
-    transition: transform .1s ease, border-color .15s ease;
+    transition: transform .1s ease, border-color .15s ease, box-shadow .15s ease;
     position: relative;
     text-align: left;
     color: var(--text);
     font-family: inherit;
     width: 100%;
+    overflow: hidden;
+    display: block;
+  }
+  .bundle-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.10); }
+  /* Wallpaper-Strip oben — 5 Mini-Vorschauen der enthaltenen Themes */
+  .bundle-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    height: 80px;
+  }
+  .bundle-strip > div {
+    background-size: cover;
+    background-position: center;
+    border-right: 1px solid rgba(0,0,0,0.06);
+    position: relative;
+  }
+  .bundle-strip > div:last-child { border-right: none; }
+  .bundle-strip > div::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.45) 100%);
+  }
+  .bundle-strip > div .strip-name {
+    position: absolute; bottom: 4px; left: 4px; right: 4px;
+    font-size: 8.5px; color: #fff; font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    text-align: center;
+    line-height: 1.05;
+    z-index: 1;
+  }
+  .bundle-body-wrap {
+    padding: 12px 14px;
     display: flex;
     align-items: center;
     gap: 14px;
@@ -4233,6 +4296,37 @@ function applyThemeFx(name) {
   }
 }
 
+// Mini-Sudoku-Sample für Vorschau: 3x3 Cells mit ein paar Zahlen + Highlight
+const PREVIEW_SAMPLE = [
+  { v: '5', kind: 'given' }, { v: '',  kind: 'peer' },     { v: '8', kind: 'given' },
+  { v: '',  kind: 'same' },  { v: '4', kind: 'selected' }, { v: '',  kind: 'peer'   },
+  { v: '7', kind: 'user' },  { v: '',  kind: 'peer' },     { v: '2', kind: 'given' },
+];
+// Deko-Snippet pro fx-Identifier — statische Position in der Vorschau
+function previewDecoHtml(fx) {
+  if (fx === 'sakura')     return `<div class="pv-deco fx-petal"        style="top:6px;right:8px;"></div>
+                                   <div class="pv-deco fx-petal"        style="bottom:14px;left:6px;transform:rotate(40deg);"></div>`;
+  if (fx === 'bamboo')     return `<div class="pv-deco fx-leaf-bamboo"  style="top:8px;right:6px;transform:rotate(35deg);"></div>
+                                   <div class="pv-deco fx-leaf-bamboo"  style="bottom:18px;left:6px;transform:rotate(-25deg);"></div>`;
+  if (fx === 'koi')        return `<div class="pv-deco" style="top:8px;right:8px;width:14px;height:14px;border:1.5px solid rgba(15,138,141,0.55);border-radius:50%;"></div>
+                                   <div class="pv-deco" style="bottom:18px;left:6px;width:8px;height:8px;border:1.5px solid rgba(15,138,141,0.45);border-radius:50%;"></div>`;
+  if (fx === 'momiji')     return `<div class="pv-deco fx-leaf-momiji"  style="top:6px;right:8px;"></div>
+                                   <div class="pv-deco fx-leaf-momiji"  style="bottom:18px;left:6px;transform:rotate(50deg);"></div>`;
+  if (fx === 'yonkisetsu') return `<div class="pv-deco fx-petal"        style="top:6px;right:8px;"></div>
+                                   <div class="pv-deco fx-leaf-momiji"  style="bottom:18px;left:6px;transform:rotate(40deg);"></div>`;
+  return '';
+}
+function previewTagHtml(th) {
+  if (th.pkg === 'japan') return '<span class="pv-tag" style="background:rgba(236,72,153,0.85);">Japan</span>';
+  if (th.bgPattern || th.wallpaper) return '<span class="pv-tag" style="background:rgba(0,0,0,0.55);">Premium</span>';
+  return '';
+}
+// Berechnet die Hintergrund-CSS-Eigenschaften für ein Wallpaper/Pattern
+function previewBgStyleFor(th) {
+  if (th.wallpaper) return `background-image:url('${th.wallpaper.light}'); background-size:cover; background-position:center;`;
+  if (th.bgPattern) return `background-image:${th.bgPattern}; background-size:60px 60px;`;
+  return '';
+}
 function buildThemeGrid() {
   const grid = document.getElementById('shop-theme-grid');
   if (!grid) return;
@@ -4245,19 +4339,22 @@ function buildThemeGrid() {
     card.className = 'theme-card' + (active ? ' active' : '');
     card.dataset.id = id;
     const previewBg = th.bgColor || th.cellBg;
-    let previewBgStyle;
-    if (th.wallpaper) {
-      previewBgStyle = `background-image:url('${th.wallpaper.light}'); background-size:cover; background-position:center;`;
-    } else if (th.bgPattern) {
-      previewBgStyle = `background-image:${th.bgPattern}; background-size:60px 60px;`;
-    } else {
-      previewBgStyle = '';
-    }
     const givenColor = th.cellGiven || '#1E2A4A';
+    // Mini-Sudoku-Cells bauen
+    const miniHtml = PREVIEW_SAMPLE.map(c => {
+      let bg = th.cellBg, color = givenColor;
+      if (c.kind === 'peer')     bg = th.cellPeer;
+      if (c.kind === 'same')     bg = th.cellSame;
+      if (c.kind === 'selected') bg = th.cellSelected;
+      if (c.kind === 'user')     { bg = th.cellBg; color = th.cellUser; }
+      // Wallpaper-Themes: Cell-Backgrounds sind teil-transparent — als rgba lassen
+      return `<div style="background:${bg};color:${color};">${c.v}</div>`;
+    }).join('');
     card.innerHTML = `
-      <div class="theme-preview" style="background-color:${previewBg}; ${previewBgStyle}">
-        <span class="pv-cell-given" style="color:${givenColor};">3</span>
-        <span class="pv-cell-user" style="color:${th.cellUser};">7</span>
+      <div class="theme-preview" style="background-color:${previewBg}; ${previewBgStyleFor(th)}">
+        ${previewTagHtml(th)}
+        ${previewDecoHtml(th.fx)}
+        <div class="pv-mini">${miniHtml}</div>
         <div class="pv-pill" style="background:${th.primary};"></div>
       </div>
       <div class="theme-name">${th.name}</div>
@@ -4320,19 +4417,30 @@ function buildBundleGrid() {
     const owned = bundleOwned(id);
     const orig = bundleOriginalPrice(id);
     const discount = Math.round((1 - b.price / orig) * 100);
+    const ids = bundleThemes(id);
+    // Wallpaper-Strip aus den 5 Themes des Bundles
+    const stripHtml = ids.map(tid => {
+      const th = THEMES[tid];
+      const bg = th.wallpaper ? `background-image:url('${th.wallpaper.light}')`
+                              : `background-color:${th.bgColor || th.cellBg}`;
+      return `<div style="${bg}"><span class="strip-name">${th.name}</span></div>`;
+    }).join('');
     const card = document.createElement('button');
     card.className = 'bundle-card' + (owned ? ' owned' : '');
     card.innerHTML = `
-      <div class="bundle-icon" style="background:${b.accent}22;color:${b.accent};">${b.icon}</div>
-      <div class="bundle-body">
-        <div class="bundle-title">${b.name}</div>
-        <div class="bundle-desc">${b.desc}</div>
-        ${owned ? `<span class="bundle-owned-badge">✓ Freigeschaltet</span>` :
-          `<div class="bundle-pricing">
-             <span class="bundle-price-now">🪙 ${b.price}</span>
-             <span class="bundle-price-old">🪙 ${orig}</span>
-             <span class="bundle-discount">−${discount}%</span>
-           </div>`}
+      <div class="bundle-strip">${stripHtml}</div>
+      <div class="bundle-body-wrap">
+        <div class="bundle-icon" style="background:${b.accent}22;color:${b.accent};">${b.icon}</div>
+        <div class="bundle-body">
+          <div class="bundle-title">${b.name}</div>
+          <div class="bundle-desc">${b.desc}</div>
+          ${owned ? `<span class="bundle-owned-badge">✓ Freigeschaltet</span>` :
+            `<div class="bundle-pricing">
+               <span class="bundle-price-now">🪙 ${b.price}</span>
+               <span class="bundle-price-old">🪙 ${orig}</span>
+               <span class="bundle-discount">−${discount}%</span>
+             </div>`}
+        </div>
       </div>
     `;
     card.addEventListener('click', () => onBundleClick(id));
