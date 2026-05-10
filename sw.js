@@ -1,5 +1,5 @@
 /* Brainoku Service Worker — cache-first für statische Assets, network-first fürs HTML */
-const CACHE = 'brainoku-v1';
+const CACHE = 'brainoku-v2-japan';
 const STATIC_ASSETS = ['/', '/index.html', '/manifest.webmanifest', '/icon.svg'];
 
 self.addEventListener('install', (e) => {

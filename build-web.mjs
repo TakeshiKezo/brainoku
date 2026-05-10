@@ -12,6 +12,17 @@ const SRC_FILES = [
   'icon.svg',
   'sakura.jpeg',
   'sakuradark.jpeg',
+  // Japan-Paket Wallpaper (light + dark)
+  'japan_sakura_moon.jpeg',
+  'japan_sakura_moon_dark.jpeg',
+  'japan_bamboo.jpeg',
+  'japan_bamboo_dark.jpeg',
+  'japan_koi.jpeg',
+  'japan_koi_dark.jpeg',
+  'japan_momiji.jpeg',
+  'japan_momiji_dark.jpeg',
+  'japan_yonkisetsu.jpeg',
+  'japan_yonkisetsu_dark.jpeg',
 ];
 
 const OUT_DIR = 'www';

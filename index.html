@@ -1314,6 +1314,58 @@
     color: #fff;
   }
 
+  /* Bundle-Karten (Themen-Pakete im Shop) */
+  .bundle-grid { display: grid; gap: 12px; margin: 10px 0 18px; }
+  .bundle-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 14px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform .1s ease, border-color .15s ease;
+    position: relative;
+    text-align: left;
+    color: var(--text);
+    font-family: inherit;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .bundle-card:active { transform: scale(0.98); }
+  .bundle-card.owned {
+    border-color: var(--success);
+    background: linear-gradient(135deg, rgba(34,197,94,0.06), var(--card));
+  }
+  .bundle-icon {
+    flex: 0 0 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    background: var(--primary-soft);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .bundle-body { flex: 1; min-width: 0; }
+  .bundle-title { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
+  .bundle-desc  { font-size: 11.5px; color: var(--text-mute); line-height: 1.35; margin-bottom: 6px; }
+  .bundle-pricing {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 700;
+  }
+  .bundle-price-now { color: var(--primary); }
+  .bundle-price-old { color: var(--text-mute); text-decoration: line-through; font-weight: 500; }
+  .bundle-discount {
+    background: linear-gradient(135deg, #F97316, #EC4899);
+    color: #fff; font-size: 10px; font-weight: 800;
+    padding: 2px 7px; border-radius: 999px;
+    letter-spacing: .3px;
+  }
+  .bundle-owned-badge {
+    background: var(--success); color: #fff; font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 999px;
+  }
+
   /* Cost button (combined ad + coin option) */
   .btn-with-cost {
     display: flex;
@@ -1604,10 +1656,86 @@
   }
   .tutorial-footer .btn-secondary { flex: 1; }
   .tutorial-footer .btn-primary   { flex: 1.4; }
+
+  /* ============== Theme-FX Layer (Partikel-Animationen) ============== */
+  .theme-fx-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+  }
+  .theme-fx-layer .particle {
+    position: absolute;
+    top: -10%;
+    will-change: transform, opacity;
+    animation: fxFall linear infinite;
+    opacity: 0.85;
+  }
+  .theme-fx-layer .particle.swirl {
+    animation: fxFallSwirl linear infinite;
+  }
+  @keyframes fxFall {
+    0%   { transform: translate3d(0, 0, 0) rotate(0deg);   opacity: 0; }
+    8%   { opacity: 0.9; }
+    100% { transform: translate3d(40px, 120vh, 0) rotate(360deg); opacity: 0; }
+  }
+  @keyframes fxFallSwirl {
+    0%   { transform: translate3d(0, 0, 0) rotate(0deg);   opacity: 0; }
+    8%   { opacity: 0.9; }
+    50%  { transform: translate3d(-50px, 60vh, 0) rotate(180deg); }
+    100% { transform: translate3d(60px, 120vh, 0) rotate(360deg); opacity: 0; }
+  }
+  /* Sakura-Blütenblatt */
+  .fx-petal {
+    width: 14px; height: 14px;
+    background: radial-gradient(circle at 30% 30%, #FFE3EE 0%, #F9A8D4 60%, #EC4899 100%);
+    border-radius: 50% 0 50% 0;
+    box-shadow: 0 0 8px rgba(236,72,153,0.25);
+  }
+  /* Bambus-Blatt — schmal, grün */
+  .fx-leaf-bamboo {
+    width: 22px; height: 5px;
+    background: linear-gradient(90deg, #2C6048, #6FA88A);
+    border-radius: 50% 6px 50% 6px;
+    box-shadow: 0 0 6px rgba(44,96,72,0.20);
+  }
+  /* Wassertropfen-Ring (Koi) — kein Fall, sondern fadende Ringe an Position */
+  .theme-fx-layer.fx-koi .particle {
+    animation: fxRipple 4.5s linear infinite;
+    border: 1.5px solid rgba(15,138,141,0.55);
+    background: transparent;
+    border-radius: 50%;
+    width: 12px; height: 12px;
+    top: auto;
+  }
+  @keyframes fxRipple {
+    0%   { transform: scale(0.4); opacity: 0; }
+    20%  { opacity: 0.7; }
+    100% { transform: scale(8);   opacity: 0; }
+  }
+  /* Momiji-Ahornblatt */
+  .fx-leaf-momiji {
+    width: 16px; height: 16px;
+    background:
+      radial-gradient(circle at 50% 30%, #F0A687 0%, transparent 35%),
+      radial-gradient(circle at 20% 65%, #C04A2B 0%, transparent 38%),
+      radial-gradient(circle at 80% 65%, #C04A2B 0%, transparent 38%),
+      radial-gradient(circle at 50% 95%, #9A3A22 0%, transparent 40%);
+    background-color: #C04A2B;
+    clip-path: polygon(50% 0%, 60% 30%, 90% 25%, 70% 50%, 95% 70%, 65% 65%, 50% 100%, 35% 65%, 5% 70%, 30% 50%, 10% 25%, 40% 30%);
+    box-shadow: 0 0 6px rgba(192,74,43,0.22);
+  }
+  /* Yonkisetsu-Mix: Klasse pro Partikel im JS gesetzt */
+  @media (prefers-reduced-motion: reduce) {
+    .theme-fx-layer { display: none !important; }
+  }
 </style>
 </head>
 <body>
 <div id="app">
+  <!-- Theme-FX Partikel-Layer (über Wallpaper, unter UI). Wird von applyThemeFx() befüllt. -->
+  <div id="theme-fx-layer" class="theme-fx-layer" aria-hidden="true"></div>
 
   <!-- ============================ HOME ============================ -->
   <section id="screen-home" class="screen">
@@ -1735,6 +1863,11 @@
   <section id="screen-shop" class="screen">
     <h1 class="settings-title sammlung-title" data-i18n="shop.title">Shop</h1>
     <div class="shop-balance"><span class="coin-emoji">🪙</span> <span id="shop-coins">0</span> <span data-i18n="shop.coins">Coins</span></div>
+
+    <div class="shop-section">
+      <h2 class="shop-section-title" data-i18n="shop.bundles">🎁 Themen-Pakete</h2>
+      <div class="bundle-grid" id="shop-bundle-grid"></div>
+    </div>
 
     <div class="shop-section">
       <h2 class="shop-section-title" data-i18n="shop.designs">🎨 Designs</h2>
@@ -2227,7 +2360,7 @@ const LANG = {
     'settings.rate':'Bewerte uns','settings.contact':'Schreib uns','settings.privacy':'Datenschutz','settings.imprint':'Impressum',
     'settings.langPick':'Sprache wählen',
     'sammlung.title':'Sammlung','sammlung.records':'Rekorde','sammlung.streak':'Tagesserie','sammlung.winStreak':'Siegesserie','sammlung.wins':'Siege','sammlung.achievements':'Auszeichnungen','sammlung.bestTimes':'Bestzeiten',
-    'shop.title':'Shop','shop.coins':'Coins','shop.designs':'🎨 Designs','shop.boosters':'⚡ Booster','shop.premium':'⭐ Premium',
+    'shop.title':'Shop','shop.coins':'Coins','shop.designs':'🎨 Designs','shop.bundles':'🎁 Themen-Pakete','shop.boosters':'⚡ Booster','shop.premium':'⭐ Premium',
     'shop.shieldName':'Streak-Schild','shop.shieldDesc':'Schützt deine Streak bei einem verpassten Tag.',
     'shop.hintPackName':'Tipp-Paket','shop.hintPackDesc':'3 Tipps fürs nächste Spiel direkt einsetzbar.','shop.hintBought':'Tipp-Paket gekauft','shop.hintAdded':'+{n} Tipps verfügbar.',
     'shop.adFreeName':'Werbung entfernen','shop.adFreeDesc':'Keine Werbung mehr — dauerhaft, einmalige Zahlung.',
@@ -2295,7 +2428,7 @@ const LANG = {
     'settings.rate':'Rate us','settings.contact':'Contact us','settings.privacy':'Privacy','settings.imprint':'Imprint',
     'settings.langPick':'Choose language',
     'sammlung.title':'Collection','sammlung.records':'Records','sammlung.streak':'Daily streak','sammlung.winStreak':'Win streak','sammlung.wins':'Wins','sammlung.achievements':'Achievements','sammlung.bestTimes':'Best times',
-    'shop.title':'Shop','shop.coins':'Coins','shop.designs':'🎨 Designs','shop.boosters':'⚡ Boosters','shop.premium':'⭐ Premium',
+    'shop.title':'Shop','shop.coins':'Coins','shop.designs':'🎨 Designs','shop.bundles':'🎁 Theme Packs','shop.boosters':'⚡ Boosters','shop.premium':'⭐ Premium',
     'shop.shieldName':'Streak shield','shop.shieldDesc':'Protects your streak if you miss a day.',
     'shop.hintPackName':'Hint pack','shop.hintPackDesc':'3 hints ready to use in your next game.','shop.hintBought':'Hint pack purchased','shop.hintAdded':'+{n} hints available.',
     'shop.adFreeName':'Remove ads','shop.adFreeDesc':'No more ads — forever, one-time payment.',
@@ -2363,7 +2496,7 @@ const LANG = {
     'settings.rate':'Оцените нас','settings.contact':'Связаться','settings.privacy':'Конфиденциальность','settings.imprint':'Выходные данные',
     'settings.langPick':'Выбери язык',
     'sammlung.title':'Коллекция','sammlung.records':'Рекорды','sammlung.streak':'Серия дней','sammlung.winStreak':'Серия побед','sammlung.wins':'Победы','sammlung.achievements':'Достижения','sammlung.bestTimes':'Лучшие времена',
-    'shop.title':'Магазин','shop.coins':'Монеты','shop.designs':'🎨 Темы','shop.boosters':'⚡ Бустеры','shop.premium':'⭐ Премиум',
+    'shop.title':'Магазин','shop.coins':'Монеты','shop.designs':'🎨 Темы','shop.bundles':'🎁 Тематические наборы','shop.boosters':'⚡ Бустеры','shop.premium':'⭐ Премиум',
     'shop.shieldName':'Щит серии','shop.shieldDesc':'Защитит серию при пропуске дня.',
     'shop.hintPackName':'Набор подсказок','shop.hintPackDesc':'3 подсказки для следующей игры.','shop.hintBought':'Набор куплен','shop.hintAdded':'+{n} подсказок.',
     'shop.adFreeName':'Убрать рекламу','shop.adFreeDesc':'Больше никакой рекламы — навсегда.',
@@ -2431,7 +2564,7 @@ const LANG = {
     'settings.rate':'Bizi puanla','settings.contact':'İletişim','settings.privacy':'Gizlilik','settings.imprint':'Künye',
     'settings.langPick':'Dil seç',
     'sammlung.title':'Koleksiyon','sammlung.records':'Rekorlar','sammlung.streak':'Günlük seri','sammlung.winStreak':'Galibiyet serisi','sammlung.wins':'Galibiyetler','sammlung.achievements':'Başarılar','sammlung.bestTimes':'En iyi süreler',
-    'shop.title':'Mağaza','shop.coins':'Coin','shop.designs':'🎨 Tasarımlar','shop.boosters':'⚡ Güçlendirici','shop.premium':'⭐ Premium',
+    'shop.title':'Mağaza','shop.coins':'Coin','shop.designs':'🎨 Tasarımlar','shop.bundles':'🎁 Tema Paketleri','shop.boosters':'⚡ Güçlendirici','shop.premium':'⭐ Premium',
     'shop.shieldName':'Seri kalkanı','shop.shieldDesc':'Bir gün kaçırınca serini korur.',
     'shop.hintPackName':'İpucu paketi','shop.hintPackDesc':'Sonraki oyunda 3 ipucu kullanıma hazır.','shop.hintBought':'İpucu paketi alındı','shop.hintAdded':'+{n} ipucu mevcut.',
     'shop.adFreeName':'Reklamları kaldır','shop.adFreeDesc':'Reklamsız — sonsuza dek, tek seferlik ödeme.',
@@ -2499,7 +2632,7 @@ const LANG = {
     'settings.rate':'評価する','settings.contact':'お問い合わせ','settings.privacy':'プライバシー','settings.imprint':'運営者情報',
     'settings.langPick':'言語を選択',
     'sammlung.title':'コレクション','sammlung.records':'記録','sammlung.streak':'連続記録','sammlung.winStreak':'連勝記録','sammlung.wins':'勝利','sammlung.achievements':'実績','sammlung.bestTimes':'ベストタイム',
-    'shop.title':'ショップ','shop.coins':'コイン','shop.designs':'🎨 デザイン','shop.boosters':'⚡ ブースター','shop.premium':'⭐ プレミアム',
+    'shop.title':'ショップ','shop.coins':'コイン','shop.designs':'🎨 デザイン','shop.bundles':'🎁 テーマパック','shop.boosters':'⚡ ブースター','shop.premium':'⭐ プレミアム',
     'shop.shieldName':'ストリーク・シールド','shop.shieldDesc':'日を逃したときストリークを守ります。',
     'shop.hintPackName':'ヒントパック','shop.hintPackDesc':'次のゲームですぐ使える3つのヒント。','shop.hintBought':'ヒントパック購入','shop.hintAdded':'+{n} ヒント獲得。',
     'shop.adFreeName':'広告を削除','shop.adFreeDesc':'広告なし — 永久、一度きりの支払い。',
@@ -3849,9 +3982,81 @@ const SFX = {
   },
   toggle:   () => tone({ freq: 700, dur: 0.04, type: 'sine', vol: 0.07, release: 0.06 }),
 };
+// Themen-spezifische SFX-Profile (überschreiben die Default-SFX wenn gesetzt).
+// Nur die markant unterschiedlichen Sounds werden überschrieben — Rest fällt
+// auf die Defaults zurück.
+let currentSfxProfile = null;
+const SFX_PROFILES = {
+  // Koto (Sakura) — gezupfte Saite, weich + glockenartig
+  koto: {
+    click:   () => tone({ freq: 1320, dur: 0.05, type: 'triangle', vol: 0.06, attack: 0.002, release: 0.10 }),
+    correct: () => {
+      [659, 988, 1319].forEach((f, i) => tone({ freq: f, dur: 0.16, type: 'triangle', vol: 0.10 - i*0.02, release: 0.30, start: i * 0.04 }));
+    },
+    error:   () => tone({ freq: 196, dur: 0.22, type: 'triangle', vol: 0.13, filter: 600, release: 0.30 }),
+    win:     () => {
+      [523, 659, 784, 988, 1175].forEach((f, i) => tone({ freq: f, dur: 0.20, type: 'triangle', vol: 0.11, release: 0.32, start: i * 0.10 }));
+    },
+  },
+  // Bambus — trockener Holzklick (Shishi-odoshi)
+  bamboo: {
+    click:   () => tone({ freq: 880, dur: 0.04, type: 'square', vol: 0.05, attack: 0.001, release: 0.05, filter: 1800 }),
+    correct: () => {
+      tone({ freq: 660, dur: 0.06, type: 'square', vol: 0.10, filter: 1500, release: 0.10 });
+      tone({ freq: 990, dur: 0.08, type: 'triangle', vol: 0.08, release: 0.15, start: 0.04 });
+    },
+    error:   () => {
+      tone({ freq: 220, dur: 0.10, type: 'square', vol: 0.12, filter: 700, release: 0.15 });
+      tone({ freq: 165, dur: 0.14, type: 'square', vol: 0.10, filter: 500, release: 0.20, start: 0.06 });
+    },
+  },
+  // Wasser/Koi — sanfte Tropfen (Sinus + Hochpass-Charakter)
+  water: {
+    click:   () => tone({ freq: 1480, dur: 0.05, type: 'sine', vol: 0.07, attack: 0.001, release: 0.18, filter: 3000 }),
+    correct: () => {
+      tone({ freq: 988, dur: 0.10, type: 'sine', vol: 0.10, release: 0.30, filter: 2400 });
+      tone({ freq: 1568, dur: 0.10, type: 'sine', vol: 0.06, release: 0.30, filter: 3200, start: 0.05 });
+    },
+    error:   () => tone({ freq: 247, dur: 0.20, type: 'sine', vol: 0.13, filter: 800, release: 0.30 }),
+    hint:    () => {
+      [784, 988, 1175, 1480].forEach((f, i) => tone({ freq: f, dur: 0.10, type: 'sine', vol: 0.08, release: 0.22, start: i * 0.06, filter: 2800 }));
+    },
+  },
+  // Taiko (Momiji) — tiefer Trommelschlag
+  taiko: {
+    click:   () => tone({ freq: 180, dur: 0.06, type: 'sine', vol: 0.10, attack: 0.001, release: 0.10, filter: 400 }),
+    correct: () => {
+      tone({ freq: 220, dur: 0.10, type: 'sine', vol: 0.14, release: 0.20, filter: 500 });
+      tone({ freq: 440, dur: 0.10, type: 'sine', vol: 0.06, release: 0.18, start: 0.04 });
+    },
+    error:   () => {
+      tone({ freq: 120, dur: 0.18, type: 'sine', vol: 0.16, filter: 350, release: 0.30 });
+      tone({ freq: 90,  dur: 0.22, type: 'sine', vol: 0.14, filter: 300, release: 0.35, start: 0.08 });
+    },
+    win: () => {
+      [165, 220, 277, 330, 440].forEach((f, i) => tone({ freq: f, dur: 0.16, type: 'sine', vol: 0.13, release: 0.24, filter: 600, start: i * 0.10 }));
+    },
+  },
+  // Shakuhachi (Yonkisetsu) — Bambusflöte, weich + atmosphärisch
+  shaku: {
+    click:   () => tone({ freq: 988, dur: 0.06, type: 'sine', vol: 0.06, attack: 0.005, release: 0.14, filter: 2000 }),
+    correct: () => {
+      tone({ freq: 587, dur: 0.18, type: 'sine', vol: 0.10, release: 0.30, filter: 1800 });
+      tone({ freq: 880, dur: 0.16, type: 'sine', vol: 0.07, release: 0.30, filter: 2200, start: 0.06 });
+    },
+    error:   () => tone({ freq: 233, dur: 0.24, type: 'sine', vol: 0.12, filter: 700, release: 0.32 }),
+    win:     () => {
+      [392, 523, 659, 784, 988].forEach((f, i) => tone({ freq: f, dur: 0.22, type: 'sine', vol: 0.11, release: 0.34, filter: 2200, start: i * 0.12 }));
+    },
+  },
+};
 function playSfx(name) {
   if (!state.sound) return;
-  try { SFX[name] && SFX[name](); } catch (e) {}
+  try {
+    const profile = currentSfxProfile && SFX_PROFILES[currentSfxProfile];
+    if (profile && profile[name]) { profile[name](); return; }
+    SFX[name] && SFX[name]();
+  } catch (e) {}
 }
 
 /* =========================================================
@@ -3879,7 +4084,53 @@ const THEMES = {
   geometrie:    { name: 'Geometrie',   price: 1800, primary: '#8B5CF6', primarySoft: '#EDE9FE', primaryLight: '#C4B5FD', cellBg: '#FBFAFF', cellPeer: '#EDE9FE', cellSelected: '#C4B5FD', cellSame: '#DDD6FE', cellUser: '#7C3AED', bgPattern: PATTERN_HEX,    bgColor: '#F5F3FF' },
   marmor:       { name: 'Marmor',      price: 2000, primary: '#475569', primarySoft: '#E2E8F0', primaryLight: '#94A3B8', cellBg: '#FAFAFA', cellPeer: '#E2E8F0', cellSelected: '#CBD5E1', cellSame: '#E2E8F0', cellUser: '#1E293B', bgPattern: PATTERN_MARBLE, bgColor: '#F1F5F9' },
   goldrausch:   { name: 'Gold',        price: 2500, primary: '#D4AF37', primarySoft: '#1A1A1A', primaryLight: '#FCD34D', cellBg: '#1C1C1C', cellPeer: '#262626', cellSelected: '#404040', cellSame: '#333333', cellUser: '#FCD34D', cellGiven: '#F5F5F4', bgPattern: PATTERN_GOLD,   bgColor: '#0A0A0A', dark: true },
+
+  // ===== Japan-Paket (Bundle: 'japan') ====================================
+  // Wallpaper: Aquarell-Hintergründe mit Light + Dark Variante.
+  // sfxProfile + fx werden von SFX-/Animations-Layer gelesen.
+  japan_sakura_moon: { name: 'Sakura & Mond', price: 600, pkg: 'japan', sfxProfile: 'koto', fx: 'sakura',
+    primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4',
+    cellBg: 'rgba(255,250,253,0.92)', cellPeer: 'rgba(252,224,236,0.85)', cellSelected: 'rgba(249,168,212,0.85)', cellSame: 'rgba(251,207,232,0.85)', cellUser: '#BE185D',
+    wallpaper: { light: 'japan_sakura_moon.jpeg', dark: 'japan_sakura_moon_dark.jpeg' } },
+  japan_bamboo: { name: 'Bambus-Hain', price: 600, pkg: 'japan', sfxProfile: 'bamboo', fx: 'bamboo',
+    primary: '#3F8060', primarySoft: '#E5F0E9', primaryLight: '#9EC4AE',
+    cellBg: 'rgba(252,250,242,0.92)', cellPeer: 'rgba(225,234,224,0.88)', cellSelected: 'rgba(158,196,174,0.85)', cellSame: 'rgba(207,224,212,0.85)', cellUser: '#2C6048',
+    wallpaper: { light: 'japan_bamboo.jpeg', dark: 'japan_bamboo_dark.jpeg' } },
+  japan_koi: { name: 'Koi-Teich', price: 700, pkg: 'japan', sfxProfile: 'water', fx: 'koi',
+    primary: '#0F8A8D', primarySoft: '#D8F0F0', primaryLight: '#7FD0D2',
+    cellBg: 'rgba(250,253,252,0.92)', cellPeer: 'rgba(214,238,236,0.88)', cellSelected: 'rgba(127,208,210,0.82)', cellSame: 'rgba(189,228,226,0.85)', cellUser: '#0B6E70',
+    wallpaper: { light: 'japan_koi.jpeg', dark: 'japan_koi_dark.jpeg' } },
+  japan_momiji: { name: 'Momiji-Herbst', price: 700, pkg: 'japan', sfxProfile: 'taiko', fx: 'momiji',
+    primary: '#C04A2B', primarySoft: '#FCE5DC', primaryLight: '#F0A687',
+    cellBg: 'rgba(255,250,244,0.92)', cellPeer: 'rgba(252,225,210,0.88)', cellSelected: 'rgba(240,166,135,0.82)', cellSame: 'rgba(252,210,193,0.85)', cellUser: '#9A3A22',
+    wallpaper: { light: 'japan_momiji.jpeg', dark: 'japan_momiji_dark.jpeg' } },
+  japan_yonkisetsu: { name: 'Vier Jahreszeiten', price: 900, pkg: 'japan', sfxProfile: 'shaku', fx: 'yonkisetsu',
+    primary: '#7E57C2', primarySoft: '#EDE3F8', primaryLight: '#B89BD9',
+    cellBg: 'rgba(253,251,247,0.92)', cellPeer: 'rgba(232,222,242,0.88)', cellSelected: 'rgba(184,155,217,0.82)', cellSame: 'rgba(216,200,235,0.85)', cellUser: '#5E3B96',
+    wallpaper: { light: 'japan_yonkisetsu.jpeg', dark: 'japan_yonkisetsu_dark.jpeg' } },
 };
+
+// Themen-Pakete (Bundles): kauft alle pkg-Themes auf einmal mit Rabatt frei
+const THEME_BUNDLES = {
+  japan: {
+    name: 'Japan-Paket',
+    desc: '5 Designs mit eigenen Sounds & Animationen — Sakura, Bambus, Koi, Momiji, Vier Jahreszeiten',
+    price: 1999,
+    icon: '⛩️',
+    accent: '#EC4899',
+  },
+};
+function bundleThemes(bundleId) {
+  return Object.keys(THEMES).filter(id => THEMES[id].pkg === bundleId);
+}
+function bundleOriginalPrice(bundleId) {
+  return bundleThemes(bundleId).reduce((s, id) => s + (THEMES[id].price || 0), 0);
+}
+function bundleOwned(bundleId) {
+  const ids = bundleThemes(bundleId);
+  if (!ids.length) return false;
+  return ids.every(id => !!state.unlockedThemes?.[id]);
+}
 
 function applyTheme(id) {
   const t = THEMES[id] || THEMES.classic;
@@ -3922,6 +4173,63 @@ function applyTheme(id) {
       app.style.backgroundImage = t.bgPattern;
       app.style.backgroundRepeat = 'repeat';
     }
+  }
+  // Aktuelles SFX- und FX-Profil für SFX-Override und Animations-Layer
+  currentSfxProfile = t.sfxProfile || null;
+  applyThemeFx(t.fx || null);
+}
+
+/* =========================================================
+   THEME-FX (Partikel-Animationen pro Theme)
+   Sakura: fallende Blütenblätter
+   Bambus: treibende schmale Blätter
+   Koi:    aufsteigende Wasserringe an zufälligen Positionen
+   Momiji: fallende Ahornblätter
+   Yonkisetsu: Mix aus allen vier
+========================================================= */
+const FX_SPECS = {
+  sakura:     { count: 16, klass: 'fx-petal',        swirl: true,  durRange: [7, 14] },
+  bamboo:     { count: 14, klass: 'fx-leaf-bamboo',  swirl: true,  durRange: [9, 16] },
+  koi:        { count: 10, klass: '',                swirl: false, durRange: [3.5, 5.5], ripple: true },
+  momiji:     { count: 14, klass: 'fx-leaf-momiji',  swirl: true,  durRange: [8, 15] },
+  yonkisetsu: { count: 18, klass: 'mix',             swirl: true,  durRange: [7, 16] },
+};
+const YONKI_KINDS = ['fx-petal', 'fx-leaf-bamboo', 'fx-leaf-momiji'];
+function applyThemeFx(name) {
+  const layer = document.getElementById('theme-fx-layer');
+  if (!layer) return;
+  layer.className = 'theme-fx-layer';
+  layer.innerHTML = '';
+  const spec = name && FX_SPECS[name];
+  if (!spec) return;
+  if (name === 'koi') layer.classList.add('fx-koi');
+  for (let i = 0; i < spec.count; i++) {
+    const p = document.createElement('div');
+    let cls = 'particle';
+    if (spec.swirl && Math.random() < 0.5) cls += ' swirl';
+    let kind = spec.klass;
+    if (kind === 'mix') kind = YONKI_KINDS[Math.floor(Math.random() * YONKI_KINDS.length)];
+    if (kind) cls += ' ' + kind;
+    p.className = cls;
+    const x = Math.random() * 100;
+    const dur = spec.durRange[0] + Math.random() * (spec.durRange[1] - spec.durRange[0]);
+    const delay = -Math.random() * dur;       // negative delay → schon mittendrin
+    p.style.left = x + '%';
+    p.style.animationDuration = dur.toFixed(2) + 's';
+    p.style.animationDelay = delay.toFixed(2) + 's';
+    if (spec.ripple) {
+      // Ripples bekommen zufällige Y-Position
+      p.style.top = (10 + Math.random() * 80) + '%';
+      // Größe variieren
+      const scale = 0.6 + Math.random() * 0.8;
+      p.style.transform = `scale(${scale})`;
+    } else {
+      // Größe leicht variieren für Tiefenwirkung
+      const scale = 0.7 + Math.random() * 0.6;
+      p.style.zoom = scale;          // alt: zoom (Webkit)
+      p.style.opacity = (0.5 + Math.random() * 0.5).toFixed(2);
+    }
+    layer.appendChild(p);
   }
 }
 
@@ -3999,7 +4307,59 @@ function refreshShop() {
   document.getElementById('hintpack-cost').textContent = HINT_PACK_COST;
   // ad-free hidden if already bought
   document.getElementById('shop-premium-section').classList.toggle('hidden', !!state.adFree);
+  buildBundleGrid();
   buildThemeGrid();
+}
+
+function buildBundleGrid() {
+  const grid = document.getElementById('shop-bundle-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  Object.keys(THEME_BUNDLES).forEach(id => {
+    const b = THEME_BUNDLES[id];
+    const owned = bundleOwned(id);
+    const orig = bundleOriginalPrice(id);
+    const discount = Math.round((1 - b.price / orig) * 100);
+    const card = document.createElement('button');
+    card.className = 'bundle-card' + (owned ? ' owned' : '');
+    card.innerHTML = `
+      <div class="bundle-icon" style="background:${b.accent}22;color:${b.accent};">${b.icon}</div>
+      <div class="bundle-body">
+        <div class="bundle-title">${b.name}</div>
+        <div class="bundle-desc">${b.desc}</div>
+        ${owned ? `<span class="bundle-owned-badge">✓ Freigeschaltet</span>` :
+          `<div class="bundle-pricing">
+             <span class="bundle-price-now">🪙 ${b.price}</span>
+             <span class="bundle-price-old">🪙 ${orig}</span>
+             <span class="bundle-discount">−${discount}%</span>
+           </div>`}
+      </div>
+    `;
+    card.addEventListener('click', () => onBundleClick(id));
+    grid.appendChild(card);
+  });
+}
+
+function onBundleClick(id) {
+  const b = THEME_BUNDLES[id];
+  if (!b) return;
+  if (bundleOwned(id)) {
+    showToast(b.icon, b.name, 'Alle Designs aus diesem Paket sind bereits freigeschaltet.');
+    return;
+  }
+  if ((state.coins || 0) < b.price) {
+    showToast('🪙', t('shop.notEnough'), t('shop.notEnoughSub', { n: b.price }));
+    return;
+  }
+  if (!confirm(`${b.name} für ${b.price} 🪙 freischalten?\n\n${bundleThemes(id).map(tid => '• ' + THEMES[tid].name).join('\n')}`)) return;
+  state.coins -= b.price;
+  state.unlockedThemes = state.unlockedThemes || {};
+  bundleThemes(id).forEach(tid => { state.unlockedThemes[tid] = true; });
+  saveState();
+  refreshShop();
+  refreshHome();
+  showToast(b.icon, b.name + ' freigeschaltet', `${bundleThemes(id).length} neue Designs verfügbar.`);
+  playSfx('achieve');
 }
 
 const HINT_PACK_COST = 120;
