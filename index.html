@@ -1106,6 +1106,27 @@
   .resume-arrow { font-size: 28px; line-height: 1; }
 
   /* Daily Challenge Karte */
+  .daily-row {
+    width: 100%;
+    max-width: 320px;
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .daily-row .daily-card { margin-top: 0; flex: 1; }
+  .daily-lb-btn {
+    flex: 0 0 52px;
+    background: var(--card);
+    border: 0;
+    border-radius: var(--radius);
+    font-size: 26px;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.10);
+    transition: transform .08s ease;
+    font-family: inherit;
+  }
+  .daily-lb-btn:active { transform: scale(0.95); }
   .daily-card {
     width: 100%;
     max-width: 320px;
@@ -1804,6 +1825,122 @@
   .tutorial-footer .btn-secondary { flex: 1; }
   .tutorial-footer .btn-primary   { flex: 1.4; }
 
+  /* ============== Leaderboard Modal ============== */
+  .lb-modal {
+    max-width: 380px;
+    padding: 30px 16px 18px;
+    position: relative;
+  }
+  .lb-title {
+    text-align: center;
+    margin: 0 0 2px;
+    font-size: 22px;
+  }
+  .lb-date {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-mute);
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  .lb-day-tabs {
+    display: flex;
+    gap: 4px;
+    margin: 0 -2px 12px;
+    background: var(--card-strong);
+    border-radius: 10px;
+    padding: 3px;
+  }
+  .lb-day-tabs button {
+    flex: 1;
+    padding: 6px 8px;
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    color: var(--text-mute);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .lb-day-tabs button.active {
+    background: var(--card);
+    color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .lb-myrank {
+    background: linear-gradient(135deg, #FB7185, #F97316);
+    color: #fff;
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .lb-list {
+    max-height: 380px;
+    overflow-y: auto;
+    border-radius: 10px;
+  }
+  .lb-row {
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .lb-row:last-child { border-bottom: 0; }
+  .lb-row.me {
+    background: var(--primary-soft);
+    border-radius: 6px;
+    font-weight: 800;
+  }
+  .lb-row .lb-rank {
+    text-align: center;
+    font-weight: 800;
+    color: var(--text-mute);
+  }
+  .lb-row.gold   .lb-rank { color: #D4AF37; font-size: 16px; }
+  .lb-row.silver .lb-rank { color: #B0B0B0; font-size: 15px; }
+  .lb-row.bronze .lb-rank { color: #C77A47; font-size: 14px; }
+  .lb-row .lb-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 700;
+  }
+  .lb-row .lb-name .lb-perfect {
+    color: #10B981;
+    font-size: 11px;
+    margin-left: 4px;
+  }
+  .lb-row .lb-time {
+    font-variant-numeric: tabular-nums;
+    font-weight: 800;
+    color: var(--primary);
+  }
+  .lb-empty {
+    text-align: center;
+    padding: 24px 12px;
+    color: var(--text-mute);
+    font-size: 13px;
+  }
+  .lb-empty-icon { font-size: 36px; margin-bottom: 6px; }
+  .lb-needauth {
+    background: var(--card-strong);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    color: var(--text-mute);
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
   /* ============== Level-Up Modal ============== */
   .lvlup-modal {
     text-align: center;
@@ -2113,14 +2250,17 @@
         </div>
         <span class="resume-arrow">›</span>
       </button>
-      <button class="daily-card" id="daily-card">
-        <div class="daily-icon">📅</div>
-        <div class="daily-info">
-          <div class="daily-title">Tages-Challenge</div>
-          <div class="daily-sub" id="daily-sub">Heute jeden Tag das gleiche Puzzle</div>
-        </div>
-        <span class="daily-streak" id="daily-streak"></span>
-      </button>
+      <div class="daily-row">
+        <button class="daily-card" id="daily-card">
+          <div class="daily-icon">📅</div>
+          <div class="daily-info">
+            <div class="daily-title">Tages-Challenge</div>
+            <div class="daily-sub" id="daily-sub">Heute jeden Tag das gleiche Puzzle</div>
+          </div>
+          <span class="daily-streak" id="daily-streak"></span>
+        </button>
+        <button class="daily-lb-btn" id="daily-lb-btn" title="Bestenliste">🏆</button>
+      </div>
       <div class="quests-card" id="quests-card">
         <div class="quests-head">
           <span>🎯 Tagesaufgaben</span>
@@ -2498,6 +2638,29 @@
       <div class="modal-buttons">
         <button class="btn-primary" id="btn-lose-retry" data-i18n="lose.retry">Nochmal</button>
         <button class="btn-secondary" id="btn-lose-home" data-i18n="lose.home">Zur Startseite</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Daily Challenge Leaderboard Modal -->
+  <div class="overlay" id="overlay-leaderboard">
+    <div class="modal lb-modal">
+      <button class="tutorial-back" id="btn-lb-close" aria-label="Schließen" style="display:flex;">‹</button>
+      <h2 class="lb-title">📅 Tages-Bestenliste</h2>
+      <div class="lb-date" id="lb-date">heute</div>
+      <div class="lb-day-tabs" id="lb-day-tabs">
+        <button data-day="0" class="active">Heute</button>
+        <button data-day="-1">Gestern</button>
+        <button data-day="-2">Vorgestern</button>
+      </div>
+      <div class="lb-myrank hidden" id="lb-myrank"></div>
+      <div class="lb-list" id="lb-list">Lade …</div>
+      <div class="lb-empty hidden" id="lb-empty">
+        <div class="lb-empty-icon">🏆</div>
+        <div>Noch keine Einträge — sei der erste!</div>
+      </div>
+      <div class="lb-needauth hidden" id="lb-needauth">
+        Melde dich an, um an der Bestenliste teilzunehmen.
       </div>
     </div>
   </div>
@@ -3407,10 +3570,89 @@ function mergeCloudIntoLocal(local, cloud) {
     else if (cloud[k] !== undefined) merged[k] = cloud[k];
   });
   // Flags: sobald irgendwo true → bleibt true
-  ['adFree','rated','tutorialSeen','authSeen'].forEach(k => {
+  ['adFree','rated','tutorialSeen','authSeen','coinDoubler'].forEach(k => {
     merged[k] = !!(local[k] || cloud[k]);
   });
+  // dailyResults: best time pro Datum gewinnt
+  merged.dailyResults = (() => {
+    const out = {};
+    const both = Object.assign({}, cloud.dailyResults || {}, local.dailyResults || {});
+    Object.keys(both).forEach(k => {
+      const a = local.dailyResults?.[k]?.time;
+      const b = cloud.dailyResults?.[k]?.time;
+      if (a && b) {
+        out[k] = a < b ? local.dailyResults[k] : cloud.dailyResults[k];
+      } else {
+        out[k] = local.dailyResults?.[k] || cloud.dailyResults?.[k];
+      }
+    });
+    return out;
+  })();
   return merged;
+}
+
+/* =========================================================
+   DAILY LEADERBOARD (Cloud)
+========================================================= */
+async function submitDailyScore(dateKey, timeSeconds, perfect, errors, hints) {
+  const sb = await loadSupabase();
+  if (!sb || !state.account?.id) return;
+  // Nur den eigenen Score upserten — Server-Constraint sorgt dafür dass
+  // pro User+Date nur 1 Eintrag existiert. Wir schicken trotzdem nur, wenn
+  // er besser oder neu ist (vermeidet unnötigen Traffic).
+  try {
+    const { data: existing } = await sb
+      .from('daily_scores')
+      .select('time_seconds')
+      .eq('user_id', state.account.id)
+      .eq('challenge_date', dateKey)
+      .maybeSingle();
+    if (existing?.time_seconds && existing.time_seconds <= timeSeconds) return; // nicht besser
+    await sb.from('daily_scores').upsert({
+      user_id: state.account.id,
+      challenge_date: dateKey,
+      time_seconds: timeSeconds,
+      perfect: !!perfect,
+      errors: errors || 0,
+      hints: hints || 0,
+      display_name: state.account.displayName || state.account.email?.split('@')[0] || 'Spieler',
+    }, { onConflict: 'user_id,challenge_date' });
+  } catch (e) { console.warn('submitDailyScore failed:', e); }
+}
+
+async function fetchDailyLeaderboard(dateKey, limit = 100) {
+  const sb = await loadSupabase();
+  if (!sb) return null;
+  try {
+    const { data, error } = await sb
+      .from('daily_scores')
+      .select('user_id, time_seconds, perfect, errors, hints, display_name')
+      .eq('challenge_date', dateKey)
+      .order('time_seconds', { ascending: true })
+      .limit(limit);
+    if (error) throw error;
+    return data || [];
+  } catch (e) { console.warn('fetchDailyLeaderboard failed:', e); return null; }
+}
+
+async function fetchMyDailyRank(dateKey) {
+  const sb = await loadSupabase();
+  if (!sb || !state.account?.id) return null;
+  try {
+    const { data: me } = await sb
+      .from('daily_scores')
+      .select('time_seconds')
+      .eq('user_id', state.account.id)
+      .eq('challenge_date', dateKey)
+      .maybeSingle();
+    if (!me?.time_seconds) return null;
+    const { count } = await sb
+      .from('daily_scores')
+      .select('user_id', { count: 'exact', head: true })
+      .eq('challenge_date', dateKey)
+      .lt('time_seconds', me.time_seconds);
+    return { rank: (count || 0) + 1, time: me.time_seconds };
+  } catch (e) { console.warn('fetchMyDailyRank failed:', e); return null; }
 }
 
 /* =========================================================
@@ -4167,6 +4409,11 @@ function winGame() {
       state.dailyStreak = 1;
     }
     state.lastDailyKey = game.dailyKey;
+    // Cloud-Submit (fire-and-forget — Leaderboard-Eintrag)
+    if (typeof submitDailyScore === 'function') {
+      submitDailyScore(game.dailyKey, finalTime, isPerfect, game.errorsThisGame, game.hintsUsedThisGame || 0)
+        .catch(() => {});
+    }
   }
 
   // Quest-Progress
@@ -5485,6 +5732,91 @@ document.getElementById('btn-lvlup-ok').addEventListener('click', () => {
 });
 
 /* =========================================================
+   LEADERBOARD UI
+========================================================= */
+function dateKeyOffset(offset) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d.toISOString().slice(0,10);
+}
+function formatDateNice(key) {
+  const d = new Date(key + 'T00:00');
+  return d.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'short' });
+}
+async function openLeaderboard(dayOffset = 0) {
+  const overlay = document.getElementById('overlay-leaderboard');
+  overlay.classList.add('active');
+  // Tab-State
+  document.querySelectorAll('#lb-day-tabs button').forEach(b => {
+    b.classList.toggle('active', +b.dataset.day === dayOffset);
+  });
+  const dateKey = dateKeyOffset(dayOffset);
+  document.getElementById('lb-date').textContent = formatDateNice(dateKey) + ' · Mittel';
+  const list = document.getElementById('lb-list');
+  const empty = document.getElementById('lb-empty');
+  const myRank = document.getElementById('lb-myrank');
+  const needAuth = document.getElementById('lb-needauth');
+  list.innerHTML = 'Lade …';
+  empty.classList.add('hidden');
+  myRank.classList.add('hidden');
+  needAuth.classList.add('hidden');
+
+  // Wenn nicht eingeloggt: Hinweis
+  if (!state.account?.id) {
+    needAuth.classList.remove('hidden');
+  }
+
+  const rows = await fetchDailyLeaderboard(dateKey, 100);
+  if (rows === null) {
+    list.innerHTML = '<div class="lb-empty">Verbindung fehlgeschlagen.</div>';
+    return;
+  }
+  if (rows.length === 0) {
+    list.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  // Eigenen Rang anzeigen falls in Top-100, sonst separat fetchen
+  const myUserId = state.account?.id;
+  let myInTop = false;
+  list.innerHTML = rows.map((r, i) => {
+    const rank = i + 1;
+    const cls = ['lb-row'];
+    if (rank === 1) cls.push('gold');
+    else if (rank === 2) cls.push('silver');
+    else if (rank === 3) cls.push('bronze');
+    if (myUserId && r.user_id === myUserId) { cls.push('me'); myInTop = true; }
+    const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+    const perfect = r.perfect ? ' <span class="lb-perfect">perfekt</span>' : '';
+    const safeName = (r.display_name || 'Spieler').replace(/[<>&]/g, '');
+    return `<div class="${cls.join(' ')}">
+      <div class="lb-rank">${medal}</div>
+      <div class="lb-name">${safeName}${perfect}</div>
+      <div class="lb-time">${formatTime(r.time_seconds)}</div>
+    </div>`;
+  }).join('');
+  // Falls nicht in Top — eigenen Rang oben anzeigen
+  if (myUserId && !myInTop) {
+    const me = await fetchMyDailyRank(dateKey);
+    if (me) {
+      myRank.classList.remove('hidden');
+      myRank.innerHTML = `<span>Dein Rang: <strong>#${me.rank}</strong></span><span>${formatTime(me.time)}</span>`;
+    }
+  } else if (myUserId && myInTop) {
+    // In Top — Rang trotzdem oben pinnen
+    const idx = rows.findIndex(r => r.user_id === myUserId);
+    myRank.classList.remove('hidden');
+    myRank.innerHTML = `<span>Dein Rang: <strong>#${idx + 1}</strong></span><span>${formatTime(rows[idx].time_seconds)}</span>`;
+  }
+}
+document.getElementById('btn-lb-close').addEventListener('click', () => {
+  document.getElementById('overlay-leaderboard').classList.remove('active');
+});
+document.querySelectorAll('#lb-day-tabs button').forEach(btn => {
+  btn.addEventListener('click', () => openLeaderboard(+btn.dataset.day));
+});
+
+/* =========================================================
    DAILY STREAK
 ========================================================= */
 function dateStr(d) {
@@ -5673,6 +6005,7 @@ document.getElementById('daily-card').addEventListener('click', () => {
   show('screen-game');
   startDailyChallenge();
 });
+document.getElementById('daily-lb-btn').addEventListener('click', () => openLeaderboard(0));
 
 /* =========================================================
    QUESTS (3 Tagesaufgaben mit Coin-Belohnung)

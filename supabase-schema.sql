@@ -96,3 +96,40 @@ drop trigger if exists user_state_touch on public.user_state;
 create trigger user_state_touch
   before update on public.user_state
   for each row execute function public.touch_updated_at();
+
+-- ============================================================
+-- 6. Daily Challenge Leaderboard
+-- ============================================================
+create table if not exists public.daily_scores (
+  user_id      uuid not null references auth.users on delete cascade,
+  challenge_date date not null,
+  time_seconds int  not null,
+  perfect      boolean not null default false,
+  errors       int  not null default 0,
+  hints        int  not null default 0,
+  display_name text,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now(),
+  primary key (user_id, challenge_date),
+  check (time_seconds > 0 and time_seconds < 86400)
+);
+
+create index if not exists daily_scores_date_time_idx
+  on public.daily_scores (challenge_date, time_seconds asc);
+
+alter table public.daily_scores enable row level security;
+
+drop policy if exists "daily_scores_select_all" on public.daily_scores;
+drop policy if exists "daily_scores_upsert_self" on public.daily_scores;
+
+-- Lesen: jeder Authentifizierte darf das Leaderboard sehen
+create policy "daily_scores_select_all" on public.daily_scores
+  for select using (auth.role() = 'authenticated');
+-- Schreiben: nur eigener Score
+create policy "daily_scores_upsert_self" on public.daily_scores
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+drop trigger if exists daily_scores_touch on public.daily_scores;
+create trigger daily_scores_touch
+  before update on public.daily_scores
+  for each row execute function public.touch_updated_at();
