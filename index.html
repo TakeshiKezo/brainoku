@@ -5910,13 +5910,50 @@ function parseHM(t) {
   const [h, m] = (t || '19:00').split(':').map(Number);
   return { h, m };
 }
+// Capacitor LocalNotifications wenn in nativer App, sonst Web-Notification-Fallback
+function nativeLN() { return window.Capacitor?.Plugins?.LocalNotifications || null; }
+function isNative() { return !!nativeLN(); }
+
 async function requestNotificationPermission() {
+  const LN = nativeLN();
+  if (LN) {
+    try {
+      const r = await LN.requestPermissions();
+      return r.display === 'granted';
+    } catch (e) { return false; }
+  }
   if (!('Notification' in window)) return false;
   if (Notification.permission === 'granted') return true;
   if (Notification.permission === 'denied') return false;
   const r = await Notification.requestPermission();
   return r === 'granted';
 }
+
+const REMINDER_NOTIFICATION_ID = 1;
+async function scheduleNativeReminder() {
+  const LN = nativeLN();
+  if (!LN) return;
+  // Erst alte Reminder-Notification entfernen
+  try { await LN.cancel({ notifications: [{ id: REMINDER_NOTIFICATION_ID }] }); } catch (e) {}
+  if (!state.reminderEnabled) return;
+  const { h, m } = parseHM(state.reminderTime);
+  try {
+    await LN.schedule({
+      notifications: [{
+        id: REMINDER_NOTIFICATION_ID,
+        title: 'Sudoku-Zeit!',
+        body: 'Halte deine Streak am Leben — kurze Runde gefällig?',
+        schedule: { on: { hour: h, minute: m }, allowWhileIdle: true, repeats: true },
+      }],
+    });
+  } catch (e) { console.warn('LocalNotifications.schedule failed', e); }
+}
+async function cancelNativeReminder() {
+  const LN = nativeLN();
+  if (!LN) return;
+  try { await LN.cancel({ notifications: [{ id: REMINDER_NOTIFICATION_ID }] }); } catch (e) {}
+}
+
 function setupReminderInputs() {
   const tog = document.getElementById('toggle-reminder');
   const inp = document.getElementById('reminder-time');
@@ -5927,22 +5964,34 @@ function setupReminderInputs() {
     e.stopImmediatePropagation();
     if (!state.reminderEnabled) {
       const ok = await requestNotificationPermission();
-      if (!ok && Notification.permission !== 'default') {
-        showToast('🔕', 'Benachrichtigungen blockiert', 'Aktiviere sie im Browser.');
+      if (!ok) {
+        const blockedMsg = isNative() ? 'Aktiviere sie in den iOS-Einstellungen.' : 'Aktiviere sie im Browser.';
+        showToast('🔕', 'Benachrichtigungen blockiert', blockedMsg);
+        // Trotzdem state setzen, damit der In-App-Banner funktioniert
       }
       state.reminderEnabled = true;
+      saveState();
+      await scheduleNativeReminder();
+      if (ok) showToast('🔔', 'Erinnerung aktiv', `Täglich um ${state.reminderTime || '19:00'} Uhr.`);
     } else {
       state.reminderEnabled = false;
+      saveState();
+      await cancelNativeReminder();
     }
-    saveState();
     tog.classList.toggle('on', state.reminderEnabled);
   }, true);
 
-  inp.addEventListener('change', () => {
+  inp.addEventListener('change', async () => {
     state.reminderTime = inp.value || '19:00';
     saveState();
+    // Wenn aktiv, Reminder mit neuer Zeit neu schedulen
+    if (state.reminderEnabled) {
+      await scheduleNativeReminder();
+      showToast('🔔', 'Zeit aktualisiert', `Täglich um ${state.reminderTime} Uhr.`);
+    }
   });
 }
+// In-App-Reminder (Banner + bei offener App auch Web-Notification als Bonus)
 function checkReminder() {
   if (!state.reminderEnabled) return;
   if (state.lastPlayedDate === todayStr()) return;
@@ -5953,7 +6002,9 @@ function checkReminder() {
   if (now.getHours() > h || (now.getHours() === h && now.getMinutes() >= m)) {
     state.lastReminderSent = today;
     saveState();
-    if ('Notification' in window && Notification.permission === 'granted') {
+    // Native Capacitor schickt die Notification von selbst (auch bei geschlossener App).
+    // Hier nur für Web-Browser-User: einmaliger Notification-Versuch.
+    if (!isNative() && 'Notification' in window && Notification.permission === 'granted') {
       try { new Notification('Sudoku-Zeit!', { body: 'Halte deine Streak am Leben — kurze Runde gefällig?' }); } catch (e) {}
     }
     if (document.getElementById('screen-home').classList.contains('active')) {
@@ -6047,6 +6098,8 @@ refreshHome();
 checkAchievements();
 checkReminder();
 setInterval(checkReminder, 60 * 1000);
+// Native Reminder beim App-Start synchronisieren (idempotent — überschreibt vorhandenen Schedule)
+if (state.reminderEnabled) { scheduleNativeReminder().catch(() => {}); }
 
 // pointer interaction on board area resets idle timer
 document.getElementById('board').addEventListener('pointerdown', resetIdleTimer);
