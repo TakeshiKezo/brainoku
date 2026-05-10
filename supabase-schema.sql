@@ -133,3 +133,42 @@ drop trigger if exists daily_scores_touch on public.daily_scores;
 create trigger daily_scores_touch
   before update on public.daily_scores
   for each row execute function public.touch_updated_at();
+
+-- ============================================================
+-- 7. Wochen- und Monats-Challenge Leaderboard (generisch)
+-- ============================================================
+-- kind: 'weekly' | 'monthly'  (daily bleibt in eigener Tabelle aus historischen Gründen)
+-- period_key: 'YYYY-Www' (z.B. '2026-W19') oder 'YYYY-MM' (z.B. '2026-05')
+create table if not exists public.challenge_scores (
+  user_id      uuid not null references auth.users on delete cascade,
+  kind         text not null,
+  period_key   text not null,
+  time_seconds int  not null,
+  perfect      boolean not null default false,
+  errors       int  not null default 0,
+  hints        int  not null default 0,
+  display_name text,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now(),
+  primary key (user_id, kind, period_key),
+  check (kind in ('weekly', 'monthly')),
+  check (time_seconds > 0 and time_seconds < 86400)
+);
+
+create index if not exists challenge_scores_period_time_idx
+  on public.challenge_scores (kind, period_key, time_seconds asc);
+
+alter table public.challenge_scores enable row level security;
+
+drop policy if exists "challenge_scores_select_all"  on public.challenge_scores;
+drop policy if exists "challenge_scores_upsert_self" on public.challenge_scores;
+
+create policy "challenge_scores_select_all" on public.challenge_scores
+  for select using (auth.role() = 'authenticated');
+create policy "challenge_scores_upsert_self" on public.challenge_scores
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+drop trigger if exists challenge_scores_touch on public.challenge_scores;
+create trigger challenge_scores_touch
+  before update on public.challenge_scores
+  for each row execute function public.touch_updated_at();

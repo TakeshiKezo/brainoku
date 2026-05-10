@@ -287,6 +287,10 @@
   }
   .hearts { display: inline-flex; gap: 3px; margin-top: 4px; }
   .hearts svg { width: 22px; height: 22px; }
+  .meta-training { display: none; margin-left: 4px; color: var(--primary); font-weight: 700; }
+  body.training-mode .meta-time { display: none; }
+  body.training-mode #hearts { display: none; }
+  body.training-mode .meta-training { display: inline; }
 
   .tipp-btn {
     background: var(--primary);
@@ -1147,6 +1151,10 @@
   }
   .daily-card:active { transform: scale(0.98); }
   .daily-card.completed { background: linear-gradient(135deg, #34D399, #10B981); }
+  .daily-card.challenge-weekly  { background: linear-gradient(135deg, #6366F1, #8B5CF6); box-shadow: 0 6px 14px rgba(99,102,241,0.30); }
+  .daily-card.challenge-monthly { background: linear-gradient(135deg, #F59E0B, #D97706); box-shadow: 0 6px 14px rgba(245,158,11,0.30); }
+  .daily-card.challenge-weekly.completed,
+  .daily-card.challenge-monthly.completed { background: linear-gradient(135deg, #34D399, #10B981); }
   .daily-icon { font-size: 26px; flex: 0 0 auto; }
   .daily-info { flex: 1; min-width: 0; }
   .daily-title { font-size: 14px; font-weight: 800; }
@@ -2047,6 +2055,61 @@
   .stats-cal > div.lvl3 { background: var(--primary); opacity: 0.85; }
   .stats-cal > div.lvl4 { background: var(--primary); }
 
+  /* Trend-Linie (SVG) — Bestzeit-Verlauf */
+  .stats-trend {
+    background: var(--card-strong);
+    border-radius: 12px;
+    padding: 10px;
+    margin-top: 4px;
+  }
+  .stats-trend svg { display: block; width: 100%; height: 110px; overflow: visible; }
+  .stats-trend .trend-grid line { stroke: var(--border); stroke-width: 1; stroke-dasharray: 2 3; }
+  .stats-trend .trend-line { fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .stats-trend .trend-fill { fill: var(--primary); opacity: 0.12; }
+  .stats-trend .trend-dot  { fill: var(--primary); }
+  .stats-trend .trend-empty { color: var(--text-mute); text-align: center; font-size: 12px; padding: 30px 0; font-style: italic; }
+  .stats-trend-tabs { display: flex; gap: 4px; margin-bottom: 6px; }
+  .stats-trend-tabs button {
+    flex: 1; border: 0; background: var(--card); color: var(--text-mute);
+    padding: 6px 8px; border-radius: 8px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .3px; cursor: pointer;
+  }
+  .stats-trend-tabs button.active { background: var(--primary); color: #fff; }
+  .stats-trend-axis { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-mute); margin-top: 4px; padding: 0 4px; font-variant-numeric: tabular-nums; }
+
+  /* Donut + Wochentage Side-by-Side */
+  .stats-charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .stats-chart-box {
+    background: var(--card-strong);
+    border-radius: 12px;
+    padding: 10px;
+  }
+  .stats-chart-box .stats-cal-label { margin: 0 0 6px; }
+
+  /* Donut */
+  .stats-donut { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .stats-donut svg { width: 100px; height: 100px; }
+  .stats-donut-legend { font-size: 10px; display: grid; gap: 2px; width: 100%; }
+  .stats-donut-legend > div { display: flex; align-items: center; gap: 6px; }
+  .stats-donut-legend .dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+  .stats-donut-legend .name { flex: 1; font-weight: 700; }
+  .stats-donut-legend .pct  { color: var(--text-mute); font-variant-numeric: tabular-nums; }
+
+  /* Wochentage */
+  .stats-weekday { display: flex; align-items: flex-end; justify-content: space-between; gap: 4px; height: 100px; padding-top: 4px; }
+  .stats-weekday .wd-bar { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+  .stats-weekday .wd-bar .bar {
+    width: 100%; background: var(--primary); border-radius: 4px 4px 0 0;
+    min-height: 2px; transition: height .3s ease;
+  }
+  .stats-weekday .wd-bar .bar.empty { background: var(--card); }
+  .stats-weekday .wd-bar .lbl { font-size: 9px; color: var(--text-mute); font-weight: 700; }
+
   /* ============== Theme-Vorschau-Modal ============== */
   .theme-preview-modal {
     max-width: 360px;
@@ -2261,6 +2324,26 @@
         </button>
         <button class="daily-lb-btn" id="daily-lb-btn">🏆</button>
       </div>
+      <div class="daily-row">
+        <button class="daily-card challenge-weekly" id="weekly-card">
+          <div class="daily-icon">📆</div>
+          <div class="daily-info">
+            <div class="daily-title" data-i18n="weekly.title">Wochen-Challenge</div>
+            <div class="daily-sub" id="weekly-sub" data-i18n="weekly.subOpen">Diese Woche das gleiche Puzzle für alle</div>
+          </div>
+        </button>
+        <button class="daily-lb-btn" id="weekly-lb-btn">🏆</button>
+      </div>
+      <div class="daily-row">
+        <button class="daily-card challenge-monthly" id="monthly-card">
+          <div class="daily-icon">🗓️</div>
+          <div class="daily-info">
+            <div class="daily-title" data-i18n="monthly.title">Monats-Challenge</div>
+            <div class="daily-sub" id="monthly-sub" data-i18n="monthly.subOpen">Diesen Monat das gleiche Puzzle für alle</div>
+          </div>
+        </button>
+        <button class="daily-lb-btn" id="monthly-lb-btn">🏆</button>
+      </div>
       <div class="quests-card" id="quests-card">
         <div class="quests-head">
           <span data-i18n="quests.title">🎯 Tagesaufgaben</span>
@@ -2372,6 +2455,20 @@
       <div class="stats-diff-table" id="stats-diff-table"></div>
       <div class="stats-cal-label" data-i18n="stats.last30">Letzte 30 Tage</div>
       <div class="stats-cal" id="stats-cal"></div>
+
+      <div class="stats-cal-label" data-i18n="stats.trend">Bestzeit-Verlauf</div>
+      <div class="stats-trend" id="stats-trend"></div>
+
+      <div class="stats-charts-row">
+        <div class="stats-chart-box">
+          <div class="stats-cal-label" data-i18n="stats.diffShare">Schwierigkeiten</div>
+          <div class="stats-donut" id="stats-donut"></div>
+        </div>
+        <div class="stats-chart-box">
+          <div class="stats-cal-label" data-i18n="stats.weekday">Wochentage</div>
+          <div class="stats-weekday" id="stats-weekday"></div>
+        </div>
+      </div>
     </div>
 
     <h2 class="section-h" data-i18n="sammlung.achievements">Auszeichnungen</h2>
@@ -2458,7 +2555,7 @@
         <svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 11-5 5H5a7 7 0 107-7z"/></svg>
       </button>
       <div class="status">
-        <div class="game-meta"><span data-i18n="game.level">Level</span> <span id="game-level">1</span> · ⏱ <span id="game-timer">0:00</span> <span id="game-best" class="game-best"></span></div>
+        <div class="game-meta"><span data-i18n="game.level">Level</span> <span id="game-level">1</span><span class="meta-time"> · ⏱ <span id="game-timer">0:00</span></span> <span id="game-best" class="game-best"></span><span class="meta-training" data-i18n="game.training">· Übung</span></div>
         <div class="difficulty-label" id="game-diff">Schwer</div>
         <div class="hearts" id="hearts"></div>
       </div>
@@ -2532,7 +2629,7 @@
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zM8.5 11a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm7 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM12 17.5c2 0 3.7-1.2 4.4-3H7.6c.7 1.8 2.4 3 4.4 3z"/></svg></div>
           <div class="label">
             <span data-i18n="settings.kleinkind">Kleinkind-Modus</span>
-            <span class="label-sub" data-i18n="settings.kleinkindDesc">Hebt gleiche Zahlen automatisch hervor.</span>
+            <span class="label-sub" data-i18n="settings.kleinkindDesc">Übungsmodus: ohne Zeit, ohne Leben, kleine Belohnung.</span>
           </div>
           <div class="toggle" data-setting="kleinkindMode"></div>
         </div>
@@ -2931,10 +3028,10 @@ const LANG = {
     'home.reminder':'⏰ Heute schon Sudoku gespielt? Ein Spiel hält die Streak am Leben.',
     'diff.title':'Schwierigkeit','diff.choose':'Wähle dein Level',
     'diff.leicht':'Leicht','diff.mittel':'Mittel','diff.schwer':'Schwer','diff.experte':'Experte',
-    'game.lvl':'Lvl','game.level':'Level','game.spiel':'Spiel','game.erase':'Löschen','game.notes':'Notizen','game.hint':'Tipp','game.new':'Neu','game.tipp':'Tipp','game.undo':'Rückgängig','game.restart':'Neu starten','game.restartConfirm':'Aktuelles Level neu starten? Alle Eingaben, Zeit und Leben werden zurückgesetzt.',
+    'game.lvl':'Lvl','game.level':'Level','game.spiel':'Spiel','game.erase':'Löschen','game.notes':'Notizen','game.hint':'Tipp','game.new':'Neu','game.tipp':'Tipp','game.undo':'Rückgängig','game.restart':'Neu starten','game.restartConfirm':'Aktuelles Level neu starten? Alle Eingaben, Zeit und Leben werden zurückgesetzt.','game.training':'· Übung',
     'win.title':'Geschafft! 🎉','win.next':'Nächstes Level','win.home':'Zur Startseite','win.retry':'Wiederholen',
     'win.lblTime':'Zeit','win.lblErrors':'Fehler','win.lblHints':'Tipps','win.newRecord':'⭐ Neue Bestzeit!',
-    'win.solved':'Spiel {n} gelöst.','win.streakAdd':' Tagesserie: {n} {label}.','win.adNext':' Kurze Werbung folgt.',
+    'win.solved':'Spiel {n} gelöst.','win.streakAdd':' Tagesserie: {n} {label}.','win.adNext':' Kurze Werbung folgt.','win.training':'Übungs-Sudoku gelöst — gut gemacht!','win.trainingReward':'+{xp} XP · +{coins} 🪙.',
     'lose.title':'Schade!','lose.text':'Keine Leben mehr. Magst du es nochmal versuchen?','lose.retry':'Nochmal','lose.home':'Zur Startseite',
     'revive.title':'Noch ein Leben?','revive.text':'Schau ein kurzes Video oder zahle <strong>150 🪙</strong> für ein zusätzliches Leben und spiel weiter.',
     'revive.watch':'Video ansehen','revive.coins':'Mit Coins zahlen','revive.cancel':'Aufgeben',
@@ -2950,7 +3047,7 @@ const LANG = {
     'auth.google':'Mit Google fortfahren','auth.apple':'Mit Apple fortfahren','auth.facebook':'Mit Facebook fortfahren','auth.email':'Mit E-Mail fortfahren','auth.or':'oder','auth.skip':'Ohne Konto fortfahren',
     'auth.legal':'Mit dem Anmelden akzeptierst du unsere <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Nutzungsbedingungen</a> und die <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Datenschutzerklärung</a>.','auth.welcome':'Angemeldet',
     'email.title':'E-Mail-Anmeldung','email.text':'Wir senden dir einen Login-Link per E-Mail.','email.placeholder':'deine@email.de','email.send':'Link senden','email.cancel':'Abbrechen','email.sent':'E-Mail unterwegs','email.sentSub':'Klick den Link in deinem Postfach.','email.invalid':'Ungültige E-Mail','email.invalidSub':'Bitte eine gültige Adresse eingeben.','email.fail':'Login fehlgeschlagen',
-    'settings.title':'Einstellungen','settings.lang':'Sprache','settings.vibrate':'Vibrationen','settings.sound':'Geräusche','settings.dark':'Dunkelmodus','settings.tutorial':'Anleitung anzeigen','settings.kleinkind':'Kleinkind-Modus','settings.kleinkindDesc':'Hebt gleiche Zahlen automatisch hervor.',
+    'settings.title':'Einstellungen','settings.lang':'Sprache','settings.vibrate':'Vibrationen','settings.sound':'Geräusche','settings.dark':'Dunkelmodus','settings.tutorial':'Anleitung anzeigen','settings.kleinkind':'Kleinkind-Modus','settings.kleinkindDesc':'Übungsmodus: ohne Zeit, ohne Leben, kleine Belohnung.',
     'settings.reminder':'Tägliche Erinnerung','settings.reminderTime':'Erinnerungszeit',
     'settings.removeAds':'Werbung entfernen','settings.adFreeOn':'Aktiv ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Käufe wiederherstellen','settings.restoreOk':'Werbefrei aktiv.','settings.restoreNone':'Keine Käufe gefunden.',
     'settings.rate':'Bewerte uns','settings.contact':'Schreib uns','settings.privacy':'Datenschutz','settings.imprint':'Impressum',
@@ -2995,7 +3092,7 @@ const LANG = {
     'quests.title':'🎯 Tagesaufgaben','quests.resetFmt':'Reset in {h}h {m}m','quests.claimedTitle':'Quest geschafft',
     'quests.q.play3':'Spiele 3 Puzzles','quests.q.noErrors':'Beende ein Puzzle ohne Fehler','quests.q.daily':'Schließe die Tages-Challenge ab','quests.q.hard':'Beende ein Schwer-Puzzle','quests.q.noHints':'Beende ein Puzzle ohne Tipp','quests.q.fast':'Beende ein Mittel-Puzzle unter 5 Min',
     // Leaderboard
-    'lb.title':'📅 Tages-Bestenliste','lb.tabs.today':'Heute','lb.tabs.yesterday':'Gestern','lb.tabs.dayBefore':'Vorgestern','lb.loading':'Lade …','lb.connFail':'Verbindung fehlgeschlagen.','lb.empty':'Noch keine Einträge — sei der erste!','lb.needAuth':'Melde dich an, um an der Bestenliste teilzunehmen.','lb.myRankFmt':'Dein Rang: #{rank}','lb.perfect':'perfekt','lb.suffixMittel':'Mittel','lb.playerFallback':'Spieler',
+    'lb.title':'📅 Tages-Bestenliste','lb.titleWeekly':'📆 Wochen-Bestenliste','lb.titleMonthly':'🗓️ Monats-Bestenliste','lb.tabs.today':'Heute','lb.tabs.yesterday':'Gestern','lb.tabs.dayBefore':'Vorgestern','lb.tabs.thisWeek':'Diese Woche','lb.tabs.lastWeek':'Letzte Woche','lb.tabs.weekBefore':'Vorletzte','lb.tabs.thisMonth':'Dieser Monat','lb.tabs.lastMonth':'Letzter Monat','lb.tabs.monthBefore':'Vorletzter','lb.loading':'Lade …','lb.connFail':'Verbindung fehlgeschlagen.','lb.empty':'Noch keine Einträge — sei der erste!','lb.needAuth':'Melde dich an, um an der Bestenliste teilzunehmen.','lb.myRankFmt':'Dein Rang: #{rank}','lb.perfect':'perfekt','lb.suffixMittel':'Mittel','lb.suffixSchwer':'Schwer','lb.suffixExperte':'Experte','lb.playerFallback':'Spieler','weekly.title':'Wochen-Challenge','weekly.subOpen':'Diese Woche das gleiche Puzzle für alle','weekly.subDoneFmt':'Diese Woche geschafft in {time}','weekly.subDonePerfect':'Diese Woche geschafft in {time} · perfekt!','weekly.gameLabel':'📆 Wochen-Challenge','monthly.title':'Monats-Challenge','monthly.subOpen':'Diesen Monat das gleiche Puzzle für alle','monthly.subDoneFmt':'Diesen Monat geschafft in {time}','monthly.subDonePerfect':'Diesen Monat geschafft in {time} · perfekt!','monthly.gameLabel':'🗓️ Monats-Challenge',
     // Level-Up
     'lvlup.title':'Level','lvlup.sub':'Stark! Du hast ein neues Level erreicht.','lvlup.coins':'Coins','lvlup.shield':'Streak-Schild','lvlup.bonus':'🎁 Meilenstein-Bonus!','lvlup.continue':'Weiter','lvlup.coinDoubler':'×2',
     // Coin-Doubler
@@ -3004,12 +3101,12 @@ const LANG = {
     'bundle.section':'🎁 Themen-Pakete','bundle.unlocked':'✓ Freigeschaltet','bundle.alreadyDesc':'Alle Designs aus diesem Paket sind bereits freigeschaltet.','bundle.unlockedFmt':'{n} neue Designs verfügbar.',
     'bundle.japan.name':'Japan-Paket','bundle.japan.desc':'5 Designs mit eigenen Sounds & Animationen — Sakura, Bambus, Koi, Momiji, Vier Jahreszeiten',
     // Theme-Namen
-    'theme.classic':'Classic','theme.sakura_photo':'Sakura Foto','theme.sakura':'Sakura','theme.ozean':'Ozean','theme.wald':'Wald','theme.sunset':'Sunset','theme.neon':'Neon','theme.bluetenwiese':'Blütenwiese','theme.sternennacht':'Sternennacht','theme.geometrie':'Geometrie','theme.marmor':'Marmor','theme.goldrausch':'Gold','theme.japan_sakura_moon':'Sakura & Mond','theme.japan_bamboo':'Bambus-Hain','theme.japan_koi':'Koi-Teich','theme.japan_momiji':'Momiji-Herbst','theme.japan_yonkisetsu':'Vier Jahreszeiten',
+    'theme.classic':'Classic','theme.sakura_photo':'Sakura Foto','theme.sakura':'Sakura','theme.ozean':'Ozean','theme.wald':'Wald','theme.sunset':'Sunset','theme.neon':'Neon','theme.bluetenwiese':'Blütenwiese','theme.sternennacht':'Sternennacht','theme.geometrie':'Geometrie','theme.marmor':'Marmor','theme.goldrausch':'Gold','theme.japan_sakura_moon':'Sakura & Mond','theme.japan_bamboo':'Bambus-Hain','theme.japan_koi':'Koi-Teich','theme.japan_momiji':'Momiji-Herbst','theme.japan_yonkisetsu':'Vier Jahreszeiten','theme.halloween':'Halloween','theme.weihnachten':'Weihnachten','theme.ostern':'Ostern','theme.sommer':'Sommer','season.halloween':'🎃 Halloween','season.xmas':'❄️ Weihnachten','season.easter':'🌸 Ostern','season.summer':'☀️ Sommer',
     // Theme-Preview-Modal
     'tp.activate':'Aktivieren','tp.active':'✓ Aktiv','tp.buyFmt':'Für 🪙 {price} kaufen',
     'tp.tag.japan':'Japan-Paket','tp.tag.wallpaper':'Foto-Hintergrund','tp.tag.fx':'Animation','tp.tag.sound':'Eigener Sound','tp.tag.classic':'Klassisches Design',
     // Statistik-Dashboard
-    'stats.title':'Statistik','stats.winrate':'Win-Rate','stats.avgtime':'Ø Zeit','stats.perfect':'Perfekt','stats.errors':'Ø Fehler','stats.hints':'Ø Tipps','stats.total':'Spiele','stats.colMode':'Modus','stats.colGames':'Spiele','stats.colAvg':'Ø Zeit','stats.colBest':'Best','stats.last30':'Letzte 30 Tage',
+    'stats.title':'Statistik','stats.winrate':'Win-Rate','stats.avgtime':'Ø Zeit','stats.perfect':'Perfekt','stats.errors':'Ø Fehler','stats.hints':'Ø Tipps','stats.total':'Spiele','stats.colMode':'Modus','stats.colGames':'Spiele','stats.colAvg':'Ø Zeit','stats.colBest':'Best','stats.last30':'Letzte 30 Tage','stats.trend':'Bestzeit-Verlauf','stats.allDiffs':'Alle','stats.trendEmpty':'Noch nicht genug Daten','stats.diffShare':'Schwierigkeiten','stats.weekday':'Wochentage','wd.mo':'Mo','wd.tu':'Di','wd.we':'Mi','wd.th':'Do','wd.fr':'Fr','wd.sa':'Sa','wd.su':'So',
     // Reminder Toast
     'reminder.activeFmt':'Täglich um {time} Uhr.','reminder.activeTitle':'Erinnerung aktiv','reminder.timeUpdatedTitle':'Zeit aktualisiert','reminder.blockedNative':'Aktiviere sie in den iOS-Einstellungen.','reminder.blockedWeb':'Aktiviere sie im Browser.','reminder.blockedTitle':'Benachrichtigungen blockiert',
   },
@@ -3022,10 +3119,10 @@ const LANG = {
     'home.reminder':"⏰ Played Sudoku today? One game keeps your streak alive.",
     'diff.title':'Difficulty','diff.choose':'Pick your level',
     'diff.leicht':'Easy','diff.mittel':'Medium','diff.schwer':'Hard','diff.experte':'Expert',
-    'game.lvl':'Lvl','game.level':'Level','game.spiel':'Game','game.erase':'Erase','game.notes':'Notes','game.hint':'Hint','game.new':'New','game.tipp':'Hint','game.undo':'Undo','game.restart':'Restart','game.restartConfirm':'Restart current level? All entries, time and lives will be reset.',
+    'game.lvl':'Lvl','game.level':'Level','game.spiel':'Game','game.erase':'Erase','game.notes':'Notes','game.hint':'Hint','game.new':'New','game.tipp':'Hint','game.undo':'Undo','game.restart':'Restart','game.restartConfirm':'Restart current level? All entries, time and lives will be reset.','game.training':'· Practice',
     'win.title':'Solved! 🎉','win.next':'Next level','win.home':'Home','win.retry':'Retry',
     'win.lblTime':'Time','win.lblErrors':'Errors','win.lblHints':'Hints','win.newRecord':'⭐ New best time!',
-    'win.solved':'Game {n} solved.','win.streakAdd':' Daily streak: {n} {label}.','win.adNext':' A short ad will follow.',
+    'win.solved':'Game {n} solved.','win.streakAdd':' Daily streak: {n} {label}.','win.adNext':' A short ad will follow.','win.training':'Practice Sudoku solved — nice work!','win.trainingReward':'+{xp} XP · +{coins} 🪙.',
     'lose.title':'Oh no!','lose.text':'No lives left. Want to try again?','lose.retry':'Retry','lose.home':'Home',
     'revive.title':'One more life?','revive.text':'Watch a short video or pay <strong>150 🪙</strong> for an extra life and keep playing.',
     'revive.watch':'Watch video','revive.coins':'Pay with coins','revive.cancel':'Give up',
@@ -3041,7 +3138,7 @@ const LANG = {
     'auth.google':'Continue with Google','auth.apple':'Continue with Apple','auth.facebook':'Continue with Facebook','auth.email':'Continue with Email','auth.or':'or','auth.skip':'Continue without account',
     'auth.legal':'By signing in you accept our <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Terms of Service</a> and <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Privacy Policy</a>.','auth.welcome':'Signed in',
     'email.title':'Email sign-in','email.text':"We'll send you a login link by email.",'email.placeholder':'your@email.com','email.send':'Send link','email.cancel':'Cancel','email.sent':'Email on the way','email.sentSub':'Tap the link in your inbox.','email.invalid':'Invalid email','email.invalidSub':'Please enter a valid address.','email.fail':'Sign-in failed',
-    'settings.title':'Settings','settings.lang':'Language','settings.vibrate':'Vibrations','settings.sound':'Sounds','settings.dark':'Dark mode','settings.tutorial':'Show tutorial','settings.kleinkind':'Toddler mode','settings.kleinkindDesc':'Highlights matching numbers automatically.',
+    'settings.title':'Settings','settings.lang':'Language','settings.vibrate':'Vibrations','settings.sound':'Sounds','settings.dark':'Dark mode','settings.tutorial':'Show tutorial','settings.kleinkind':'Toddler mode','settings.kleinkindDesc':'Practice mode: no timer, no lives, small reward.',
     'settings.reminder':'Daily reminder','settings.reminderTime':'Reminder time',
     'settings.removeAds':'Remove ads','settings.adFreeOn':'Active ✓','settings.adFreePrice':'€9.99 ›','settings.restore':'Restore purchases','settings.restoreOk':'Ad-free is active.','settings.restoreNone':'No purchases found.',
     'settings.rate':'Rate us','settings.contact':'Contact us','settings.privacy':'Privacy','settings.imprint':'Imprint',
@@ -3083,15 +3180,15 @@ const LANG = {
     'daily.title':'Daily Challenge','daily.subOpen':'Same puzzle every day for everyone','daily.subDoneFmt':'Solved today in {time}','daily.subDonePerfect':'Solved today in {time} · perfect!','daily.gameLabel':'📅 Daily Challenge','daily.winHome':'🏠 Back to home',
     'quests.title':'🎯 Daily quests','quests.resetFmt':'Reset in {h}h {m}m','quests.claimedTitle':'Quest completed',
     'quests.q.play3':'Solve 3 puzzles','quests.q.noErrors':'Finish a puzzle without errors','quests.q.daily':'Complete the Daily Challenge','quests.q.hard':'Finish a Hard puzzle','quests.q.noHints':'Finish a puzzle without a hint','quests.q.fast':'Finish a Medium puzzle under 5 min',
-    'lb.title':'📅 Daily Leaderboard','lb.tabs.today':'Today','lb.tabs.yesterday':'Yesterday','lb.tabs.dayBefore':'Two days ago','lb.loading':'Loading …','lb.connFail':'Connection failed.','lb.empty':'No entries yet — be the first!','lb.needAuth':'Sign in to join the leaderboard.','lb.myRankFmt':'Your rank: #{rank}','lb.perfect':'perfect','lb.suffixMittel':'Medium','lb.playerFallback':'Player',
+    'lb.title':'📅 Daily Leaderboard','lb.titleWeekly':'📆 Weekly Leaderboard','lb.titleMonthly':'🗓️ Monthly Leaderboard','lb.tabs.today':'Today','lb.tabs.yesterday':'Yesterday','lb.tabs.dayBefore':'Two days ago','lb.tabs.thisWeek':'This week','lb.tabs.lastWeek':'Last week','lb.tabs.weekBefore':'Two weeks ago','lb.tabs.thisMonth':'This month','lb.tabs.lastMonth':'Last month','lb.tabs.monthBefore':'Two months ago','lb.loading':'Loading …','lb.connFail':'Connection failed.','lb.empty':'No entries yet — be the first!','lb.needAuth':'Sign in to join the leaderboard.','lb.myRankFmt':'Your rank: #{rank}','lb.perfect':'perfect','lb.suffixMittel':'Medium','lb.suffixSchwer':'Hard','lb.suffixExperte':'Expert','lb.playerFallback':'Player','weekly.title':'Weekly Challenge','weekly.subOpen':'Same puzzle every week for everyone','weekly.subDoneFmt':'Solved this week in {time}','weekly.subDonePerfect':'Solved this week in {time} · perfect!','weekly.gameLabel':'📆 Weekly Challenge','monthly.title':'Monthly Challenge','monthly.subOpen':'Same puzzle every month for everyone','monthly.subDoneFmt':'Solved this month in {time}','monthly.subDonePerfect':'Solved this month in {time} · perfect!','monthly.gameLabel':'🗓️ Monthly Challenge',
     'lvlup.title':'Level','lvlup.sub':'Nice! You reached a new level.','lvlup.coins':'Coins','lvlup.shield':'Streak shield','lvlup.bonus':'🎁 Milestone bonus!','lvlup.continue':'Continue','lvlup.coinDoubler':'×2',
     'doubler.section':'💰 Coin Doubler','doubler.name':'Coin Doubler','doubler.desc':'All coins you earn from now on are doubled — forever, one-time payment.','doubler.modalTitle':'🪙×2 Coin Doubler','doubler.modalText':'Doubles all earned coins forever (games, achievements, login bonus). One-time payment €3.99.','doubler.confirm':'Buy now','doubler.cancel':'Later','doubler.active':'✓ Active','doubler.alreadyTitle':'Coin Doubler active','doubler.alreadyMsg':'Coins are already doubled.','doubler.boughtMsg':'All coins are now doubled.','doubler.coinSubFmt':'+{n} coins (×2 Doubler)','doubler.coinSubPlain':'+{n} coins',
     'bundle.section':'🎁 Theme Packs','bundle.unlocked':'✓ Unlocked','bundle.alreadyDesc':'All designs in this pack are already unlocked.','bundle.unlockedFmt':'{n} new designs available.',
     'bundle.japan.name':'Japan Pack','bundle.japan.desc':'5 designs with own sounds & animations — Sakura, Bamboo, Koi, Momiji, Four Seasons',
-    'theme.classic':'Classic','theme.sakura_photo':'Sakura Photo','theme.sakura':'Sakura','theme.ozean':'Ocean','theme.wald':'Forest','theme.sunset':'Sunset','theme.neon':'Neon','theme.bluetenwiese':'Flower Meadow','theme.sternennacht':'Starry Night','theme.geometrie':'Geometry','theme.marmor':'Marble','theme.goldrausch':'Gold','theme.japan_sakura_moon':'Sakura & Moon','theme.japan_bamboo':'Bamboo Grove','theme.japan_koi':'Koi Pond','theme.japan_momiji':'Momiji Autumn','theme.japan_yonkisetsu':'Four Seasons',
+    'theme.classic':'Classic','theme.sakura_photo':'Sakura Photo','theme.sakura':'Sakura','theme.ozean':'Ocean','theme.wald':'Forest','theme.sunset':'Sunset','theme.neon':'Neon','theme.bluetenwiese':'Flower Meadow','theme.sternennacht':'Starry Night','theme.geometrie':'Geometry','theme.marmor':'Marble','theme.goldrausch':'Gold','theme.japan_sakura_moon':'Sakura & Moon','theme.japan_bamboo':'Bamboo Grove','theme.japan_koi':'Koi Pond','theme.japan_momiji':'Momiji Autumn','theme.japan_yonkisetsu':'Four Seasons','theme.halloween':'Halloween','theme.weihnachten':'Christmas','theme.ostern':'Easter','theme.sommer':'Summer','season.halloween':'🎃 Halloween','season.xmas':'❄️ Christmas','season.easter':'🌸 Easter','season.summer':'☀️ Summer',
     'tp.activate':'Activate','tp.active':'✓ Active','tp.buyFmt':'Buy for 🪙 {price}',
     'tp.tag.japan':'Japan Pack','tp.tag.wallpaper':'Photo wallpaper','tp.tag.fx':'Animation','tp.tag.sound':'Custom sound','tp.tag.classic':'Classic design',
-    'stats.title':'Statistics','stats.winrate':'Win rate','stats.avgtime':'Avg time','stats.perfect':'Perfect','stats.errors':'Avg errors','stats.hints':'Avg hints','stats.total':'Games','stats.colMode':'Mode','stats.colGames':'Games','stats.colAvg':'Avg time','stats.colBest':'Best','stats.last30':'Last 30 days',
+    'stats.title':'Statistics','stats.winrate':'Win rate','stats.avgtime':'Avg time','stats.perfect':'Perfect','stats.errors':'Avg errors','stats.hints':'Avg hints','stats.total':'Games','stats.colMode':'Mode','stats.colGames':'Games','stats.colAvg':'Avg time','stats.colBest':'Best','stats.last30':'Last 30 days','stats.trend':'Best-time trend','stats.allDiffs':'All','stats.trendEmpty':'Not enough data yet','stats.diffShare':'Difficulties','stats.weekday':'Weekdays','wd.mo':'Mon','wd.tu':'Tue','wd.we':'Wed','wd.th':'Thu','wd.fr':'Fri','wd.sa':'Sat','wd.su':'Sun',
     'reminder.activeFmt':'Daily at {time}.','reminder.activeTitle':'Reminder enabled','reminder.timeUpdatedTitle':'Time updated','reminder.blockedNative':'Enable in iOS Settings.','reminder.blockedWeb':'Enable in your browser.','reminder.blockedTitle':'Notifications blocked',
   },
   ru: {
@@ -3103,10 +3200,10 @@ const LANG = {
     'home.reminder':'⏰ Уже играли сегодня? Одна игра поддержит ваш стрик.',
     'diff.title':'Сложность','diff.choose':'Выберите уровень',
     'diff.leicht':'Лёгкий','diff.mittel':'Средний','diff.schwer':'Сложный','diff.experte':'Эксперт',
-    'game.lvl':'Ур.','game.level':'Уровень','game.spiel':'Игра','game.erase':'Стереть','game.notes':'Заметки','game.hint':'Подсказка','game.new':'Новая','game.tipp':'Подсказка','game.undo':'Отмена','game.restart':'Заново','game.restartConfirm':'Перезапустить уровень? Все записи, время и жизни будут сброшены.',
+    'game.lvl':'Ур.','game.level':'Уровень','game.spiel':'Игра','game.erase':'Стереть','game.notes':'Заметки','game.hint':'Подсказка','game.new':'Новая','game.tipp':'Подсказка','game.undo':'Отмена','game.restart':'Заново','game.restartConfirm':'Перезапустить уровень? Все записи, время и жизни будут сброшены.','game.training':'· Тренировка',
     'win.title':'Решено! 🎉','win.next':'Следующий уровень','win.home':'На главную','win.retry':'Повторить',
     'win.lblTime':'Время','win.lblErrors':'Ошибки','win.lblHints':'Подсказки','win.newRecord':'⭐ Новый рекорд!',
-    'win.solved':'Игра {n} решена.','win.streakAdd':' Серия: {n} {label}.','win.adNext':' Сейчас будет реклама.',
+    'win.solved':'Игра {n} решена.','win.streakAdd':' Серия: {n} {label}.','win.adNext':' Сейчас будет реклама.','win.training':'Тренировочное судоку решено — молодец!','win.trainingReward':'+{xp} XP · +{coins} 🪙.',
     'lose.title':'Жаль!','lose.text':'Жизни закончились. Попробовать ещё раз?','lose.retry':'Ещё раз','lose.home':'На главную',
     'revive.title':'Ещё одну жизнь?','revive.text':'Посмотри короткое видео или заплати <strong>150 🪙</strong> за дополнительную жизнь.',
     'revive.watch':'Смотреть видео','revive.coins':'Заплатить монетами','revive.cancel':'Сдаться',
@@ -3122,7 +3219,7 @@ const LANG = {
     'auth.google':'Войти через Google','auth.apple':'Войти через Apple','auth.facebook':'Войти через Facebook','auth.email':'Войти по E-Mail','auth.or':'или','auth.skip':'Продолжить без аккаунта',
     'auth.legal':'Входя, ты принимаешь <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Условия</a> и <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Политику конфиденциальности</a>.','auth.welcome':'Вход выполнен',
     'email.title':'Вход по E-Mail','email.text':'Мы пришлём тебе ссылку для входа.','email.placeholder':'твой@email.com','email.send':'Отправить ссылку','email.cancel':'Отмена','email.sent':'Письмо отправлено','email.sentSub':'Открой ссылку из письма.','email.invalid':'Неверный E-Mail','email.invalidSub':'Введи корректный адрес.','email.fail':'Не удалось войти',
-    'settings.title':'Настройки','settings.lang':'Язык','settings.vibrate':'Вибрация','settings.sound':'Звуки','settings.dark':'Тёмная тема','settings.tutorial':'Показать обучение','settings.kleinkind':'Режим новичка','settings.kleinkindDesc':'Подсвечивает одинаковые числа автоматически.',
+    'settings.title':'Настройки','settings.lang':'Язык','settings.vibrate':'Вибрация','settings.sound':'Звуки','settings.dark':'Тёмная тема','settings.tutorial':'Показать обучение','settings.kleinkind':'Режим новичка','settings.kleinkindDesc':'Тренировка: без времени и жизней, малая награда.',
     'settings.reminder':'Ежедневное напоминание','settings.reminderTime':'Время напоминания',
     'settings.removeAds':'Убрать рекламу','settings.adFreeOn':'Активно ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Восстановить покупки','settings.restoreOk':'Без рекламы активно.','settings.restoreNone':'Покупки не найдены.',
     'settings.rate':'Оцените нас','settings.contact':'Связаться','settings.privacy':'Конфиденциальность','settings.imprint':'Выходные данные',
@@ -3164,15 +3261,15 @@ const LANG = {
     'daily.title':'Ежедневный челлендж','daily.subOpen':'Один и тот же пазл для всех каждый день','daily.subDoneFmt':'Решено за {time}','daily.subDonePerfect':'Решено за {time} · идеально!','daily.gameLabel':'📅 Ежедневный челлендж','daily.winHome':'🏠 На главную',
     'quests.title':'🎯 Дневные задания','quests.resetFmt':'Сброс через {h}ч {m}м','quests.claimedTitle':'Задание выполнено',
     'quests.q.play3':'Реши 3 пазла','quests.q.noErrors':'Заверши пазл без ошибок','quests.q.daily':'Пройди ежедневный челлендж','quests.q.hard':'Заверши «Сложный» пазл','quests.q.noHints':'Заверши пазл без подсказок','quests.q.fast':'Заверши «Средний» пазл за 5 мин',
-    'lb.title':'📅 Дневной рейтинг','lb.tabs.today':'Сегодня','lb.tabs.yesterday':'Вчера','lb.tabs.dayBefore':'Позавчера','lb.loading':'Загрузка …','lb.connFail':'Нет соединения.','lb.empty':'Записей пока нет — будь первым!','lb.needAuth':'Войди, чтобы попасть в рейтинг.','lb.myRankFmt':'Твой ранг: #{rank}','lb.perfect':'идеально','lb.suffixMittel':'Средний','lb.playerFallback':'Игрок',
+    'lb.title':'📅 Дневной рейтинг','lb.titleWeekly':'📆 Недельный рейтинг','lb.titleMonthly':'🗓️ Месячный рейтинг','lb.tabs.today':'Сегодня','lb.tabs.yesterday':'Вчера','lb.tabs.dayBefore':'Позавчера','lb.tabs.thisWeek':'Эта неделя','lb.tabs.lastWeek':'Прошлая','lb.tabs.weekBefore':'Позапрошлая','lb.tabs.thisMonth':'Этот месяц','lb.tabs.lastMonth':'Прошлый','lb.tabs.monthBefore':'Позапрошлый','lb.loading':'Загрузка …','lb.connFail':'Нет соединения.','lb.empty':'Записей пока нет — будь первым!','lb.needAuth':'Войди, чтобы попасть в рейтинг.','lb.myRankFmt':'Твой ранг: #{rank}','lb.perfect':'идеально','lb.suffixMittel':'Средний','lb.suffixSchwer':'Сложный','lb.suffixExperte':'Эксперт','lb.playerFallback':'Игрок','weekly.title':'Недельный челлендж','weekly.subOpen':'Один пазл на всю неделю для всех','weekly.subDoneFmt':'Решено за {time}','weekly.subDonePerfect':'Решено за {time} · идеально!','weekly.gameLabel':'📆 Недельный челлендж','monthly.title':'Месячный челлендж','monthly.subOpen':'Один пазл на месяц для всех','monthly.subDoneFmt':'Решено за {time}','monthly.subDonePerfect':'Решено за {time} · идеально!','monthly.gameLabel':'🗓️ Месячный челлендж',
     'lvlup.title':'Уровень','lvlup.sub':'Отлично! Новый уровень.','lvlup.coins':'Монеты','lvlup.shield':'Стрик-щит','lvlup.bonus':'🎁 Бонус-веха!','lvlup.continue':'Дальше','lvlup.coinDoubler':'×2',
     'doubler.section':'💰 Удвоитель монет','doubler.name':'Удвоитель монет','doubler.desc':'Все полученные монеты удваиваются — навсегда, разовая оплата.','doubler.modalTitle':'🪙×2 Удвоитель монет','doubler.modalText':'Удваивает все полученные монеты навсегда (игры, награды, ежедневный бонус). Разовая оплата 3,99 €.','doubler.confirm':'Купить','doubler.cancel':'Позже','doubler.active':'✓ Активно','doubler.alreadyTitle':'Удвоитель уже активен','doubler.alreadyMsg':'Монеты уже удваиваются.','doubler.boughtMsg':'Монеты теперь удваиваются.','doubler.coinSubFmt':'+{n} монет (×2)','doubler.coinSubPlain':'+{n} монет',
     'bundle.section':'🎁 Тематические наборы','bundle.unlocked':'✓ Открыто','bundle.alreadyDesc':'Все темы из этого набора уже открыты.','bundle.unlockedFmt':'Доступно новых тем: {n}.',
     'bundle.japan.name':'Японский набор','bundle.japan.desc':'5 тем со звуком и анимацией — Сакура, Бамбук, Кои, Момидзи, Четыре сезона',
-    'theme.classic':'Классика','theme.sakura_photo':'Сакура (фото)','theme.sakura':'Сакура','theme.ozean':'Океан','theme.wald':'Лес','theme.sunset':'Закат','theme.neon':'Неон','theme.bluetenwiese':'Цветочный луг','theme.sternennacht':'Звёздная ночь','theme.geometrie':'Геометрия','theme.marmor':'Мрамор','theme.goldrausch':'Золото','theme.japan_sakura_moon':'Сакура и Луна','theme.japan_bamboo':'Бамбуковая роща','theme.japan_koi':'Пруд кои','theme.japan_momiji':'Момидзи (осень)','theme.japan_yonkisetsu':'Четыре сезона',
+    'theme.classic':'Классика','theme.sakura_photo':'Сакура (фото)','theme.sakura':'Сакура','theme.ozean':'Океан','theme.wald':'Лес','theme.sunset':'Закат','theme.neon':'Неон','theme.bluetenwiese':'Цветочный луг','theme.sternennacht':'Звёздная ночь','theme.geometrie':'Геометрия','theme.marmor':'Мрамор','theme.goldrausch':'Золото','theme.japan_sakura_moon':'Сакура и Луна','theme.japan_bamboo':'Бамбуковая роща','theme.japan_koi':'Пруд кои','theme.japan_momiji':'Момидзи (осень)','theme.japan_yonkisetsu':'Четыре сезона','theme.halloween':'Хэллоуин','theme.weihnachten':'Рождество','theme.ostern':'Пасха','theme.sommer':'Лето','season.halloween':'🎃 Хэллоуин','season.xmas':'❄️ Рождество','season.easter':'🌸 Пасха','season.summer':'☀️ Лето',
     'tp.activate':'Применить','tp.active':'✓ Активно','tp.buyFmt':'Купить за 🪙 {price}',
     'tp.tag.japan':'Японский набор','tp.tag.wallpaper':'Фон-фото','tp.tag.fx':'Анимация','tp.tag.sound':'Свой звук','tp.tag.classic':'Классический дизайн',
-    'stats.title':'Статистика','stats.winrate':'% побед','stats.avgtime':'Ср. время','stats.perfect':'Идеально','stats.errors':'Ср. ошибки','stats.hints':'Ср. подсказки','stats.total':'Игры','stats.colMode':'Режим','stats.colGames':'Игры','stats.colAvg':'Ср. время','stats.colBest':'Рекорд','stats.last30':'Последние 30 дней',
+    'stats.title':'Статистика','stats.winrate':'% побед','stats.avgtime':'Ср. время','stats.perfect':'Идеально','stats.errors':'Ср. ошибки','stats.hints':'Ср. подсказки','stats.total':'Игры','stats.colMode':'Режим','stats.colGames':'Игры','stats.colAvg':'Ср. время','stats.colBest':'Рекорд','stats.last30':'Последние 30 дней','stats.trend':'Динамика рекорда','stats.allDiffs':'Все','stats.trendEmpty':'Пока мало данных','stats.diffShare':'Сложности','stats.weekday':'Дни недели','wd.mo':'Пн','wd.tu':'Вт','wd.we':'Ср','wd.th':'Чт','wd.fr':'Пт','wd.sa':'Сб','wd.su':'Вс',
     'reminder.activeFmt':'Ежедневно в {time}.','reminder.activeTitle':'Напоминание включено','reminder.timeUpdatedTitle':'Время обновлено','reminder.blockedNative':'Включи в настройках iOS.','reminder.blockedWeb':'Включи в браузере.','reminder.blockedTitle':'Уведомления заблокированы',
   },
   tr: {
@@ -3184,10 +3281,10 @@ const LANG = {
     'home.reminder':'⏰ Bugün Sudoku oynadın mı? Bir oyun serini canlı tutar.',
     'diff.title':'Zorluk','diff.choose':'Seviyeni seç',
     'diff.leicht':'Kolay','diff.mittel':'Orta','diff.schwer':'Zor','diff.experte':'Uzman',
-    'game.lvl':'Sv.','game.level':'Seviye','game.spiel':'Oyun','game.erase':'Sil','game.notes':'Notlar','game.hint':'İpucu','game.new':'Yeni','game.tipp':'İpucu','game.undo':'Geri al','game.restart':'Yeniden başla','game.restartConfirm':'Mevcut seviyeyi yeniden başlat? Tüm girdiler, süre ve canlar sıfırlanır.',
+    'game.lvl':'Sv.','game.level':'Seviye','game.spiel':'Oyun','game.erase':'Sil','game.notes':'Notlar','game.hint':'İpucu','game.new':'Yeni','game.tipp':'İpucu','game.undo':'Geri al','game.restart':'Yeniden başla','game.restartConfirm':'Mevcut seviyeyi yeniden başlat? Tüm girdiler, süre ve canlar sıfırlanır.','game.training':'· Antrenman',
     'win.title':'Tamamlandı! 🎉','win.next':'Sonraki seviye','win.home':'Ana sayfa','win.retry':'Tekrar',
     'win.lblTime':'Süre','win.lblErrors':'Hata','win.lblHints':'İpucu','win.newRecord':'⭐ Yeni rekor!',
-    'win.solved':'Oyun {n} çözüldü.','win.streakAdd':' Günlük seri: {n} {label}.','win.adNext':' Kısa bir reklam gelecek.',
+    'win.solved':'Oyun {n} çözüldü.','win.streakAdd':' Günlük seri: {n} {label}.','win.adNext':' Kısa bir reklam gelecek.','win.training':'Antrenman sudokusu çözüldü — aferin!','win.trainingReward':'+{xp} XP · +{coins} 🪙.',
     'lose.title':'Vah!','lose.text':'Can kalmadı. Tekrar denemek ister misin?','lose.retry':'Tekrar','lose.home':'Ana sayfa',
     'revive.title':'Bir can daha?','revive.text':'Kısa bir video izle ya da <strong>150 🪙</strong> öde, ekstra canla devam et.',
     'revive.watch':'Video izle','revive.coins':'Coin ile öde','revive.cancel':'Vazgeç',
@@ -3203,7 +3300,7 @@ const LANG = {
     'auth.google':'Google ile devam et','auth.apple':'Apple ile devam et','auth.facebook':'Facebook ile devam et','auth.email':'E-posta ile devam et','auth.or':'veya','auth.skip':'Hesapsız devam et',
     'auth.legal':'Giriş yaparak <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Kullanım Şartları</a> ve <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Gizlilik Politikası</a> kabul edilir.','auth.welcome':'Giriş yapıldı',
     'email.title':'E-posta ile giriş','email.text':'Sana bir giriş bağlantısı göndereceğiz.','email.placeholder':'senin@eposta.com','email.send':'Bağlantı gönder','email.cancel':'İptal','email.sent':'E-posta yolda','email.sentSub':'Gelen kutusundaki bağlantıya tıkla.','email.invalid':'Geçersiz e-posta','email.invalidSub':'Geçerli bir adres gir.','email.fail':'Giriş başarısız',
-    'settings.title':'Ayarlar','settings.lang':'Dil','settings.vibrate':'Titreşim','settings.sound':'Sesler','settings.dark':'Karanlık mod','settings.tutorial':'Eğitimi göster','settings.kleinkind':'Çocuk modu','settings.kleinkindDesc':'Aynı sayıları otomatik vurgular.',
+    'settings.title':'Ayarlar','settings.lang':'Dil','settings.vibrate':'Titreşim','settings.sound':'Sesler','settings.dark':'Karanlık mod','settings.tutorial':'Eğitimi göster','settings.kleinkind':'Çocuk modu','settings.kleinkindDesc':'Antrenman modu: süresiz ve cansız, küçük ödül.',
     'settings.reminder':'Günlük hatırlatıcı','settings.reminderTime':'Hatırlatma saati',
     'settings.removeAds':'Reklamları kaldır','settings.adFreeOn':'Aktif ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Satın alımları geri yükle','settings.restoreOk':'Reklamsız aktif.','settings.restoreNone':'Satın alma bulunamadı.',
     'settings.rate':'Bizi puanla','settings.contact':'İletişim','settings.privacy':'Gizlilik','settings.imprint':'Künye',
@@ -3245,15 +3342,15 @@ const LANG = {
     'daily.title':'Günün Mücadelesi','daily.subOpen':'Her gün herkes için aynı bulmaca','daily.subDoneFmt':'Bugün {time} içinde çözüldü','daily.subDonePerfect':'Bugün {time} içinde çözüldü · kusursuz!','daily.gameLabel':'📅 Günün Mücadelesi','daily.winHome':'🏠 Ana sayfaya dön',
     'quests.title':'🎯 Günlük görevler','quests.resetFmt':'{h}sa {m}dk içinde sıfırlanır','quests.claimedTitle':'Görev tamamlandı',
     'quests.q.play3':'3 bulmaca çöz','quests.q.noErrors':'Hatasız bir bulmaca bitir','quests.q.daily':'Günün mücadelesini tamamla','quests.q.hard':'Zor bir bulmacayı bitir','quests.q.noHints':'İpucu kullanmadan bitir','quests.q.fast':'Orta bulmacayı 5 dk altında bitir',
-    'lb.title':'📅 Günlük sıralama','lb.tabs.today':'Bugün','lb.tabs.yesterday':'Dün','lb.tabs.dayBefore':'Önceki gün','lb.loading':'Yükleniyor …','lb.connFail':'Bağlantı başarısız.','lb.empty':'Henüz kayıt yok — ilk sen ol!','lb.needAuth':'Sıralamaya katılmak için giriş yap.','lb.myRankFmt':'Sıralaman: #{rank}','lb.perfect':'kusursuz','lb.suffixMittel':'Orta','lb.playerFallback':'Oyuncu',
+    'lb.title':'📅 Günlük sıralama','lb.titleWeekly':'📆 Haftalık sıralama','lb.titleMonthly':'🗓️ Aylık sıralama','lb.tabs.today':'Bugün','lb.tabs.yesterday':'Dün','lb.tabs.dayBefore':'Önceki gün','lb.tabs.thisWeek':'Bu hafta','lb.tabs.lastWeek':'Geçen hafta','lb.tabs.weekBefore':'Önceki hafta','lb.tabs.thisMonth':'Bu ay','lb.tabs.lastMonth':'Geçen ay','lb.tabs.monthBefore':'Önceki ay','lb.loading':'Yükleniyor …','lb.connFail':'Bağlantı başarısız.','lb.empty':'Henüz kayıt yok — ilk sen ol!','lb.needAuth':'Sıralamaya katılmak için giriş yap.','lb.myRankFmt':'Sıralaman: #{rank}','lb.perfect':'kusursuz','lb.suffixMittel':'Orta','lb.suffixSchwer':'Zor','lb.suffixExperte':'Uzman','lb.playerFallback':'Oyuncu','weekly.title':'Haftalık mücadele','weekly.subOpen':'Herkes için aynı haftalık bulmaca','weekly.subDoneFmt':'{time} içinde çözüldü','weekly.subDonePerfect':'{time} içinde çözüldü · kusursuz!','weekly.gameLabel':'📆 Haftalık mücadele','monthly.title':'Aylık mücadele','monthly.subOpen':'Herkes için aynı aylık bulmaca','monthly.subDoneFmt':'{time} içinde çözüldü','monthly.subDonePerfect':'{time} içinde çözüldü · kusursuz!','monthly.gameLabel':'🗓️ Aylık mücadele',
     'lvlup.title':'Seviye','lvlup.sub':'Süper! Yeni seviye.','lvlup.coins':'Coin','lvlup.shield':'Seri kalkanı','lvlup.bonus':'🎁 Kilometre taşı bonusu!','lvlup.continue':'Devam','lvlup.coinDoubler':'×2',
     'doubler.section':'💰 Coin Çiftleyici','doubler.name':'Coin Çiftleyici','doubler.desc':'Kazandığın tüm coinler iki katına çıkar — kalıcı, tek seferlik ödeme.','doubler.modalTitle':'🪙×2 Coin Çiftleyici','doubler.modalText':'Tüm kazandığın coinleri kalıcı iki katına çıkarır (oyunlar, başarımlar, giriş bonusu). Tek seferlik 3,99 €.','doubler.confirm':'Şimdi al','doubler.cancel':'Sonra','doubler.active':'✓ Aktif','doubler.alreadyTitle':'Çiftleyici aktif','doubler.alreadyMsg':'Coinler zaten ikiye katlanıyor.','doubler.boughtMsg':'Coinler artık ikiye katlanıyor.','doubler.coinSubFmt':'+{n} coin (×2)','doubler.coinSubPlain':'+{n} coin',
     'bundle.section':'🎁 Tema Paketleri','bundle.unlocked':'✓ Açıldı','bundle.alreadyDesc':'Bu paketteki tüm tasarımlar zaten açık.','bundle.unlockedFmt':'{n} yeni tasarım kullanılabilir.',
     'bundle.japan.name':'Japonya Paketi','bundle.japan.desc':'Kendi sesleri ve animasyonlarıyla 5 tasarım — Sakura, Bambu, Koi, Momiji, Dört Mevsim',
-    'theme.classic':'Klasik','theme.sakura_photo':'Sakura Foto','theme.sakura':'Sakura','theme.ozean':'Okyanus','theme.wald':'Orman','theme.sunset':'Gün batımı','theme.neon':'Neon','theme.bluetenwiese':'Çiçek çayırı','theme.sternennacht':'Yıldızlı gece','theme.geometrie':'Geometri','theme.marmor':'Mermer','theme.goldrausch':'Altın','theme.japan_sakura_moon':'Sakura ve Ay','theme.japan_bamboo':'Bambu korusu','theme.japan_koi':'Koi havuzu','theme.japan_momiji':'Momiji sonbahar','theme.japan_yonkisetsu':'Dört mevsim',
+    'theme.classic':'Klasik','theme.sakura_photo':'Sakura Foto','theme.sakura':'Sakura','theme.ozean':'Okyanus','theme.wald':'Orman','theme.sunset':'Gün batımı','theme.neon':'Neon','theme.bluetenwiese':'Çiçek çayırı','theme.sternennacht':'Yıldızlı gece','theme.geometrie':'Geometri','theme.marmor':'Mermer','theme.goldrausch':'Altın','theme.japan_sakura_moon':'Sakura ve Ay','theme.japan_bamboo':'Bambu korusu','theme.japan_koi':'Koi havuzu','theme.japan_momiji':'Momiji sonbahar','theme.japan_yonkisetsu':'Dört mevsim','theme.halloween':'Cadılar Bayramı','theme.weihnachten':'Noel','theme.ostern':'Paskalya','theme.sommer':'Yaz','season.halloween':'🎃 Cadılar Bayramı','season.xmas':'❄️ Noel','season.easter':'🌸 Paskalya','season.summer':'☀️ Yaz',
     'tp.activate':'Etkinleştir','tp.active':'✓ Aktif','tp.buyFmt':'🪙 {price} ile satın al',
     'tp.tag.japan':'Japonya Paketi','tp.tag.wallpaper':'Foto arka plan','tp.tag.fx':'Animasyon','tp.tag.sound':'Özel ses','tp.tag.classic':'Klasik tasarım',
-    'stats.title':'İstatistik','stats.winrate':'Kazanma %','stats.avgtime':'Ort. süre','stats.perfect':'Kusursuz','stats.errors':'Ort. hata','stats.hints':'Ort. ipucu','stats.total':'Oyun','stats.colMode':'Mod','stats.colGames':'Oyun','stats.colAvg':'Ort. süre','stats.colBest':'Rekor','stats.last30':'Son 30 gün',
+    'stats.title':'İstatistik','stats.winrate':'Kazanma %','stats.avgtime':'Ort. süre','stats.perfect':'Kusursuz','stats.errors':'Ort. hata','stats.hints':'Ort. ipucu','stats.total':'Oyun','stats.colMode':'Mod','stats.colGames':'Oyun','stats.colAvg':'Ort. süre','stats.colBest':'Rekor','stats.last30':'Son 30 gün','stats.trend':'Rekor zamanı','stats.allDiffs':'Tümü','stats.trendEmpty':'Henüz veri yok','stats.diffShare':'Zorluklar','stats.weekday':'Haftanın günü','wd.mo':'Pzt','wd.tu':'Sal','wd.we':'Çar','wd.th':'Per','wd.fr':'Cum','wd.sa':'Cmt','wd.su':'Paz',
     'reminder.activeFmt':'Her gün {time}.','reminder.activeTitle':'Hatırlatıcı açık','reminder.timeUpdatedTitle':'Saat güncellendi','reminder.blockedNative':'iOS Ayarları’ndan etkinleştir.','reminder.blockedWeb':'Tarayıcıda etkinleştir.','reminder.blockedTitle':'Bildirimler engellendi',
   },
   ja: {
@@ -3265,10 +3362,10 @@ const LANG = {
     'home.reminder':'⏰ 今日まだプレイしていません。連続記録を絶やさないために一局どうぞ。',
     'diff.title':'難易度','diff.choose':'レベルを選択',
     'diff.leicht':'簡単','diff.mittel':'普通','diff.schwer':'難しい','diff.experte':'エキスパート',
-    'game.lvl':'Lv','game.level':'レベル','game.spiel':'ゲーム','game.erase':'消去','game.notes':'メモ','game.hint':'ヒント','game.new':'新規','game.tipp':'ヒント','game.undo':'戻す','game.restart':'リスタート','game.restartConfirm':'このレベルをリスタートしますか？入力・時間・ライフがすべてリセットされます。',
+    'game.lvl':'Lv','game.level':'レベル','game.spiel':'ゲーム','game.erase':'消去','game.notes':'メモ','game.hint':'ヒント','game.new':'新規','game.tipp':'ヒント','game.undo':'戻す','game.restart':'リスタート','game.restartConfirm':'このレベルをリスタートしますか？入力・時間・ライフがすべてリセットされます。','game.training':'· 練習',
     'win.title':'クリア！🎉','win.next':'次のレベル','win.home':'ホームへ','win.retry':'もう一度',
     'win.lblTime':'タイム','win.lblErrors':'ミス','win.lblHints':'ヒント','win.newRecord':'⭐ ベスト記録！',
-    'win.solved':'ゲーム {n} クリア。','win.streakAdd':' 連続: {n}{label}。','win.adNext':' 短い広告が流れます。',
+    'win.solved':'ゲーム {n} クリア。','win.streakAdd':' 連続: {n}{label}。','win.adNext':' 短い広告が流れます。','win.training':'練習スドクをクリア — お見事！','win.trainingReward':'+{xp} XP · +{coins} 🪙。',
     'lose.title':'残念！','lose.text':'ライフがありません。もう一度挑戦しますか？','lose.retry':'もう一度','lose.home':'ホームへ',
     'revive.title':'もう1つライフ？','revive.text':'短い動画を見るか、<strong>150 🪙</strong> を払って追加ライフを獲得してください。',
     'revive.watch':'動画を見る','revive.coins':'コインで支払う','revive.cancel':'あきらめる',
@@ -3284,7 +3381,7 @@ const LANG = {
     'auth.google':'Googleで続ける','auth.apple':'Appleで続ける','auth.facebook':'Facebookで続ける','auth.email':'メールで続ける','auth.or':'または','auth.skip':'アカウントなしで続ける',
     'auth.legal':'サインインすると、<a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">利用規約</a>と<a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">プライバシーポリシー</a>に同意したものとみなされます。','auth.welcome':'サインインしました',
     'email.title':'メールでサインイン','email.text':'ログインリンクをメールでお送りします。','email.placeholder':'your@email.com','email.send':'リンク送信','email.cancel':'キャンセル','email.sent':'メール送信済み','email.sentSub':'受信ボックスのリンクをタップしてください。','email.invalid':'無効なメールアドレス','email.invalidSub':'正しいアドレスを入力してください。','email.fail':'サインイン失敗',
-    'settings.title':'設定','settings.lang':'言語','settings.vibrate':'バイブレーション','settings.sound':'サウンド','settings.dark':'ダークモード','settings.tutorial':'チュートリアルを表示','settings.kleinkind':'初心者モード','settings.kleinkindDesc':'同じ数字を自動でハイライトします。',
+    'settings.title':'設定','settings.lang':'言語','settings.vibrate':'バイブレーション','settings.sound':'サウンド','settings.dark':'ダークモード','settings.tutorial':'チュートリアルを表示','settings.kleinkind':'初心者モード','settings.kleinkindDesc':'練習モード：タイマー・ライフなし、少量の報酬。',
     'settings.reminder':'毎日のリマインダー','settings.reminderTime':'リマインダー時刻',
     'settings.removeAds':'広告を削除','settings.adFreeOn':'有効 ✓','settings.adFreePrice':'9.99€ ›','settings.restore':'購入を復元','settings.restoreOk':'広告非表示が有効。','settings.restoreNone':'購入は見つかりませんでした。',
     'settings.rate':'評価する','settings.contact':'お問い合わせ','settings.privacy':'プライバシー','settings.imprint':'運営者情報',
@@ -3326,15 +3423,15 @@ const LANG = {
     'daily.title':'デイリー・チャレンジ','daily.subOpen':'毎日全員に同じパズル','daily.subDoneFmt':'本日は {time} でクリア','daily.subDonePerfect':'本日は {time} でクリア・パーフェクト！','daily.gameLabel':'📅 デイリー・チャレンジ','daily.winHome':'🏠 ホームへ戻る',
     'quests.title':'🎯 デイリー・クエスト','quests.resetFmt':'{h}時間 {m}分 後にリセット','quests.claimedTitle':'クエスト達成',
     'quests.q.play3':'パズルを3問解く','quests.q.noErrors':'ノーミスでクリア','quests.q.daily':'デイリー・チャレンジをクリア','quests.q.hard':'「難しい」をクリア','quests.q.noHints':'ヒント無しでクリア','quests.q.fast':'「ふつう」を5分以内でクリア',
-    'lb.title':'📅 デイリー・ランキング','lb.tabs.today':'今日','lb.tabs.yesterday':'昨日','lb.tabs.dayBefore':'一昨日','lb.loading':'読み込み中 …','lb.connFail':'接続に失敗しました。','lb.empty':'まだ記録なし — 最初の一人になろう！','lb.needAuth':'ランキングに参加するにはサインインしてね。','lb.myRankFmt':'あなたの順位: #{rank}','lb.perfect':'パーフェクト','lb.suffixMittel':'ふつう','lb.playerFallback':'プレイヤー',
+    'lb.title':'📅 デイリー・ランキング','lb.titleWeekly':'📆 ウィークリー・ランキング','lb.titleMonthly':'🗓️ マンスリー・ランキング','lb.tabs.today':'今日','lb.tabs.yesterday':'昨日','lb.tabs.dayBefore':'一昨日','lb.tabs.thisWeek':'今週','lb.tabs.lastWeek':'先週','lb.tabs.weekBefore':'先々週','lb.tabs.thisMonth':'今月','lb.tabs.lastMonth':'先月','lb.tabs.monthBefore':'先々月','lb.loading':'読み込み中 …','lb.connFail':'接続に失敗しました。','lb.empty':'まだ記録なし — 最初の一人になろう！','lb.needAuth':'ランキングに参加するにはサインインしてね。','lb.myRankFmt':'あなたの順位: #{rank}','lb.perfect':'パーフェクト','lb.suffixMittel':'ふつう','lb.suffixSchwer':'むずかしい','lb.suffixExperte':'エキスパート','lb.playerFallback':'プレイヤー','weekly.title':'ウィークリー・チャレンジ','weekly.subOpen':'毎週全員に同じパズル','weekly.subDoneFmt':'今週は {time} でクリア','weekly.subDonePerfect':'今週は {time} でクリア・パーフェクト！','weekly.gameLabel':'📆 ウィークリー・チャレンジ','monthly.title':'マンスリー・チャレンジ','monthly.subOpen':'毎月全員に同じパズル','monthly.subDoneFmt':'今月は {time} でクリア','monthly.subDonePerfect':'今月は {time} でクリア・パーフェクト！','monthly.gameLabel':'🗓️ マンスリー・チャレンジ',
     'lvlup.title':'レベル','lvlup.sub':'すごい！新レベル達成。','lvlup.coins':'コイン','lvlup.shield':'連続シールド','lvlup.bonus':'🎁 マイルストーン・ボーナス！','lvlup.continue':'続ける','lvlup.coinDoubler':'×2',
     'doubler.section':'💰 コイン・ダブラー','doubler.name':'コイン・ダブラー','doubler.desc':'これからもらうコインが全て2倍に — 永久・1回払い。','doubler.modalTitle':'🪙×2 コイン・ダブラー','doubler.modalText':'獲得した全てのコインを永久に2倍化（ゲーム・実績・ログイン）。買い切り 3,99 €。','doubler.confirm':'今すぐ購入','doubler.cancel':'あとで','doubler.active':'✓ 有効','doubler.alreadyTitle':'ダブラー有効','doubler.alreadyMsg':'コインは既に2倍化されています。','doubler.boughtMsg':'コインがこれから2倍化されます。','doubler.coinSubFmt':'+{n} コイン（×2）','doubler.coinSubPlain':'+{n} コイン',
     'bundle.section':'🎁 テーマパック','bundle.unlocked':'✓ 解放済み','bundle.alreadyDesc':'このパックの全デザインは既に解放済みです。','bundle.unlockedFmt':'新しいデザイン {n} 個が利用可能。',
     'bundle.japan.name':'ジャパン・パック','bundle.japan.desc':'専用サウンドとアニメ付きの5デザイン — 桜・竹・鯉・紅葉・四季',
-    'theme.classic':'クラシック','theme.sakura_photo':'桜（写真）','theme.sakura':'桜','theme.ozean':'オーシャン','theme.wald':'森','theme.sunset':'夕焼け','theme.neon':'ネオン','theme.bluetenwiese':'花畑','theme.sternennacht':'星空','theme.geometrie':'ジオメトリ','theme.marmor':'大理石','theme.goldrausch':'ゴールド','theme.japan_sakura_moon':'桜と月','theme.japan_bamboo':'竹林','theme.japan_koi':'鯉の池','theme.japan_momiji':'紅葉','theme.japan_yonkisetsu':'四季',
+    'theme.classic':'クラシック','theme.sakura_photo':'桜（写真）','theme.sakura':'桜','theme.ozean':'オーシャン','theme.wald':'森','theme.sunset':'夕焼け','theme.neon':'ネオン','theme.bluetenwiese':'花畑','theme.sternennacht':'星空','theme.geometrie':'ジオメトリ','theme.marmor':'大理石','theme.goldrausch':'ゴールド','theme.japan_sakura_moon':'桜と月','theme.japan_bamboo':'竹林','theme.japan_koi':'鯉の池','theme.japan_momiji':'紅葉','theme.japan_yonkisetsu':'四季','theme.halloween':'ハロウィン','theme.weihnachten':'クリスマス','theme.ostern':'イースター','theme.sommer':'サマー','season.halloween':'🎃 ハロウィン','season.xmas':'❄️ クリスマス','season.easter':'🌸 イースター','season.summer':'☀️ サマー',
     'tp.activate':'適用','tp.active':'✓ 有効','tp.buyFmt':'🪙 {price} で購入',
     'tp.tag.japan':'ジャパン・パック','tp.tag.wallpaper':'写真背景','tp.tag.fx':'アニメ','tp.tag.sound':'専用サウンド','tp.tag.classic':'クラシックデザイン',
-    'stats.title':'統計','stats.winrate':'勝率','stats.avgtime':'平均時間','stats.perfect':'パーフェクト','stats.errors':'平均ミス','stats.hints':'平均ヒント','stats.total':'プレイ数','stats.colMode':'モード','stats.colGames':'プレイ','stats.colAvg':'平均','stats.colBest':'記録','stats.last30':'直近30日',
+    'stats.title':'統計','stats.winrate':'勝率','stats.avgtime':'平均時間','stats.perfect':'パーフェクト','stats.errors':'平均ミス','stats.hints':'平均ヒント','stats.total':'プレイ数','stats.colMode':'モード','stats.colGames':'プレイ','stats.colAvg':'平均','stats.colBest':'記録','stats.last30':'直近30日','stats.trend':'記録の推移','stats.allDiffs':'全て','stats.trendEmpty':'データが不足しています','stats.diffShare':'難易度','stats.weekday':'曜日','wd.mo':'月','wd.tu':'火','wd.we':'水','wd.th':'木','wd.fr':'金','wd.sa':'土','wd.su':'日',
     'reminder.activeFmt':'毎日 {time} に。','reminder.activeTitle':'リマインダー有効','reminder.timeUpdatedTitle':'時刻を更新','reminder.blockedNative':'iOS設定で有効化してください。','reminder.blockedWeb':'ブラウザで有効化してください。','reminder.blockedTitle':'通知がブロックされています',
   },
 };
@@ -3646,21 +3743,23 @@ function mergeCloudIntoLocal(local, cloud) {
   ['adFree','rated','tutorialSeen','authSeen','coinDoubler'].forEach(k => {
     merged[k] = !!(local[k] || cloud[k]);
   });
-  // dailyResults: best time pro Datum gewinnt
-  merged.dailyResults = (() => {
-    const out = {};
-    const both = Object.assign({}, cloud.dailyResults || {}, local.dailyResults || {});
-    Object.keys(both).forEach(k => {
-      const a = local.dailyResults?.[k]?.time;
-      const b = cloud.dailyResults?.[k]?.time;
-      if (a && b) {
-        out[k] = a < b ? local.dailyResults[k] : cloud.dailyResults[k];
-      } else {
-        out[k] = local.dailyResults?.[k] || cloud.dailyResults?.[k];
-      }
-    });
-    return out;
-  })();
+  // dailyResults / weeklyResults / monthlyResults: best time pro Periode gewinnt
+  ['dailyResults', 'weeklyResults', 'monthlyResults'].forEach(field => {
+    merged[field] = (() => {
+      const out = {};
+      const both = Object.assign({}, cloud[field] || {}, local[field] || {});
+      Object.keys(both).forEach(k => {
+        const a = local[field]?.[k]?.time;
+        const b = cloud[field]?.[k]?.time;
+        if (a && b) {
+          out[k] = a < b ? local[field][k] : cloud[field][k];
+        } else {
+          out[k] = local[field]?.[k] || cloud[field]?.[k];
+        }
+      });
+      return out;
+    })();
+  });
   return merged;
 }
 
@@ -3706,6 +3805,48 @@ async function fetchDailyLeaderboard(dateKey, limit = 100) {
     if (error) throw error;
     return data || [];
   } catch (e) { console.warn('fetchDailyLeaderboard failed:', e); return null; }
+}
+
+// Weekly/Monthly: generische Tabelle challenge_scores mit (kind, period_key)
+async function submitChallengeScore(kind, periodKey, timeSeconds, perfect, errors, hints) {
+  const sb = await loadSupabase();
+  if (!sb || !state.account?.id) return;
+  try {
+    const { data: existing } = await sb
+      .from('challenge_scores')
+      .select('time_seconds')
+      .eq('user_id', state.account.id)
+      .eq('kind', kind)
+      .eq('period_key', periodKey)
+      .maybeSingle();
+    if (existing?.time_seconds && existing.time_seconds <= timeSeconds) return;
+    await sb.from('challenge_scores').upsert({
+      user_id: state.account.id,
+      kind,
+      period_key: periodKey,
+      time_seconds: timeSeconds,
+      perfect: !!perfect,
+      errors: errors || 0,
+      hints: hints || 0,
+      display_name: state.account.displayName || state.account.email?.split('@')[0] || 'Spieler',
+    }, { onConflict: 'user_id,kind,period_key' });
+  } catch (e) { console.warn('submitChallengeScore failed:', e); }
+}
+
+async function fetchChallengeLeaderboard(kind, periodKey, limit = 100) {
+  const sb = await loadSupabase();
+  if (!sb) return null;
+  try {
+    const { data, error } = await sb
+      .from('challenge_scores')
+      .select('user_id, time_seconds, perfect, errors, hints, display_name')
+      .eq('kind', kind)
+      .eq('period_key', periodKey)
+      .order('time_seconds', { ascending: true })
+      .limit(limit);
+    if (error) throw error;
+    return data || [];
+  } catch (e) { console.warn('fetchChallengeLeaderboard failed:', e); return null; }
 }
 
 async function fetchMyDailyRank(dateKey) {
@@ -3761,6 +3902,7 @@ function show(name) {
     el.classList.toggle('active', el.dataset.tab === name);
   });
   if (name !== 'game') stopIdleTimer();
+  if (name !== 'game') document.body.classList.remove('training-mode');
   if (name === 'home') refreshHome();
   if (name === 'sammlung') refreshSammlung();
   if (name === 'shop') refreshShop();
@@ -3900,7 +4042,7 @@ function countSolutionsUpTo(board, limit) {
   return count;
 }
 
-function generatePuzzle(difficulty, levelNum) {
+function generatePuzzleProcedural(difficulty, levelNum) {
   // Gleicher Seed = identisches Puzzle für alle Spieler
   const rand = seededRng(hashSeed(`${difficulty}-v2-${levelNum}`));
   const solved = generateSolved(rand);
@@ -3924,6 +4066,40 @@ function generatePuzzle(difficulty, levelNum) {
   return { solved, puzzle };
 }
 
+// Vor-generierte Level-Packs (siehe build-levels.mjs).  Werden lazy beim ersten
+// Bedarf gefetcht und im Speicher gehalten.  Fallback: prozedurale Erzeugung,
+// falls Datei fehlt oder Level-Nr außerhalb des Packs liegt.
+const LEVEL_PACKS = {};        // { leicht: [...], ... }
+const LEVEL_PACK_PROMISES = {}; // { leicht: Promise<...>, ... }
+function strToGrid(s) {
+  const g = [];
+  for (let r = 0; r < 9; r++) {
+    const row = [];
+    for (let c = 0; c < 9; c++) row.push(+s[r * 9 + c]);
+    g.push(row);
+  }
+  return g;
+}
+function loadLevelPack(diff) {
+  if (LEVEL_PACKS[diff]) return Promise.resolve(LEVEL_PACKS[diff]);
+  if (LEVEL_PACK_PROMISES[diff]) return LEVEL_PACK_PROMISES[diff];
+  LEVEL_PACK_PROMISES[diff] = fetch(`levels/${diff}.json`)
+    .then(r => r.ok ? r.json() : null)
+    .then(json => { if (Array.isArray(json)) LEVEL_PACKS[diff] = json; return LEVEL_PACKS[diff] || null; })
+    .catch(() => null);
+  return LEVEL_PACK_PROMISES[diff];
+}
+function generatePuzzle(difficulty, levelNum) {
+  const pack = LEVEL_PACKS[difficulty];
+  if (pack && levelNum >= 1 && levelNum <= pack.length) {
+    const entry = pack[levelNum - 1];
+    return { solved: strToGrid(entry.s), puzzle: strToGrid(entry.p) };
+  }
+  return generatePuzzleProcedural(difficulty, levelNum);
+}
+// Pre-fetch aller Packs im Hintergrund (Service Worker cached's anschließend)
+['leicht','mittel','schwer','experte'].forEach(d => loadLevelPack(d));
+
 /* =========================================================
    GAME
 ========================================================= */
@@ -3944,6 +4120,7 @@ const game = {
   timer: 0,            // seconds elapsed
   timerInt: null,
   finished: false,
+  isTraining: false,   // Kleinkind-/Übungsmodus: ohne Zeit, Leben, Wertung
 };
 
 function formatTime(s) {
@@ -3970,7 +4147,7 @@ document.addEventListener('visibilitychange', () => {
   const gameActive = document.getElementById('screen-game')?.classList.contains('active');
   if (document.hidden) {
     if (game.timerInt) stopTimer();
-  } else if (gameActive && !game.finished && game.solved) {
+  } else if (gameActive && !game.finished && game.solved && !game.isTraining) {
     if (!game.timerInt) startTimer();
   }
 });
@@ -3996,6 +4173,8 @@ function startGame(diff, levelNum) {
   game.timer = 0;
   game.reviveUsed = false;
   game.finished = false;
+  game.isTraining = !!state.kleinkindMode;
+  document.body.classList.toggle('training-mode', game.isTraining);
   clearSavedGame();
 
   document.getElementById('game-diff').textContent = t('diff.' + diff);
@@ -4013,7 +4192,7 @@ function startGame(diff, levelNum) {
   updateProgress();
   show('game');
   resetIdleTimer();
-  startTimer();
+  if (!game.isTraining) startTimer();
 }
 
 function buildBoard() {
@@ -4135,14 +4314,19 @@ function inputDigit(n) {
       game.board[r][c] = 0;
       renderBoard();
     }, 500);
-    game.lives--;
-    game.errorsThisGame++;
-    renderHearts();
-    if (game.lives <= 0) {
-      stopIdleTimer();
-      offerRevive();
-    } else {
+    if (game.isTraining) {
+      // Übungsmodus: Fehler zeigen, aber kein Leben abziehen, kein Game-Over
       saveCurrentGame();
+    } else {
+      game.lives--;
+      game.errorsThisGame++;
+      renderHearts();
+      if (game.lives <= 0) {
+        stopIdleTimer();
+        offerRevive();
+      } else {
+        saveCurrentGame();
+      }
     }
   } else {
     vibrate(20);
@@ -4420,6 +4604,43 @@ function winGame() {
   stopTimer();
   const finalTime = game.timer;
 
+  // Übungsmodus: abgeschwächte Belohnung — wenig XP/Coins, Streak halten,
+  // Completed zählt für Achievements; KEIN Bestzeit/Leaderboard/Win-Streak/perfectGames.
+  if (game.isTraining) {
+    state.completed++;
+    state.completedByDifficulty = state.completedByDifficulty || { leicht: 0, mittel: 0, schwer: 0, experte: 0 };
+    state.completedByDifficulty[game.difficulty] = (state.completedByDifficulty[game.difficulty] || 0) + 1;
+    state.levels = state.levels || { leicht: 1, mittel: 1, schwer: 1, experte: 1 };
+    if (game.levelNum >= state.levels[game.difficulty]) {
+      state.levels[game.difficulty] = game.levelNum + 1;
+    }
+    state.coins = (state.coins || 0) + TRAINING_COINS * (state.coinDoubler ? 2 : 1);
+    awardXP(TRAINING_XP);
+    const newDayT = bumpDailyStreak();
+    clearSavedGame();
+    saveState();
+    checkAchievements({ difficulty: game.difficulty, noHint: game.hintsUsedThisGame === 0, timeSec: 0 });
+
+    document.getElementById('win-time').textContent = '–';
+    document.getElementById('win-errors').textContent = game.errorsThisGame;
+    document.getElementById('win-hints').textContent = game.hintsUsedThisGame;
+    const recEl = document.getElementById('win-record');
+    if (recEl) recEl.classList.add('hidden');
+    const nextBtn = document.getElementById('btn-win-next');
+    if (nextBtn) {
+      nextBtn.textContent = t('win.next') + ' (' + (game.levelNum + 1) + ')';
+      nextBtn.dataset.action = 'next';
+    }
+    let msgT = t('win.training');
+    msgT += ' ' + t('win.trainingReward', { xp: TRAINING_XP, coins: TRAINING_COINS * (state.coinDoubler ? 2 : 1) });
+    if (newDayT) msgT += t('win.streakAdd', { n: state.streak, label: state.streak === 1 ? t('home.day') : t('home.days') });
+    document.getElementById('win-text').textContent = msgT;
+    document.getElementById('overlay-win').classList.add('active');
+    playSfx('win');
+    fireConfetti();
+    return;
+  }
+
   state.completed++;
   state.completedByDifficulty = state.completedByDifficulty || { leicht: 0, mittel: 0, schwer: 0, experte: 0 };
   state.completedByDifficulty[game.difficulty] = (state.completedByDifficulty[game.difficulty] || 0) + 1;
@@ -4430,9 +4651,9 @@ function winGame() {
   if (isPerfect) state.perfectGames = (state.perfectGames || 0) + 1;
 
   let isNewLevelRecord = false, isNewOverallBest = false;
-  if (!game.isDailyChallenge) {
+  if (!game.challengeKind) {
     // Bestzeit pro Level + insgesamt — NUR für reguläre Spiele,
-    // sonst würden die abnormen Daily-Seed-Levelnummern den Speicher verseuchen
+    // sonst würden die abnormen Challenge-Seed-Levelnummern den Speicher verseuchen
     state.bestTimesByLevel = state.bestTimesByLevel || { leicht: {}, mittel: {}, schwer: {}, experte: {} };
     state.bestTimesByLevel[game.difficulty] = state.bestTimesByLevel[game.difficulty] || {};
     const oldLevelBest = state.bestTimesByLevel[game.difficulty][game.levelNum];
@@ -4462,8 +4683,23 @@ function winGame() {
     hints: game.hintsUsedThisGame || 0,
     perfect: isPerfect,
     daily: !!game.isDailyChallenge,
+    challenge: game.challengeKind || null,
   });
   if (state.history.length > 200) state.history = state.history.slice(-200);
+
+  // Weekly/Monthly Challenge Result + Cloud-Submit
+  if ((game.challengeKind === 'weekly' || game.challengeKind === 'monthly') && game.challengeKey) {
+    const field = challengeResultsField(game.challengeKind);
+    state[field] = state[field] || {};
+    const prev = state[field][game.challengeKey];
+    if (!prev || finalTime < prev.time) {
+      state[field][game.challengeKey] = { time: finalTime, perfect: isPerfect };
+    }
+    if (typeof submitChallengeScore === 'function') {
+      submitChallengeScore(game.challengeKind, game.challengeKey, finalTime, isPerfect, game.errorsThisGame, game.hintsUsedThisGame || 0)
+        .catch(() => {});
+    }
+  }
 
   // Daily Challenge Result
   if (game.isDailyChallenge && game.dailyKey) {
@@ -4498,7 +4734,7 @@ function winGame() {
     daily: !!game.isDailyChallenge,
   });
 
-  awardXP(game.difficulty);
+  awardXP(XP_PER_WIN[game.difficulty] || 10);
   const newDay = bumpDailyStreak();
   clearSavedGame();
   saveState();
@@ -4898,6 +5134,15 @@ const PATTERN_HEX     = "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3
 const PATTERN_MARBLE  = "linear-gradient(135deg, rgba(180,180,200,0.18) 0%, transparent 22%, transparent 50%, rgba(180,180,200,0.14) 70%, transparent 92%), linear-gradient(60deg, transparent 40%, rgba(140,150,180,0.10) 60%, transparent 80%)";
 const PATTERN_GOLD    = "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='70' height='70' viewBox='0 0 70 70'><g fill='%23D4AF37' opacity='0.45'><circle cx='12' cy='12' r='1.4'/><circle cx='38' cy='20' r='2'/><circle cx='58' cy='14' r='1.2'/><circle cx='22' cy='38' r='1.6'/><circle cx='50' cy='44' r='1.2'/><circle cx='8' cy='56' r='1.4'/><circle cx='32' cy='62' r='1.8'/><circle cx='62' cy='58' r='1.4'/></g></svg>\")";
 
+// Saison-Patterns: kleine stilisierte Symbole, niedrige Deckkraft → dezenter Hintergrund
+const PATTERN_HALLOWEEN = "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g opacity='0.32'><g fill='%23FF7B1A'><ellipse cx='20' cy='28' rx='9' ry='7.5'/><ellipse cx='15' cy='28' rx='4.5' ry='7'/><ellipse cx='25' cy='28' rx='4.5' ry='7'/></g><rect x='19' y='19' width='2' height='4' fill='%234A2A0F'/><g fill='%231A0F1F'><polygon points='15,26 18,29 12,29'/><polygon points='25,26 22,29 28,29'/><path d='M14 32 Q20 35 26 32 L24 33 L22 31 L20 33 L18 31 L16 33 Z'/></g><g fill='%23BB6BFF'><circle cx='62' cy='62' r='2'/><circle cx='58' cy='66' r='1.4'/><circle cx='66' cy='66' r='1.4'/><circle cx='60' cy='70' r='1.6'/><circle cx='64' cy='70' r='1.6'/></g></g></svg>\")";
+
+const PATTERN_SNOWFLAKE = "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 90 90'><g fill='none' stroke='%23C8102E' stroke-width='1.3' stroke-linecap='round' opacity='0.28'><g transform='translate(22 22)'><line x1='0' y1='-9' x2='0' y2='9'/><line x1='-9' y1='0' x2='9' y2='0'/><line x1='-6' y1='-6' x2='6' y2='6'/><line x1='-6' y1='6' x2='6' y2='-6'/><circle r='1.2' fill='%23C8102E' stroke='none'/></g><g transform='translate(66 60)'><line x1='0' y1='-7' x2='0' y2='7'/><line x1='-7' y1='0' x2='7' y2='0'/><line x1='-5' y1='-5' x2='5' y2='5'/><line x1='-5' y1='5' x2='5' y2='-5'/><circle r='1' fill='%23C8102E' stroke='none'/></g></g><g fill='%23166534' opacity='0.22'><polygon points='50,12 54,20 58,12'/><polygon points='52,18 47,28 57,28'/><polygon points='52,26 45,36 59,36'/><rect x='51' y='35' width='2' height='3'/></g></svg>\")";
+
+const PATTERN_EASTER = "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g opacity='0.34'><ellipse cx='20' cy='22' rx='6' ry='8' fill='%23FFB1C5'/><g stroke='%23FFFFFF' stroke-width='1.2' fill='none' opacity='0.85'><path d='M14 22 Q20 19 26 22'/><path d='M14 26 Q20 23 26 26'/></g><ellipse cx='58' cy='58' rx='6' ry='8' fill='%237ED4B0'/><g stroke='%23FFFFFF' stroke-width='1.2' fill='none' opacity='0.85'><path d='M52 56 Q58 53 64 56'/><circle cx='56' cy='60' r='1.4'/><circle cx='60' cy='60' r='1.4'/></g><ellipse cx='62' cy='20' rx='5' ry='6.5' fill='%23FFE17A'/><circle cx='14' cy='62' r='5' fill='%23B6D8F2'/></g></svg>\")";
+
+const PATTERN_SUMMER = "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><g opacity='0.28'><g transform='translate(20 22)' fill='%23FFC93C'><circle r='6'/><g stroke='%23FFC93C' stroke-width='2' stroke-linecap='round'><line x1='0' y1='-11' x2='0' y2='-9'/><line x1='0' y1='9' x2='0' y2='11'/><line x1='-11' y1='0' x2='-9' y2='0'/><line x1='9' y1='0' x2='11' y2='0'/><line x1='-7.7' y1='-7.7' x2='-6.4' y2='-6.4'/><line x1='6.4' y1='6.4' x2='7.7' y2='7.7'/><line x1='-7.7' y1='7.7' x2='-6.4' y2='6.4'/><line x1='6.4' y1='-6.4' x2='7.7' y2='-7.7'/></g></g><g fill='none' stroke='%2300B8D4' stroke-width='1.6' stroke-linecap='round'><path d='M50 70 Q58 64 66 70 T82 70'/><path d='M14 80 Q22 74 30 80 T46 80'/><path d='M58 84 Q66 78 74 84 T90 84'/></g></g></svg>\")";
+
 const THEMES = {
   classic:        { name: 'Classic',       price: 0,    primary: '#5C5CF0', primarySoft: '#EAEAFD', primaryLight: '#A5A8E8', cellBg: '#fff',    cellPeer: '#EEF0FA', cellSelected: '#C8C9FA', cellSame: '#DEDFFB', cellUser: '#5C5CF0' },
   sakura_photo:   { name: 'Sakura Foto',   price: 50,   primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4', cellBg: 'rgba(255,248,251,0.92)', cellPeer: 'rgba(252,224,236,0.85)', cellSelected: 'rgba(249,168,212,0.85)', cellSame: 'rgba(251,207,232,0.85)', cellUser: '#DB2777', wallpaper: { light: 'sakura.jpeg', dark: 'sakuradark.jpeg' } },
@@ -4936,6 +5181,25 @@ const THEMES = {
     primary: '#7E57C2', primarySoft: '#EDE3F8', primaryLight: '#B89BD9',
     cellBg: 'rgba(253,251,247,0.92)', cellPeer: 'rgba(232,222,242,0.88)', cellSelected: 'rgba(184,155,217,0.82)', cellSame: 'rgba(216,200,235,0.85)', cellUser: '#5E3B96',
     wallpaper: { light: 'japan_yonkisetsu.jpeg', dark: 'japan_yonkisetsu_dark.jpeg' } },
+
+  // ===== Saison-Themes — nur in ihrem Monat sichtbar (außer für Owner) =====
+  // FOMO-Mechanik: Theme verschwindet nach Saison wieder aus dem Shop.
+  halloween: { name: 'Halloween', price: 800, season: 'halloween', months: [10],
+    primary: '#FF7B1A', primarySoft: '#3A1F2C', primaryLight: '#FFB36B',
+    cellBg: '#2A1A35', cellPeer: '#3A2548', cellSelected: '#5C2E80', cellSame: '#4A2A66', cellUser: '#FFB36B', cellGiven: '#F5E6D3',
+    bgPattern: PATTERN_HALLOWEEN, bgColor: '#1A0F1F', dark: true },
+  weihnachten: { name: 'Weihnachten', price: 800, season: 'xmas', months: [12],
+    primary: '#C8102E', primarySoft: '#FCE4E7', primaryLight: '#F08A99',
+    cellBg: '#FFFDF8', cellPeer: '#F5EAEB', cellSelected: '#F08A99', cellSame: '#FAD0D5', cellUser: '#0F5132',
+    bgPattern: PATTERN_SNOWFLAKE, bgColor: '#FBF5EE' },
+  ostern: { name: 'Ostern', price: 700, season: 'easter', months: [3, 4],
+    primary: '#FF8FA3', primarySoft: '#FFF0F5', primaryLight: '#FFC2CD',
+    cellBg: '#FFFAFC', cellPeer: '#FCE9EE', cellSelected: '#FFC2CD', cellSame: '#FCDCE3', cellUser: '#D63B5C',
+    bgPattern: PATTERN_EASTER, bgColor: '#FFF8FB' },
+  sommer: { name: 'Sommer', price: 700, season: 'summer', months: [6, 7, 8],
+    primary: '#00B8D4', primarySoft: '#E0F7FA', primaryLight: '#80DEEA',
+    cellBg: '#FFFEF6', cellPeer: '#E5F6F8', cellSelected: '#80DEEA', cellSame: '#B2EBF2', cellUser: '#00838F',
+    bgPattern: PATTERN_SUMMER, bgColor: '#FFFCE8' },
 };
 
 // Themen-Pakete (Bundles): kauft alle pkg-Themes auf einmal mit Rabatt frei
@@ -5086,8 +5350,28 @@ function previewDecoHtml(fx) {
 }
 function previewTagHtml(th) {
   if (th.pkg === 'japan') return `<span class="pv-tag" style="background:rgba(236,72,153,0.85);">Japan</span>`;
+  if (th.season) {
+    const colors = { halloween: 'rgba(255,123,26,0.92)', xmas: 'rgba(200,16,46,0.92)', easter: 'rgba(255,143,163,0.92)', summer: 'rgba(0,184,212,0.92)' };
+    return `<span class="pv-tag" style="background:${colors[th.season] || 'rgba(0,0,0,0.6)'};">${t('season.' + th.season)}</span>`;
+  }
   if (th.bgPattern || th.wallpaper) return `<span class="pv-tag" style="background:rgba(0,0,0,0.55);">Premium</span>`;
   return '';
+}
+
+// Saison-Theme nur sichtbar im richtigen Monat (oder wenn Owner).
+// Aktiviert FOMO: Theme verschwindet außerhalb der Saison komplett aus dem Shop.
+// Test-Override: ?season=halloween|xmas|easter|summer|all in der URL macht
+// das/die Saison-Theme(s) auch außerhalb ihres Monats sichtbar.
+function getSeasonOverride() {
+  try { return new URLSearchParams(location.search).get('season') || null; } catch { return null; }
+}
+function isThemeAvailable(id, th) {
+  if (!th.season) return true;
+  if (state.unlockedThemes?.[id]) return true; // Owner sehen ihre Themes immer
+  const ov = getSeasonOverride();
+  if (ov === 'all' || ov === th.season) return true;
+  const month = new Date().getMonth() + 1; // 1-12
+  return (th.months || []).includes(month);
 }
 // Berechnet die Hintergrund-CSS-Eigenschaften für ein Wallpaper/Pattern
 function previewBgStyleFor(th) {
@@ -5101,6 +5385,7 @@ function buildThemeGrid() {
   grid.innerHTML = '';
   Object.keys(THEMES).forEach(id => {
     const th = THEMES[id];
+    if (!isThemeAvailable(id, th)) return; // Saison-Theme außerhalb seines Monats: ausblenden
     const owned = !!state.unlockedThemes?.[id] || th.price === 0;
     const active = state.theme === id;
     const card = document.createElement('button');
@@ -5647,6 +5932,9 @@ function saveCurrentGame() {
     reviveUsed: game.reviveUsed || false,
     isDailyChallenge: !!game.isDailyChallenge,
     dailyKey: game.dailyKey || null,
+    challengeKind: game.challengeKind || null,
+    challengeKey: game.challengeKey || null,
+    isTraining: !!game.isTraining,
   };
   saveState();
 }
@@ -5677,18 +5965,23 @@ function loadSavedGame() {
   game.reviveUsed = g.reviveUsed || false;
   game.isDailyChallenge = !!g.isDailyChallenge;
   game.dailyKey = g.dailyKey || null;
+  game.challengeKind = g.challengeKind || (g.isDailyChallenge ? 'daily' : null);
+  game.challengeKey  = g.challengeKey  || g.dailyKey || null;
+  game.isTraining = !!g.isTraining;
+  document.body.classList.toggle('training-mode', game.isTraining);
   game.finished = false;
 
-  if (game.isDailyChallenge) {
-    document.getElementById('game-diff').textContent = t('daily.gameLabel');
-    document.getElementById('game-level').textContent = (game.dailyKey || '').slice(5);
+  if (game.challengeKind) {
+    const cfg = CHALLENGE_CONFIG[game.challengeKind];
+    document.getElementById('game-diff').textContent = t(cfg.labelKey);
+    document.getElementById('game-level').textContent = cfg.levelLabel(game.challengeKey || '');
   } else {
     document.getElementById('game-diff').textContent = t('diff.' + g.difficulty);
     document.getElementById('game-level').textContent = game.levelNum;
   }
   document.getElementById('game-timer').textContent = formatTime(game.timer);
-  const best = game.isDailyChallenge
-    ? state.dailyResults?.[game.dailyKey]?.time
+  const best = game.challengeKind
+    ? state[challengeResultsField(game.challengeKind)]?.[game.challengeKey]?.time
     : state.bestTimesByLevel?.[g.difficulty]?.[game.levelNum];
   const bestEl = document.getElementById('game-best');
   if (bestEl) bestEl.textContent = best ? `★ ${formatTime(best)}` : '';
@@ -5699,7 +5992,7 @@ function loadSavedGame() {
   updateProgress();
   show('game');
   resetIdleTimer();
-  startTimer();
+  if (!game.isTraining) startTimer();
 }
 
 document.getElementById('resume-card').addEventListener('click', loadSavedGame);
@@ -5782,9 +6075,11 @@ function rewardForLevel(lvl) {
   }
   return { coins, shield, bonus };
 }
-function awardXP(diff) {
+const TRAINING_XP = 5;
+const TRAINING_COINS = 5;
+function awardXP(amount) {
   const before = levelOf(state.xp);
-  state.xp += XP_PER_WIN[diff] || 10;
+  state.xp += amount;
   const after = levelOf(state.xp);
   if (after > before) {
     // Belohnung für jedes neu erreichte Level akkumulieren (falls jemand mehrere
@@ -5835,14 +6130,40 @@ function formatDateNice(key) {
   const d = new Date(key + 'T00:00');
   return d.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'short' });
 }
-async function openLeaderboard(dayOffset = 0) {
+// Liefert {key, label, suffix} für eine Challenge-Periode mit gegebenem Offset.
+// kind: 'daily' | 'weekly' | 'monthly'. offset 0 = aktuell, -1 = vorherige usw.
+function challengePeriodForOffset(kind, offset) {
+  const d = new Date();
+  if (kind === 'weekly')  { d.setDate(d.getDate() + offset * 7); return { key: weekKey(d),  label: weekKey(d).replace(/^\d{4}-/, ''), suffix: t('lb.suffixSchwer')  }; }
+  if (kind === 'monthly') { d.setMonth(d.getMonth() + offset);   return { key: monthKey(d), label: d.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }), suffix: t('lb.suffixExperte') }; }
+  // daily default
+  d.setDate(d.getDate() + offset);
+  return { key: d.toISOString().slice(0,10), label: formatDateNice(d.toISOString().slice(0,10)), suffix: t('lb.suffixMittel') };
+}
+
+async function openLeaderboard(offset = 0, kind = 'daily') {
   const overlay = document.getElementById('overlay-leaderboard');
   overlay.classList.add('active');
-  document.querySelectorAll('#lb-day-tabs button').forEach(b => {
-    b.classList.toggle('active', +b.dataset.day === dayOffset);
+  overlay.dataset.kind = kind;
+  // Tabs an Modus anpassen — Texte ändern sich nach kind
+  const tabBtns = document.querySelectorAll('#lb-day-tabs button');
+  tabBtns.forEach(b => {
+    const off = +b.dataset.day;
+    b.classList.toggle('active', off === offset);
+    let lbl;
+    if (kind === 'weekly')  lbl = off === 0 ? t('lb.tabs.thisWeek')  : off === -1 ? t('lb.tabs.lastWeek')  : t('lb.tabs.weekBefore');
+    else if (kind === 'monthly') lbl = off === 0 ? t('lb.tabs.thisMonth') : off === -1 ? t('lb.tabs.lastMonth') : t('lb.tabs.monthBefore');
+    else lbl = off === 0 ? t('lb.tabs.today') : off === -1 ? t('lb.tabs.yesterday') : t('lb.tabs.dayBefore');
+    b.textContent = lbl;
   });
-  const dateKey = dateKeyOffset(dayOffset);
-  document.getElementById('lb-date').textContent = formatDateNice(dateKey) + ' · ' + t('lb.suffixMittel');
+  // Title auch tauschen
+  const titleEl = document.querySelector('#overlay-leaderboard .lb-title');
+  if (titleEl) {
+    const titleKey = kind === 'weekly' ? 'lb.titleWeekly' : kind === 'monthly' ? 'lb.titleMonthly' : 'lb.title';
+    titleEl.textContent = t(titleKey);
+  }
+  const period = challengePeriodForOffset(kind, offset);
+  document.getElementById('lb-date').textContent = period.label + ' · ' + period.suffix;
   const list = document.getElementById('lb-list');
   const empty = document.getElementById('lb-empty');
   const myRank = document.getElementById('lb-myrank');
@@ -5856,7 +6177,9 @@ async function openLeaderboard(dayOffset = 0) {
     needAuth.classList.remove('hidden');
   }
 
-  const rows = await fetchDailyLeaderboard(dateKey, 100);
+  const rows = kind === 'daily'
+    ? await fetchDailyLeaderboard(period.key, 100)
+    : await fetchChallengeLeaderboard(kind, period.key, 100);
   if (rows === null) {
     list.innerHTML = `<div class="lb-empty">${t('lb.connFail')}</div>`;
     return;
@@ -5886,7 +6209,9 @@ async function openLeaderboard(dayOffset = 0) {
     </div>`;
   }).join('');
   if (myUserId && !myInTop) {
-    const me = await fetchMyDailyRank(dateKey);
+    const me = kind === 'daily'
+      ? await fetchMyDailyRank(period.key)
+      : await fetchMyChallengeRank(kind, period.key);
     if (me) {
       myRank.classList.remove('hidden');
       myRank.innerHTML = `<span>${t('lb.myRankFmt', { rank: me.rank })}</span><span>${formatTime(me.time)}</span>`;
@@ -5897,11 +6222,38 @@ async function openLeaderboard(dayOffset = 0) {
     myRank.innerHTML = `<span>${t('lb.myRankFmt', { rank: idx + 1 })}</span><span>${formatTime(rows[idx].time_seconds)}</span>`;
   }
 }
+
+async function fetchMyChallengeRank(kind, periodKey) {
+  const sb = await loadSupabase();
+  if (!sb || !state.account?.id) return null;
+  try {
+    const { data: me } = await sb
+      .from('challenge_scores')
+      .select('time_seconds')
+      .eq('user_id', state.account.id)
+      .eq('kind', kind)
+      .eq('period_key', periodKey)
+      .maybeSingle();
+    if (!me?.time_seconds) return null;
+    const { count } = await sb
+      .from('challenge_scores')
+      .select('user_id', { count: 'exact', head: true })
+      .eq('kind', kind)
+      .eq('period_key', periodKey)
+      .lt('time_seconds', me.time_seconds);
+    return { rank: (count || 0) + 1, time: me.time_seconds };
+  } catch (e) { console.warn('fetchMyChallengeRank failed:', e); return null; }
+}
+
 document.getElementById('btn-lb-close').addEventListener('click', () => {
   document.getElementById('overlay-leaderboard').classList.remove('active');
 });
 document.querySelectorAll('#lb-day-tabs button').forEach(btn => {
-  btn.addEventListener('click', () => openLeaderboard(+btn.dataset.day));
+  btn.addEventListener('click', () => {
+    const overlay = document.getElementById('overlay-leaderboard');
+    const kind = overlay.dataset.kind || 'daily';
+    openLeaderboard(+btn.dataset.day, kind);
+  });
 });
 
 /* =========================================================
@@ -6048,53 +6400,103 @@ function refreshHome() {
   }
 
   refreshDailyCard();
+  refreshWeeklyCard();
+  refreshMonthlyCard();
   refreshQuests();
 }
 
 /* =========================================================
-   DAILY CHALLENGE
+   CHALLENGES (Daily / Weekly / Monthly)
 ========================================================= */
-function todayKey() { return todayStr(); } // alias for clarity (YYYY-MM-DD)
-function startDailyChallenge() {
-  // Sonderfall: gleiche generatePuzzle-Maschine, aber Datums-Seed via levelNum-Hack
-  // Wir nutzen einen besonderen "level" der den Datums-Seed kodiert (negativ wäre Konflikt;
-  // pragmatisch: Hash des Datums in eine große Levelzahl):
-  const k = todayKey();
-  const seedNum = hashSeed('daily-' + k) >>> 0;        // positive 32-bit
-  // Schwierigkeit = mittel; Generator wird mit `daily-mittel-v2-<seedNum>` getroffen
-  startGame('mittel', seedNum);
-  game.isDailyChallenge = true;
-  game.dailyKey = k;
-  // Override Anzeige
-  document.getElementById('game-diff').textContent = t('daily.gameLabel');
-  document.getElementById('game-level').textContent = k.slice(5);  // "MM-DD"
-  const bestEl = document.getElementById('game-best');
-  const dailyBest = state.dailyResults?.[k]?.time;
-  if (bestEl) bestEl.textContent = dailyBest ? `★ ${formatTime(dailyBest)}` : '';
+function todayKey() { return todayStr(); } // YYYY-MM-DD
+function weekKey(d) {
+  // ISO-Woche: YYYY-Www (Donnerstag-basiert für Jahreswechsel-Korrektheit)
+  d = d ? new Date(d) : new Date();
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+  const yearStart = new Date(d.getFullYear(), 0, 1);
+  const wk = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+  return `${d.getFullYear()}-W${String(wk).padStart(2, '0')}`;
 }
-function refreshDailyCard() {
-  const card = document.getElementById('daily-card');
+function monthKey(d) {
+  d = d ? new Date(d) : new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
+const CHALLENGE_CONFIG = {
+  daily:   { difficulty: 'mittel',  keyFn: todayKey, levelLabel: k => k.slice(5),               labelKey: 'daily.gameLabel'   },
+  weekly:  { difficulty: 'schwer',  keyFn: weekKey,  levelLabel: k => k.replace(/^\d{4}-/, ''), labelKey: 'weekly.gameLabel'  },
+  monthly: { difficulty: 'experte', keyFn: monthKey, levelLabel: k => k,                        labelKey: 'monthly.gameLabel' },
+};
+
+function challengeResultsField(kind) {
+  return ({ daily: 'dailyResults', weekly: 'weeklyResults', monthly: 'monthlyResults' })[kind];
+}
+
+function startChallenge(kind) {
+  const cfg = CHALLENGE_CONFIG[kind];
+  if (!cfg) return;
+  const k = cfg.keyFn();
+  const seedNum = hashSeed(`${kind}-${k}`) >>> 0;
+  startGame(cfg.difficulty, seedNum);
+  // Challenges überschreiben Trainingsmodus: ohne Timer kein Score, nicht submitbar
+  game.isTraining = false;
+  document.body.classList.remove('training-mode');
+  startTimer();
+  game.challengeKind = kind;
+  game.challengeKey = k;
+  // Backwards-Compat: vorhandene Daily-Logik liest noch isDailyChallenge/dailyKey
+  game.isDailyChallenge = (kind === 'daily');
+  game.dailyKey = (kind === 'daily') ? k : null;
+
+  document.getElementById('game-diff').textContent = t(cfg.labelKey);
+  document.getElementById('game-level').textContent = cfg.levelLabel(k);
+  const bestEl = document.getElementById('game-best');
+  const best = state[challengeResultsField(kind)]?.[k]?.time;
+  if (bestEl) bestEl.textContent = best ? `★ ${formatTime(best)}` : '';
+}
+function startDailyChallenge()   { startChallenge('daily'); }
+function startWeeklyChallenge()  { startChallenge('weekly'); }
+function startMonthlyChallenge() { startChallenge('monthly'); }
+
+function refreshChallengeCard(kind) {
+  const card = document.getElementById(kind + '-card');
   if (!card) return;
-  const k = todayKey();
-  const result = state.dailyResults?.[k];
-  const sub = document.getElementById('daily-sub');
-  const streakEl = document.getElementById('daily-streak');
-  const dailyStreak = state.dailyStreak || 0;
+  const cfg = CHALLENGE_CONFIG[kind];
+  const k = cfg.keyFn();
+  const result = state[challengeResultsField(kind)]?.[k];
+  const sub = document.getElementById(kind + '-sub');
+  if (!sub) return;
   if (result) {
     card.classList.add('completed');
-    const key = result.perfect ? 'daily.subDonePerfect' : 'daily.subDoneFmt';
+    const key = result.perfect ? kind + '.subDonePerfect' : kind + '.subDoneFmt';
     sub.textContent = t(key, { time: formatTime(result.time) });
   } else {
     card.classList.remove('completed');
-    sub.textContent = t('daily.subOpen');
+    sub.textContent = t(kind + '.subOpen');
   }
-  streakEl.textContent = dailyStreak ? `🔥 ${dailyStreak}` : '';
+  if (kind === 'daily') {
+    const streakEl = document.getElementById('daily-streak');
+    const dailyStreak = state.dailyStreak || 0;
+    if (streakEl) streakEl.textContent = dailyStreak ? `🔥 ${dailyStreak}` : '';
+  }
 }
+function refreshDailyCard()   { refreshChallengeCard('daily'); }
+function refreshWeeklyCard()  { refreshChallengeCard('weekly'); }
+function refreshMonthlyCard() { refreshChallengeCard('monthly'); }
+
 document.getElementById('daily-card').addEventListener('click', () => {
-  show('screen-game');
-  startDailyChallenge();
+  show('game'); startDailyChallenge();
 });
 document.getElementById('daily-lb-btn').addEventListener('click', () => openLeaderboard(0));
+document.getElementById('weekly-card').addEventListener('click', () => {
+  show('game'); startWeeklyChallenge();
+});
+document.getElementById('weekly-lb-btn').addEventListener('click', () => openLeaderboard(0, 'weekly'));
+document.getElementById('monthly-card').addEventListener('click', () => {
+  show('game'); startMonthlyChallenge();
+});
+document.getElementById('monthly-lb-btn').addEventListener('click', () => openLeaderboard(0, 'monthly'));
 
 /* =========================================================
    QUESTS (3 Tagesaufgaben mit Coin-Belohnung)
@@ -6283,6 +6685,118 @@ function renderStats() {
     cells += `<div class="${lvl}" title="${key}: ${n}"></div>`;
   }
   cal.innerHTML = cells;
+
+  renderTrend(wins);
+  renderDifficultyDonut(wins);
+  renderWeekdayBars(h);
+}
+
+let trendDiff = 'all'; // 'all' | leicht | mittel | schwer | experte
+function renderTrend(wins) {
+  const host = document.getElementById('stats-trend');
+  if (!host) return;
+  // Tab-Bar (alle | je Schwierigkeit)
+  const tabs = ['all','leicht','mittel','schwer','experte'];
+  let tabHtml = '<div class="stats-trend-tabs">';
+  tabs.forEach(d => {
+    const lbl = d === 'all' ? t('stats.allDiffs') : t('diff.' + d);
+    tabHtml += `<button data-trend="${d}" class="${d === trendDiff ? 'active' : ''}">${lbl}</button>`;
+  });
+  tabHtml += '</div>';
+
+  // Letzte 20 Wins (gefiltert nach Schwierigkeit)
+  const filtered = trendDiff === 'all' ? wins : wins.filter(w => w.difficulty === trendDiff);
+  const last = filtered.slice(-20);
+  if (last.length < 2) {
+    host.innerHTML = tabHtml + `<div class="trend-empty">${t('stats.trendEmpty')}</div>`;
+  } else {
+    const W = 300, H = 100, P = 8;
+    const times = last.map(x => x.time);
+    const minT = Math.min(...times);
+    const maxT = Math.max(...times);
+    const range = Math.max(maxT - minT, 1);
+    const dx = (W - 2*P) / (last.length - 1);
+    const ys = times.map(tm => H - P - ((tm - minT) / range) * (H - 2*P));
+    const pts = ys.map((y, i) => `${P + i*dx},${y}`).join(' ');
+    const fillPath = `M${P},${H-P} L${pts.split(' ').join(' L')} L${P + (last.length-1)*dx},${H-P} Z`;
+    let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">`;
+    // Grid (3 horizontale Linien)
+    svg += `<g class="trend-grid">`;
+    for (let i = 1; i <= 3; i++) {
+      const y = P + (H - 2*P) * (i / 4);
+      svg += `<line x1="${P}" y1="${y}" x2="${W-P}" y2="${y}" />`;
+    }
+    svg += `</g>`;
+    svg += `<path class="trend-fill" d="${fillPath}" />`;
+    svg += `<polyline class="trend-line" points="${pts}" />`;
+    // Punkt nur bei wenigen Datenpunkten zeigen
+    if (last.length <= 12) {
+      ys.forEach((y, i) => { svg += `<circle class="trend-dot" cx="${P + i*dx}" cy="${y}" r="2.5" />`; });
+    }
+    svg += `</svg>`;
+    const axis = `<div class="stats-trend-axis"><span>${formatTime(minT)}</span><span>${formatTime(maxT)}</span></div>`;
+    host.innerHTML = tabHtml + svg + axis;
+  }
+
+  host.querySelectorAll('[data-trend]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      trendDiff = btn.dataset.trend;
+      renderTrend(wins);
+    });
+  });
+}
+
+function renderDifficultyDonut(wins) {
+  const host = document.getElementById('stats-donut');
+  if (!host) return;
+  const diffs = ['leicht','mittel','schwer','experte'];
+  const colors = { leicht: '#7BC67E', mittel: '#FFB94E', schwer: '#FF7E6B', experte: '#9B6BFF' };
+  const counts = diffs.map(d => wins.filter(w => w.difficulty === d).length);
+  const total = counts.reduce((s, n) => s + n, 0);
+  if (total === 0) {
+    host.innerHTML = `<div class="trend-empty" style="padding:20px 0">${t('stats.trendEmpty')}</div>`;
+    return;
+  }
+  // SVG-Donut: kreisförmige Stroke-Segmente
+  const R = 36, C = 2 * Math.PI * R;
+  let offset = 0;
+  let segments = '';
+  diffs.forEach((d, i) => {
+    if (counts[i] === 0) return;
+    const frac = counts[i] / total;
+    const len = frac * C;
+    segments += `<circle cx="50" cy="50" r="${R}" fill="none" stroke="${colors[d]}" stroke-width="14"
+      stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-offset}" transform="rotate(-90 50 50)" />`;
+    offset += len;
+  });
+  let legend = '<div class="stats-donut-legend">';
+  diffs.forEach((d, i) => {
+    if (counts[i] === 0) return;
+    const pct = Math.round(counts[i] * 100 / total);
+    legend += `<div><span class="dot" style="background:${colors[d]}"></span><span class="name">${t('diff.' + d)}</span><span class="pct">${pct}%</span></div>`;
+  });
+  legend += '</div>';
+  host.innerHTML = `<svg viewBox="0 0 100 100">${segments}<text x="50" y="54" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text)">${total}</text></svg>${legend}`;
+}
+
+function renderWeekdayBars(history) {
+  const host = document.getElementById('stats-weekday');
+  if (!host) return;
+  // Mo-So Verteilung über alle Spiele
+  const counts = [0, 0, 0, 0, 0, 0, 0]; // index 0 = Montag
+  history.forEach(x => {
+    const d = new Date(x.date);
+    const wd = (d.getDay() + 6) % 7; // So=0 → 6, Mo=1 → 0
+    counts[wd]++;
+  });
+  const max = Math.max(...counts, 1);
+  const labels = [t('wd.mo'), t('wd.tu'), t('wd.we'), t('wd.th'), t('wd.fr'), t('wd.sa'), t('wd.su')];
+  let html = '';
+  counts.forEach((n, i) => {
+    const h = max > 0 ? Math.max((n / max) * 80, n > 0 ? 6 : 2) : 2;
+    html += `<div class="wd-bar"><div class="bar ${n === 0 ? 'empty' : ''}" style="height:${h}px" title="${labels[i]}: ${n}"></div><div class="lbl">${labels[i]}</div></div>`;
+  });
+  host.innerHTML = html;
 }
 
 /* =========================================================

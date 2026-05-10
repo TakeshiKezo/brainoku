@@ -37,6 +37,25 @@ async function copyIfExists(src, dst) {
   }
 }
 
+async function copyDirIfExists(src, dst) {
+  try {
+    const stat = await fs.stat(src);
+    if (!stat.isDirectory()) return;
+    await fs.mkdir(dst, { recursive: true });
+    const entries = await fs.readdir(src);
+    for (const e of entries) {
+      const sp = path.join(src, e), dp = path.join(dst, e);
+      const s = await fs.stat(sp);
+      if (s.isDirectory()) await copyDirIfExists(sp, dp);
+      else await fs.copyFile(sp, dp);
+    }
+    console.log(`  ✓ ${src}/ (${entries.length} Einträge)`);
+  } catch (e) {
+    if (e.code === 'ENOENT') console.warn(`  ⚠ ${src}/ fehlt — übersprungen (build:levels noch nicht ausgeführt?)`);
+    else throw e;
+  }
+}
+
 async function main() {
   await fs.rm(OUT_DIR, { recursive: true, force: true });
   await fs.mkdir(OUT_DIR, { recursive: true });
@@ -44,6 +63,7 @@ async function main() {
   for (const f of SRC_FILES) {
     await copyIfExists(f, path.join(OUT_DIR, f));
   }
+  await copyDirIfExists('levels', path.join(OUT_DIR, 'levels'));
   console.log('Web-Build fertig.');
 }
 

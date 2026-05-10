@@ -5,6 +5,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "build:levels": "node build-levels.mjs",
     "build:web": "node build-web.mjs",
     "cap:add:ios": "npm run build:web && cap add ios",
     "cap:sync": "npm run build:web && cap sync ios",
