@@ -1804,6 +1804,54 @@
   .tutorial-footer .btn-secondary { flex: 1; }
   .tutorial-footer .btn-primary   { flex: 1.4; }
 
+  /* ============== Level-Up Modal ============== */
+  .lvlup-modal {
+    text-align: center;
+    padding-top: 30px;
+  }
+  .lvlup-burst {
+    font-size: 64px;
+    line-height: 1;
+    animation: lvlup-pop 0.6s cubic-bezier(.2,.9,.3,1.4);
+    filter: drop-shadow(0 4px 12px rgba(255,180,0,0.45));
+  }
+  @keyframes lvlup-pop {
+    0%   { transform: scale(0) rotate(-180deg); opacity: 0; }
+    60%  { transform: scale(1.2) rotate(15deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  .lvlup-title {
+    margin: 8px 0 4px;
+    font-size: 28px;
+    color: var(--primary);
+  }
+  .lvlup-sub {
+    margin: 0 0 14px;
+    color: var(--text-mute);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .lvlup-rewards {
+    background: var(--card-strong);
+    border-radius: 14px;
+    padding: 12px;
+    display: flex; flex-direction: column; gap: 10px;
+    margin-bottom: 12px;
+  }
+  .lvlup-reward {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 15px;
+  }
+  .lvlup-reward .lru-emoji { font-size: 22px; width: 32px; text-align: center; }
+  .lvlup-reward .lru-amount { font-weight: 800; color: var(--primary); }
+  .lvlup-reward .lru-lbl { font-weight: 700; }
+  .lvlup-bonus {
+    background: linear-gradient(135deg, #F97316, #EC4899);
+    color: #fff; font-size: 13px; font-weight: 800;
+    padding: 8px 12px; border-radius: 999px;
+    margin: 0 auto 14px; max-width: 220px;
+  }
+
   /* ============== Statistik-Block ============== */
   .stats-block {
     background: var(--card);
@@ -2450,6 +2498,20 @@
       <div class="modal-buttons">
         <button class="btn-primary" id="btn-lose-retry" data-i18n="lose.retry">Nochmal</button>
         <button class="btn-secondary" id="btn-lose-home" data-i18n="lose.home">Zur Startseite</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Level-Up Modal -->
+  <div class="overlay" id="overlay-levelup">
+    <div class="modal lvlup-modal">
+      <div class="lvlup-burst">⭐</div>
+      <h2 class="lvlup-title">Level <span id="lvlup-num">1</span></h2>
+      <p class="lvlup-sub">Stark! Du hast ein neues Level erreicht.</p>
+      <div class="lvlup-rewards" id="lvlup-rewards"></div>
+      <div class="lvlup-bonus hidden" id="lvlup-bonus">🎁 Meilenstein-Bonus!</div>
+      <div class="modal-buttons">
+        <button class="btn-primary" id="btn-lvlup-ok">Weiter</button>
       </div>
     </div>
   </div>
@@ -5365,16 +5427,62 @@ function completedFor(diff) {
   return (state.completedByDifficulty && state.completedByDifficulty[diff]) || 0;
 }
 
+// Level-Up Belohnungen (anti-cheat: KEINE Tipps, KEINE Lives — nur Coins/Schilde)
+const LEVEL_UP_COIN_REWARD = 30;     // pro neuem Level
+const LEVEL_UP_BONUS_EVERY = 5;      // alle X Level extra
+const LEVEL_UP_BONUS_COINS = 100;
+const LEVEL_UP_BONUS_SHIELD = 1;
+function rewardForLevel(lvl) {
+  let coins = LEVEL_UP_COIN_REWARD;
+  let shield = 0;
+  let bonus = false;
+  if (lvl % LEVEL_UP_BONUS_EVERY === 0) {
+    coins += LEVEL_UP_BONUS_COINS;
+    shield += LEVEL_UP_BONUS_SHIELD;
+    bonus = true;
+  }
+  return { coins, shield, bonus };
+}
 function awardXP(diff) {
   const before = levelOf(state.xp);
   state.xp += XP_PER_WIN[diff] || 10;
   const after = levelOf(state.xp);
   if (after > before) {
-    showToast('🎉', `Level ${after} erreicht`, 'Weiter so!');
+    // Belohnung für jedes neu erreichte Level akkumulieren (falls jemand mehrere
+    // Levels auf einmal überspringt — selten, aber möglich)
+    let totalCoins = 0, totalShield = 0, hadBonus = false;
+    for (let l = before + 1; l <= after; l++) {
+      const r = rewardForLevel(l);
+      totalCoins += r.coins;
+      totalShield += r.shield;
+      if (r.bonus) hadBonus = true;
+    }
+    // Coin-Doubler-Multiplikator wird in addCoins() nicht angewendet, weil das
+    // hier eine Achievement-artige Belohnung ist — wir gehen aber gerecht vor:
+    state.coins = (state.coins || 0) + totalCoins * (state.coinDoubler ? 2 : 1);
+    if (totalShield > 0) addShield(totalShield);
+    saveState();
+    showLevelUpModal(after, totalCoins, totalShield, hadBonus);
     playSfx('levelUp');
     checkAchievements();
+    refreshHome();
   }
 }
+
+function showLevelUpModal(level, coins, shields, isBonus) {
+  document.getElementById('lvlup-num').textContent = level;
+  const dbl = state.coinDoubler ? ' ×2' : '';
+  let rewardsHtml = `<div class="lvlup-reward"><span class="lru-emoji">🪙</span><span class="lru-amount">+${coins * (state.coinDoubler ? 2 : 1)}${dbl}</span> <span class="lru-lbl">Coins</span></div>`;
+  if (shields > 0) {
+    rewardsHtml += `<div class="lvlup-reward"><span class="lru-emoji">🛡</span><span class="lru-amount">+${shields}</span> <span class="lru-lbl">Streak-Schild</span></div>`;
+  }
+  document.getElementById('lvlup-rewards').innerHTML = rewardsHtml;
+  document.getElementById('lvlup-bonus').classList.toggle('hidden', !isBonus);
+  document.getElementById('overlay-levelup').classList.add('active');
+}
+document.getElementById('btn-lvlup-ok').addEventListener('click', () => {
+  document.getElementById('overlay-levelup').classList.remove('active');
+});
 
 /* =========================================================
    DAILY STREAK
