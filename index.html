@@ -44,6 +44,9 @@
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  /* Scrollbars überall unsichtbar (Scrolling bleibt funktional) */
+  * { scrollbar-width: none; -ms-overflow-style: none; }
+  *::-webkit-scrollbar { width: 0 !important; height: 0 !important; display: none; }
   html, body {
     margin: 0; padding: 0;
     background: var(--bg);
@@ -1720,6 +1723,100 @@
   .tutorial-footer .btn-secondary { flex: 1; }
   .tutorial-footer .btn-primary   { flex: 1.4; }
 
+  /* ============== Theme-Vorschau-Modal ============== */
+  .theme-preview-modal {
+    max-width: 360px;
+    padding: 14px 14px 16px;
+    overflow: hidden;
+  }
+  .tp-screenshot {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 12;
+    border-radius: 14px;
+    overflow: hidden;
+    margin: 6px 0 12px;
+    background: #fff;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.18), inset 0 0 0 1px rgba(0,0,0,0.06);
+  }
+  /* Mock-Topbar im Vorschau-Screenshot */
+  .tp-topbar {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 10px;
+    font-size: 11px; font-weight: 800;
+    color: #fff;
+    background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0));
+    z-index: 2;
+  }
+  .tp-topbar .tp-pill {
+    background: rgba(0,0,0,0.45);
+    padding: 3px 8px;
+    border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 4px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  /* 9x9 Mini-Sudoku als zentrales Bild */
+  .tp-board {
+    position: absolute;
+    top: 40px; left: 10px; right: 10px;
+    aspect-ratio: 1 / 1;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    gap: 0;
+    background: rgba(0,0,0,0.18);
+    padding: 1px;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    z-index: 1;
+  }
+  .tp-board > div {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800;
+    background: var(--tp-cell-bg, #fff);
+    color: var(--tp-cell-given, #1E2A4A);
+    border: 0.5px solid rgba(0,0,0,0.06);
+  }
+  .tp-board > div.user     { color: var(--tp-cell-user, #5C5CF0); }
+  .tp-board > div.peer     { background: var(--tp-cell-peer, #EEF0FA); }
+  .tp-board > div.same     { background: var(--tp-cell-same, #DEDFFB); }
+  .tp-board > div.selected { background: var(--tp-cell-selected, #C8C9FA); }
+  .tp-board > div.box-edge-r { border-right: 1.5px solid rgba(0,0,0,0.30); }
+  .tp-board > div.box-edge-b { border-bottom: 1.5px solid rgba(0,0,0,0.30); }
+  /* Zahlenpad-Mock unten */
+  .tp-pad {
+    position: absolute;
+    left: 10px; right: 10px; bottom: 10px;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 4px;
+    z-index: 2;
+  }
+  .tp-pad > div {
+    aspect-ratio: 1 / 1;
+    background: rgba(255,255,255,0.86);
+    color: var(--tp-primary, #5C5CF0);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .tp-pad > div.tp-pad-active {
+    background: var(--tp-primary, #5C5CF0);
+    color: #fff;
+  }
+  /* Animationen weiterlaufen lassen — der layer wird per JS direkt im screenshot platziert */
+  .tp-screenshot .theme-fx-layer { z-index: 3; }
+  .tp-meta { padding: 0 4px; }
+  .tp-name { font-size: 18px; font-weight: 800; color: var(--text); }
+  .tp-tagline { font-size: 12px; color: var(--text-mute); margin-top: 2px; min-height: 16px; }
+  .tp-buttons { flex-direction: row !important; gap: 10px !important; margin-top: 12px; }
+  .tp-buttons .btn-secondary { flex: 1; }
+  .tp-buttons .btn-primary   { flex: 1.4; }
+
   /* ============== Theme-FX Layer (Partikel-Animationen) ============== */
   .theme-fx-layer {
     position: absolute;
@@ -2158,6 +2255,24 @@
       <div class="modal-buttons">
         <button class="btn-primary" id="btn-lose-retry" data-i18n="lose.retry">Nochmal</button>
         <button class="btn-secondary" id="btn-lose-home" data-i18n="lose.home">Zur Startseite</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Theme-Vorschau-Modal: zeigt das Theme im realen In-Game-Look -->
+  <div class="overlay" id="overlay-theme-preview">
+    <div class="modal theme-preview-modal">
+      <button class="tutorial-back" id="btn-tp-close" aria-label="Schließen" style="display:flex;">‹</button>
+      <div class="tp-screenshot" id="tp-screenshot">
+        <!-- per JS gefüllt: Mini-Game-Screen im Theme-Look -->
+      </div>
+      <div class="tp-meta">
+        <div class="tp-name" id="tp-name">Theme</div>
+        <div class="tp-tagline" id="tp-tagline"></div>
+      </div>
+      <div class="modal-buttons tp-buttons">
+        <button class="btn-secondary" id="btn-tp-cancel">Schließen</button>
+        <button class="btn-primary" id="btn-tp-action">Aktivieren</button>
       </div>
     </div>
   </div>
@@ -4367,6 +4482,132 @@ function buildThemeGrid() {
 }
 
 function onThemeClick(id) {
+  // Klick auf Theme-Card öffnet IMMER die Vorschau — von dort wird gekauft/aktiviert
+  openThemePreview(id);
+}
+
+/* ----- Theme-Preview-Modal: zeigt das Theme im echten In-Game-Look ----- */
+// Beispiel-Sudoku (gegeben/leer + cell-states), 9x9, fix
+const TP_GIVENS = [
+  [5,3,0,0,7,0,0,0,0],
+  [6,0,0,1,9,5,0,0,0],
+  [0,9,8,0,0,0,0,6,0],
+  [8,0,0,0,6,0,0,0,3],
+  [4,0,0,8,0,3,0,0,1],
+  [7,0,0,0,2,0,0,0,6],
+  [0,6,0,0,0,0,2,8,0],
+  [0,0,0,4,1,9,0,0,5],
+  [0,0,0,0,8,0,0,7,9],
+];
+// Eine ausgewählte Zelle (Mitte-rechts, leer) + ein User-Eintrag
+const TP_USER = { row: 4, col: 4, val: 5 };           // user-eingetragene Zahl
+const TP_SELECTED = { row: 3, col: 3 };               // markierte Zelle
+const TP_SAME_VALUE = 6;                              // gleiche Zahl hervorgehoben
+
+let _tpCurrentId = null;
+function openThemePreview(id) {
+  const th = THEMES[id];
+  if (!th) return;
+  _tpCurrentId = id;
+  const wallpaperUrl = th.wallpaper ? (state.dark && th.wallpaper.dark ? th.wallpaper.dark : th.wallpaper.light) : null;
+  const bgColor = th.bgColor || th.cellBg || '#FFF';
+  const screenshot = document.getElementById('tp-screenshot');
+  // CSS-Vars an Modal pinnen — die Mini-Cells lesen sie
+  screenshot.style.setProperty('--tp-cell-bg',       th.cellBg || '#fff');
+  screenshot.style.setProperty('--tp-cell-peer',     th.cellPeer || '#eee');
+  screenshot.style.setProperty('--tp-cell-same',     th.cellSame || '#ddd');
+  screenshot.style.setProperty('--tp-cell-selected', th.cellSelected || '#bbb');
+  screenshot.style.setProperty('--tp-cell-user',     th.cellUser || '#5C5CF0');
+  screenshot.style.setProperty('--tp-cell-given',    th.cellGiven || '#1E2A4A');
+  screenshot.style.setProperty('--tp-primary',       th.primary);
+  // Hintergrund: Wallpaper > Pattern > Solid
+  if (wallpaperUrl) {
+    screenshot.style.background = `center/cover no-repeat url('${wallpaperUrl}'), ${bgColor}`;
+  } else if (th.bgPattern) {
+    screenshot.style.background = `${th.bgPattern} ${bgColor}`;
+    screenshot.style.backgroundRepeat = 'repeat';
+  } else {
+    screenshot.style.background = bgColor;
+  }
+  // Mini-9x9-Board bauen
+  const sel = TP_SELECTED;
+  let boardHtml = '';
+  for (let r = 0; r < 9; r++) {
+    for (let c = 0; c < 9; c++) {
+      const givens = TP_GIVENS[r][c];
+      const isUser = (r === TP_USER.row && c === TP_USER.col);
+      const val = isUser ? TP_USER.val : givens;
+      const isSelected = (r === sel.row && c === sel.col);
+      const isPeer     = !isSelected && (r === sel.row || c === sel.col || (Math.floor(r/3) === Math.floor(sel.row/3) && Math.floor(c/3) === Math.floor(sel.col/3)));
+      const isSame     = !isSelected && val !== 0 && val === TP_SAME_VALUE;
+      const cls = [];
+      if (isUser) cls.push('user');
+      if (isSelected) cls.push('selected');
+      else if (isSame) cls.push('same');
+      else if (isPeer) cls.push('peer');
+      // 3x3-Box-Trennlinien
+      if (c === 2 || c === 5) cls.push('box-edge-r');
+      if (r === 2 || r === 5) cls.push('box-edge-b');
+      boardHtml += `<div class="${cls.join(' ')}">${val || ''}</div>`;
+    }
+  }
+  // Zahlenpad: 1-9, eines aktiv
+  let padHtml = '';
+  for (let n = 1; n <= 9; n++) {
+    padHtml += `<div${n === TP_USER.val ? ' class="tp-pad-active"' : ''}>${n}</div>`;
+  }
+  // Theme-FX-Partikel im Screenshot (statische Deko, gleiche Optik wie in der Card)
+  const decoHtml = previewDecoHtml(th.fx);
+  screenshot.innerHTML = `
+    <div class="tp-topbar">
+      <span class="tp-pill">⏱ 02:14</span>
+      <span class="tp-pill">❤❤❤</span>
+      <span class="tp-pill">🪙 ${(state.coins || 0)}</span>
+    </div>
+    <div class="tp-deco-wrap" style="position:absolute;inset:0;z-index:2;pointer-events:none;">${decoHtml}</div>
+    <div class="tp-board">${boardHtml}</div>
+    <div class="tp-pad">${padHtml}</div>
+  `;
+  // Meta + Buttons
+  document.getElementById('tp-name').textContent = th.name;
+  const isJapan = th.pkg === 'japan';
+  const tagBits = [];
+  if (isJapan) tagBits.push('Japan-Paket');
+  if (th.wallpaper) tagBits.push('Foto-Hintergrund');
+  if (th.fx) tagBits.push('Animation');
+  if (th.sfxProfile) tagBits.push('Eigener Sound');
+  document.getElementById('tp-tagline').textContent = tagBits.join(' • ') || 'Klassisches Design';
+
+  const owned = !!state.unlockedThemes?.[id] || th.price === 0;
+  const active = state.theme === id;
+  const btn = document.getElementById('btn-tp-action');
+  if (active) {
+    btn.textContent = '✓ Aktiv';
+    btn.disabled = true;
+    btn.style.opacity = '0.55';
+    btn.dataset.mode = 'active';
+  } else if (owned) {
+    btn.textContent = 'Aktivieren';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.dataset.mode = 'activate';
+  } else {
+    btn.textContent = `Für 🪙 ${th.price} kaufen`;
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.dataset.mode = 'buy';
+  }
+  document.getElementById('overlay-theme-preview').classList.add('active');
+}
+function closeThemePreview() {
+  document.getElementById('overlay-theme-preview').classList.remove('active');
+  _tpCurrentId = null;
+}
+document.getElementById('btn-tp-close').addEventListener('click', closeThemePreview);
+document.getElementById('btn-tp-cancel').addEventListener('click', closeThemePreview);
+document.getElementById('btn-tp-action').addEventListener('click', () => {
+  const id = _tpCurrentId;
+  if (!id) return;
   const th = THEMES[id];
   const owned = !!state.unlockedThemes?.[id] || th.price === 0;
   if (owned) {
@@ -4375,13 +4616,13 @@ function onThemeClick(id) {
     applyTheme(id);
     buildThemeGrid();
     playSfx('toggle');
+    closeThemePreview();
     return;
   }
   if ((state.coins || 0) < th.price) {
     showToast('🪙', t('shop.notEnough'), t('shop.notEnoughSub', { n: th.price }));
     return;
   }
-  if (!confirm(t('shop.confirm', { name: th.name, price: th.price }))) return;
   state.coins -= th.price;
   state.unlockedThemes = Object.assign({}, state.unlockedThemes, { [id]: true });
   state.theme = id;
@@ -4391,7 +4632,8 @@ function onThemeClick(id) {
   refreshHome();
   showToast('🎨', t('shop.themeBought'), t('shop.themeActive', { name: th.name }));
   playSfx('achieve');
-}
+  closeThemePreview();
+});
 
 function refreshShop() {
   document.getElementById('shop-coins').textContent = state.coins || 0;
