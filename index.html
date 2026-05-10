@@ -1105,6 +1105,87 @@
   .resume-sub { font-size: 12px; opacity: .85; margin-top: 2px; }
   .resume-arrow { font-size: 28px; line-height: 1; }
 
+  /* Daily Challenge Karte */
+  .daily-card {
+    width: 100%;
+    max-width: 320px;
+    margin-top: 10px;
+    background: linear-gradient(135deg, #FB7185, #F97316);
+    color: #fff;
+    border: 0;
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(251, 113, 133, 0.30);
+    transition: transform .08s ease;
+    text-align: left;
+    font-family: inherit;
+  }
+  .daily-card:active { transform: scale(0.98); }
+  .daily-card.completed { background: linear-gradient(135deg, #34D399, #10B981); }
+  .daily-icon { font-size: 26px; flex: 0 0 auto; }
+  .daily-info { flex: 1; min-width: 0; }
+  .daily-title { font-size: 14px; font-weight: 800; }
+  .daily-sub { font-size: 12px; opacity: .9; margin-top: 1px; }
+  .daily-streak {
+    background: rgba(255,255,255,0.22);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px; font-weight: 800;
+    display: inline-flex; align-items: center; gap: 3px;
+    flex: 0 0 auto;
+  }
+
+  /* Quests Karte */
+  .quests-card {
+    width: 100%;
+    max-width: 320px;
+    margin-top: 10px;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 10px 12px 8px;
+  }
+  .quests-head {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; font-weight: 800; color: var(--text);
+    text-transform: uppercase; letter-spacing: .3px;
+    margin-bottom: 6px;
+  }
+  .quests-reset { color: var(--text-mute); font-size: 10px; font-weight: 700; }
+  .quest-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0;
+    border-top: 1px solid var(--border);
+  }
+  .quest-row:first-child { border-top: 0; }
+  .quest-emoji { font-size: 18px; flex: 0 0 22px; text-align: center; }
+  .quest-body { flex: 1; min-width: 0; }
+  .quest-title { font-size: 12px; font-weight: 700; color: var(--text); }
+  .quest-bar {
+    height: 5px;
+    background: var(--card-strong);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .quest-bar > div {
+    height: 100%; background: var(--primary); transition: width .3s ease;
+  }
+  .quest-reward {
+    font-size: 11px; font-weight: 800; color: var(--primary);
+    flex: 0 0 auto; min-width: 44px; text-align: right;
+  }
+  .quest-row.done .quest-reward {
+    background: var(--success); color: #fff;
+    padding: 3px 8px; border-radius: 999px;
+    cursor: pointer;
+  }
+  .quest-row.claimed { opacity: .55; }
+  .quest-row.claimed .quest-reward { color: var(--success); background: transparent; padding: 0; }
+
   /* Login-Bonus 7-Day Calendar */
   .login-grid {
     display: grid;
@@ -1723,6 +1804,64 @@
   .tutorial-footer .btn-secondary { flex: 1; }
   .tutorial-footer .btn-primary   { flex: 1.4; }
 
+  /* ============== Statistik-Block ============== */
+  .stats-block {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 18px;
+  }
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .stats-cell {
+    background: var(--card-strong);
+    border-radius: 12px;
+    padding: 10px 6px;
+    text-align: center;
+  }
+  .sc-num { font-size: 18px; font-weight: 800; color: var(--primary); line-height: 1.1; }
+  .sc-lbl { font-size: 10px; color: var(--text-mute); margin-top: 3px; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; }
+  .stats-diff-table {
+    margin-top: 8px;
+    background: var(--card-strong);
+    border-radius: 12px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  .stats-diff-table .sd-row {
+    display: grid; grid-template-columns: 1.4fr 0.7fr 0.7fr 0.7fr;
+    gap: 6px;
+    padding: 4px 0;
+    align-items: center;
+  }
+  .stats-diff-table .sd-row.head {
+    color: var(--text-mute); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .3px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px; margin-bottom: 4px;
+  }
+  .stats-diff-table .sd-row .sd-name { font-weight: 700; }
+  .stats-diff-table .sd-row .sd-val  { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+  .stats-cal-label { font-size: 11px; color: var(--text-mute); margin: 12px 4px 6px; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; }
+  .stats-cal {
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    gap: 3px;
+    padding: 0 4px;
+  }
+  .stats-cal > div {
+    aspect-ratio: 1 / 1;
+    border-radius: 3px;
+    background: var(--card-strong);
+  }
+  .stats-cal > div.lvl1 { background: var(--primary-light); }
+  .stats-cal > div.lvl2 { background: var(--primary); opacity: 0.55; }
+  .stats-cal > div.lvl3 { background: var(--primary); opacity: 0.85; }
+  .stats-cal > div.lvl4 { background: var(--primary); }
+
   /* ============== Theme-Vorschau-Modal ============== */
   .theme-preview-modal {
     max-width: 360px;
@@ -1926,6 +2065,21 @@
         </div>
         <span class="resume-arrow">›</span>
       </button>
+      <button class="daily-card" id="daily-card">
+        <div class="daily-icon">📅</div>
+        <div class="daily-info">
+          <div class="daily-title">Tages-Challenge</div>
+          <div class="daily-sub" id="daily-sub">Heute jeden Tag das gleiche Puzzle</div>
+        </div>
+        <span class="daily-streak" id="daily-streak"></span>
+      </button>
+      <div class="quests-card" id="quests-card">
+        <div class="quests-head">
+          <span>🎯 Tagesaufgaben</span>
+          <span class="quests-reset" id="quests-reset">Reset 0:00</span>
+        </div>
+        <div id="quests-list"></div>
+      </div>
     </div>
     <div id="reminder-banner" class="reminder-banner hidden" data-i18n="home.reminder">
       ⏰ Heute schon Sudoku gespielt? Ein Spiel hält die Streak am Leben.
@@ -2015,6 +2169,23 @@
     <h2 class="section-h" data-i18n="sammlung.bestTimes">Bestzeiten</h2>
     <div class="best-times" id="best-times"></div>
 
+    <h2 class="section-h" data-i18n="sammlung.stats">Statistik</h2>
+    <div class="stats-block" id="stats-block">
+      <div class="stats-row">
+        <div class="stats-cell"><div class="sc-num" id="st-winrate">0%</div><div class="sc-lbl">Win-Rate</div></div>
+        <div class="stats-cell"><div class="sc-num" id="st-avgtime">—</div><div class="sc-lbl">Ø Zeit</div></div>
+        <div class="stats-cell"><div class="sc-num" id="st-perfect">0</div><div class="sc-lbl">Perfekt</div></div>
+      </div>
+      <div class="stats-row">
+        <div class="stats-cell"><div class="sc-num" id="st-errors">0</div><div class="sc-lbl">Ø Fehler</div></div>
+        <div class="stats-cell"><div class="sc-num" id="st-hints">0</div><div class="sc-lbl">Ø Tipps</div></div>
+        <div class="stats-cell"><div class="sc-num" id="st-total">0</div><div class="sc-lbl">Spiele</div></div>
+      </div>
+      <div class="stats-diff-table" id="stats-diff-table"></div>
+      <div class="stats-cal-label">Letzte 30 Tage</div>
+      <div class="stats-cal" id="stats-cal"></div>
+    </div>
+
     <h2 class="section-h" data-i18n="sammlung.achievements">Auszeichnungen</h2>
     <div class="ach-grid" id="ach-grid"></div>
   </section>
@@ -2063,7 +2234,31 @@
         </button>
       </div>
     </div>
+
+    <div class="shop-section" id="shop-doubler-section">
+      <h2 class="shop-section-title" data-i18n="shop.doublerSection">💰 Coin-Doubler</h2>
+      <div class="booster-grid" style="grid-template-columns: 1fr;">
+        <button class="booster-card" id="shop-doubler">
+          <div class="booster-icon">🪙×2</div>
+          <div class="booster-name" data-i18n="shop.doublerName">Coin-Doubler</div>
+          <div class="booster-desc" data-i18n="shop.doublerDesc">Alle verdienten Coins werden ab sofort verdoppelt — dauerhaft, einmalige Zahlung.</div>
+          <span class="booster-buy" id="shop-doubler-status">3,99 €</span>
+        </button>
+      </div>
+    </div>
   </section>
+
+  <!-- Coin-Doubler Kauf-Bestätigung -->
+  <div class="overlay" id="overlay-doubler-buy">
+    <div class="modal">
+      <h2>🪙×2 Coin-Doubler</h2>
+      <p>Verdoppelt ab sofort dauerhaft alle verdienten Coins (Spiele, Auszeichnungen, Login-Bonus). Einmalige Zahlung 3,99 €.</p>
+      <div class="modal-buttons">
+        <button class="btn-primary" id="btn-doubler-confirm">Jetzt kaufen</button>
+        <button class="btn-secondary" id="btn-doubler-cancel">Später</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ============================ GAME ============================ -->
   <section id="screen-game" class="screen">
@@ -3857,23 +4052,69 @@ function winGame() {
   const isPerfect = game.errorsThisGame === 0;
   if (isPerfect) state.perfectGames = (state.perfectGames || 0) + 1;
 
-  // Bestzeit pro Level + insgesamt
-  state.bestTimesByLevel = state.bestTimesByLevel || { leicht: {}, mittel: {}, schwer: {}, experte: {} };
-  state.bestTimesByLevel[game.difficulty] = state.bestTimesByLevel[game.difficulty] || {};
-  const oldLevelBest = state.bestTimesByLevel[game.difficulty][game.levelNum];
-  const isNewLevelRecord = !oldLevelBest || finalTime < oldLevelBest;
-  if (isNewLevelRecord) state.bestTimesByLevel[game.difficulty][game.levelNum] = finalTime;
+  let isNewLevelRecord = false, isNewOverallBest = false;
+  if (!game.isDailyChallenge) {
+    // Bestzeit pro Level + insgesamt — NUR für reguläre Spiele,
+    // sonst würden die abnormen Daily-Seed-Levelnummern den Speicher verseuchen
+    state.bestTimesByLevel = state.bestTimesByLevel || { leicht: {}, mittel: {}, schwer: {}, experte: {} };
+    state.bestTimesByLevel[game.difficulty] = state.bestTimesByLevel[game.difficulty] || {};
+    const oldLevelBest = state.bestTimesByLevel[game.difficulty][game.levelNum];
+    isNewLevelRecord = !oldLevelBest || finalTime < oldLevelBest;
+    if (isNewLevelRecord) state.bestTimesByLevel[game.difficulty][game.levelNum] = finalTime;
 
-  state.bestOverall = state.bestOverall || { leicht: null, mittel: null, schwer: null, experte: null };
-  const oldOverallBest = state.bestOverall[game.difficulty];
-  const isNewOverallBest = !oldOverallBest || finalTime < oldOverallBest;
-  if (isNewOverallBest) state.bestOverall[game.difficulty] = finalTime;
+    state.bestOverall = state.bestOverall || { leicht: null, mittel: null, schwer: null, experte: null };
+    const oldOverallBest = state.bestOverall[game.difficulty];
+    isNewOverallBest = !oldOverallBest || finalTime < oldOverallBest;
+    if (isNewOverallBest) state.bestOverall[game.difficulty] = finalTime;
 
-  // Level inkrementieren wenn dieses das aktuelle/höchste war
-  state.levels = state.levels || { leicht: 1, mittel: 1, schwer: 1, experte: 1 };
-  if (game.levelNum >= state.levels[game.difficulty]) {
-    state.levels[game.difficulty] = game.levelNum + 1;
+    // Level inkrementieren wenn dieses das aktuelle/höchste war
+    state.levels = state.levels || { leicht: 1, mittel: 1, schwer: 1, experte: 1 };
+    if (game.levelNum >= state.levels[game.difficulty]) {
+      state.levels[game.difficulty] = game.levelNum + 1;
+    }
   }
+
+  // History für Statistik-Dashboard (rolling window 200 Einträge)
+  state.history = state.history || [];
+  state.history.push({
+    date: new Date().toISOString(),
+    difficulty: game.difficulty,
+    level: game.levelNum,
+    time: finalTime,
+    errors: game.errorsThisGame,
+    hints: game.hintsUsedThisGame || 0,
+    perfect: isPerfect,
+    daily: !!game.isDailyChallenge,
+  });
+  if (state.history.length > 200) state.history = state.history.slice(-200);
+
+  // Daily Challenge Result
+  if (game.isDailyChallenge && game.dailyKey) {
+    state.dailyResults = state.dailyResults || {};
+    const prev = state.dailyResults[game.dailyKey];
+    if (!prev || finalTime < prev.time) {
+      state.dailyResults[game.dailyKey] = { time: finalTime, perfect: isPerfect };
+    }
+    // Daily-Streak: aufeinanderfolgende Tage gespielt
+    const yesterdayKey = (() => { const d = new Date(); d.setDate(d.getDate() - 1); return d.toISOString().slice(0,10); })();
+    if (state.lastDailyKey === game.dailyKey) {
+      // schon gezählt — nichts tun
+    } else if (state.lastDailyKey === yesterdayKey) {
+      state.dailyStreak = (state.dailyStreak || 0) + 1;
+    } else {
+      state.dailyStreak = 1;
+    }
+    state.lastDailyKey = game.dailyKey;
+  }
+
+  // Quest-Progress
+  progressQuests({
+    difficulty: game.difficulty,
+    errors: game.errorsThisGame,
+    hints: game.hintsUsedThisGame || 0,
+    time: finalTime,
+    daily: !!game.isDailyChallenge,
+  });
 
   awardXP(game.difficulty);
   const newDay = bumpDailyStreak();
@@ -3894,7 +4135,15 @@ function winGame() {
   const recEl = document.getElementById('win-record');
   if (recEl) recEl.classList.toggle('hidden', !isNewLevelRecord);
   const nextBtn = document.getElementById('btn-win-next');
-  if (nextBtn) nextBtn.textContent = t('win.next') + ' (' + (game.levelNum + 1) + ')';
+  if (nextBtn) {
+    if (game.isDailyChallenge) {
+      nextBtn.textContent = '🏠 Zurück zur Startseite';
+      nextBtn.dataset.action = 'home';
+    } else {
+      nextBtn.textContent = t('win.next') + ' (' + (game.levelNum + 1) + ')';
+      nextBtn.dataset.action = 'next';
+    }
+  }
 
   let msg = t('win.solved', { n: state.completed });
   if (newDay) msg += t('win.streakAdd', { n: state.streak, label: state.streak === 1 ? t('home.day') : t('home.days') });
@@ -3919,6 +4168,10 @@ function actuallyLoseGame() {
 
 document.getElementById('btn-win-next').addEventListener('click', () => {
   document.getElementById('overlay-win').classList.remove('active');
+  if (game.isDailyChallenge) {
+    maybeShowInterstitial(() => show('home'));
+    return;
+  }
   const next = game.levelNum + 1;
   maybeShowInterstitial(() => startGame(game.difficulty, next));
 });
@@ -4646,6 +4899,7 @@ function refreshShop() {
   document.getElementById('hintpack-cost').textContent = HINT_PACK_COST;
   // ad-free hidden if already bought
   document.getElementById('shop-premium-section').classList.toggle('hidden', !!state.adFree);
+  refreshDoublerUI();
   buildBundleGrid();
   buildThemeGrid();
 }
@@ -4746,6 +5000,39 @@ document.getElementById('shop-adfree').addEventListener('click', () => {
   document.getElementById('overlay-purchase').classList.add('active');
 });
 
+/* ----- Coin-Doubler IAP ----- */
+function refreshDoublerUI() {
+  const status = document.getElementById('shop-doubler-status');
+  const card = document.getElementById('shop-doubler');
+  if (state.coinDoubler) {
+    status.textContent = '✓ Aktiv';
+    card.style.opacity = '0.7';
+    card.disabled = true;
+  } else {
+    status.textContent = '3,99 €';
+    card.style.opacity = '';
+    card.disabled = false;
+  }
+}
+document.getElementById('shop-doubler').addEventListener('click', () => {
+  if (state.coinDoubler) {
+    showToast('🪙×2', 'Coin-Doubler aktiv', 'Alle Coins werden bereits verdoppelt.');
+    return;
+  }
+  document.getElementById('overlay-doubler-buy').classList.add('active');
+});
+document.getElementById('btn-doubler-cancel').addEventListener('click', () => {
+  document.getElementById('overlay-doubler-buy').classList.remove('active');
+});
+document.getElementById('btn-doubler-confirm').addEventListener('click', () => {
+  state.coinDoubler = true;
+  saveState();
+  document.getElementById('overlay-doubler-buy').classList.remove('active');
+  refreshDoublerUI();
+  showToast('🪙×2', 'Coin-Doubler aktiv', 'Alle Coins werden ab jetzt verdoppelt.');
+  playSfx('achieve');
+});
+
 /* =========================================================
    LANGUAGE PICKER
 ========================================================= */
@@ -4777,10 +5064,15 @@ const COSTS = { hint: 50, revive: 150, shield: 300 };
 const MAX_SHIELDS = 3;
 
 function addCoins(n, label) {
-  state.coins = (state.coins || 0) + n;
+  const mult = state.coinDoubler ? 2 : 1;
+  const total = n * mult;
+  state.coins = (state.coins || 0) + total;
   saveState();
   refreshHome();
-  if (label) showToast('🪙', label, `+${n} Coins`);
+  if (label) {
+    const sub = mult > 1 ? `+${total} Coins (×2 Doubler)` : `+${total} Coins`;
+    showToast('🪙', label, sub);
+  }
 }
 function spendCoins(n) {
   if ((state.coins || 0) < n) return false;
@@ -4859,7 +5151,7 @@ document.getElementById('btn-login-claim').addEventListener('click', () => {
   if (!claimed) {
     const reward = LOGIN_REWARDS[today - 1];
     state.lastLoginBonusDate = todayStr();
-    state.coins = (state.coins || 0) + reward.coins;
+    state.coins = (state.coins || 0) + reward.coins * (state.coinDoubler ? 2 : 1);
     if (reward.shield) addShield(reward.shield);
     saveState();
     refreshHome();
@@ -4952,6 +5244,8 @@ function saveCurrentGame() {
     startTime: game.startTime,
     timer: game.timer,
     reviveUsed: game.reviveUsed || false,
+    isDailyChallenge: !!game.isDailyChallenge,
+    dailyKey: game.dailyKey || null,
   };
   saveState();
 }
@@ -4980,12 +5274,21 @@ function loadSavedGame() {
   game.startTime = g.startTime || Date.now();
   game.timer = g.timer || 0;
   game.reviveUsed = g.reviveUsed || false;
+  game.isDailyChallenge = !!g.isDailyChallenge;
+  game.dailyKey = g.dailyKey || null;
   game.finished = false;
 
-  document.getElementById('game-diff').textContent = t('diff.' + g.difficulty);
-  document.getElementById('game-level').textContent = game.levelNum;
+  if (game.isDailyChallenge) {
+    document.getElementById('game-diff').textContent = '📅 Tages-Challenge';
+    document.getElementById('game-level').textContent = (game.dailyKey || '').slice(5);
+  } else {
+    document.getElementById('game-diff').textContent = t('diff.' + g.difficulty);
+    document.getElementById('game-level').textContent = game.levelNum;
+  }
   document.getElementById('game-timer').textContent = formatTime(game.timer);
-  const best = state.bestTimesByLevel?.[g.difficulty]?.[game.levelNum];
+  const best = game.isDailyChallenge
+    ? state.dailyResults?.[game.dailyKey]?.time
+    : state.bestTimesByLevel?.[g.difficulty]?.[game.levelNum];
   const bestEl = document.getElementById('game-best');
   if (bestEl) bestEl.textContent = best ? `★ ${formatTime(best)}` : '';
   document.getElementById('act-notes').classList.remove('active');
@@ -5215,6 +5518,144 @@ function refreshHome() {
   } else {
     resume.classList.add('hidden');
   }
+
+  refreshDailyCard();
+  refreshQuests();
+}
+
+/* =========================================================
+   DAILY CHALLENGE
+========================================================= */
+function todayKey() { return todayStr(); } // alias for clarity (YYYY-MM-DD)
+function startDailyChallenge() {
+  // Sonderfall: gleiche generatePuzzle-Maschine, aber Datums-Seed via levelNum-Hack
+  // Wir nutzen einen besonderen "level" der den Datums-Seed kodiert (negativ wäre Konflikt;
+  // pragmatisch: Hash des Datums in eine große Levelzahl):
+  const k = todayKey();
+  const seedNum = hashSeed('daily-' + k) >>> 0;        // positive 32-bit
+  // Schwierigkeit = mittel; Generator wird mit `daily-mittel-v2-<seedNum>` getroffen
+  startGame('mittel', seedNum);
+  game.isDailyChallenge = true;
+  game.dailyKey = k;
+  // Override Anzeige
+  document.getElementById('game-diff').textContent = '📅 Tages-Challenge';
+  document.getElementById('game-level').textContent = k.slice(5);  // "MM-DD"
+  const bestEl = document.getElementById('game-best');
+  const dailyBest = state.dailyResults?.[k]?.time;
+  if (bestEl) bestEl.textContent = dailyBest ? `★ ${formatTime(dailyBest)}` : '';
+}
+function refreshDailyCard() {
+  const card = document.getElementById('daily-card');
+  if (!card) return;
+  const k = todayKey();
+  const result = state.dailyResults?.[k];
+  const sub = document.getElementById('daily-sub');
+  const streakEl = document.getElementById('daily-streak');
+  const dailyStreak = state.dailyStreak || 0;
+  if (result) {
+    card.classList.add('completed');
+    sub.textContent = `Heute geschafft in ${formatTime(result.time)}${result.perfect ? ' · perfekt!' : ''}`;
+  } else {
+    card.classList.remove('completed');
+    sub.textContent = 'Heute jeden Tag das gleiche Puzzle für alle';
+  }
+  streakEl.textContent = dailyStreak ? `🔥 ${dailyStreak}` : '';
+}
+document.getElementById('daily-card').addEventListener('click', () => {
+  show('screen-game');
+  startDailyChallenge();
+});
+
+/* =========================================================
+   QUESTS (3 Tagesaufgaben mit Coin-Belohnung)
+========================================================= */
+const QUEST_POOL = [
+  { id: 'play3',     emoji: '🎯', target: 3, reward: 50,  title: 'Spiele 3 Puzzles',
+    matches: ctx => ({ inc: 1 }) },
+  { id: 'noErrors',  emoji: '💎', target: 1, reward: 80,  title: 'Beende ein Puzzle ohne Fehler',
+    matches: ctx => ({ inc: ctx.errors === 0 ? 1 : 0 }) },
+  { id: 'daily',     emoji: '📅', target: 1, reward: 100, title: 'Schließe die Tages-Challenge ab',
+    matches: ctx => ({ inc: ctx.daily ? 1 : 0 }) },
+  { id: 'hard',      emoji: '🔥', target: 1, reward: 70,  title: 'Beende ein Schwer-Puzzle',
+    matches: ctx => ({ inc: ctx.difficulty === 'schwer' || ctx.difficulty === 'experte' ? 1 : 0 }) },
+  { id: 'noHints',   emoji: '🧠', target: 1, reward: 70,  title: 'Beende ein Puzzle ohne Tipp',
+    matches: ctx => ({ inc: (ctx.hints || 0) === 0 ? 1 : 0 }) },
+  { id: 'fast',      emoji: '⚡', target: 1, reward: 90,  title: 'Beende ein Mittel-Puzzle unter 5 Min',
+    matches: ctx => ({ inc: (ctx.difficulty === 'mittel' && ctx.time < 300) ? 1 : 0 }) },
+];
+function rollQuests() {
+  const pool = QUEST_POOL.slice();
+  // Shuffle (Math.random — Quests dürfen pro User unterschiedlich sein)
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, 3).map(q => ({ id: q.id, progress: 0, claimed: false }));
+}
+function ensureTodayQuests() {
+  const k = todayKey();
+  if (!state.questsDate || state.questsDate !== k) {
+    state.questsDate = k;
+    state.quests = rollQuests();
+    saveState();
+  }
+}
+function refreshQuests() {
+  ensureTodayQuests();
+  const list = document.getElementById('quests-list');
+  if (!list) return;
+  list.innerHTML = '';
+  (state.quests || []).forEach(q => {
+    const def = QUEST_POOL.find(x => x.id === q.id);
+    if (!def) return;
+    const done = q.progress >= def.target;
+    const claimed = q.claimed;
+    const row = document.createElement('div');
+    row.className = 'quest-row' + (done ? ' done' : '') + (claimed ? ' claimed' : '');
+    row.innerHTML = `
+      <div class="quest-emoji">${def.emoji}</div>
+      <div class="quest-body">
+        <div class="quest-title">${def.title}</div>
+        <div class="quest-bar"><div style="width:${Math.min(100, q.progress * 100 / def.target)}%"></div></div>
+      </div>
+      <div class="quest-reward">${claimed ? '✓' : (done ? `+${def.reward} 🪙` : `🪙 ${def.reward}`)}</div>
+    `;
+    if (done && !claimed) {
+      row.querySelector('.quest-reward').addEventListener('click', e => {
+        e.stopPropagation();
+        q.claimed = true;
+        saveState();
+        addCoins(def.reward, 'Quest geschafft');
+        playSfx('achieve');
+        refreshQuests();
+      });
+    }
+    list.appendChild(row);
+  });
+  // Reset-Timer (Mitternacht)
+  const reset = document.getElementById('quests-reset');
+  if (reset) {
+    const now = new Date();
+    const next = new Date(now); next.setHours(24, 0, 0, 0);
+    const ms = next - now;
+    const hh = Math.floor(ms / 3600000);
+    const mm = Math.floor((ms % 3600000) / 60000);
+    reset.textContent = `Reset in ${hh}h ${mm}m`;
+  }
+}
+function progressQuests(ctx) {
+  ensureTodayQuests();
+  let changed = false;
+  (state.quests || []).forEach(q => {
+    const def = QUEST_POOL.find(x => x.id === q.id);
+    if (!def) return;
+    const r = def.matches(ctx);
+    if (r && r.inc) {
+      q.progress = Math.min(def.target, q.progress + r.inc);
+      changed = true;
+    }
+  });
+  if (changed) { saveState(); refreshQuests(); }
 }
 
 function refreshSammlung() {
@@ -5240,6 +5681,8 @@ function refreshSammlung() {
     });
   }
 
+  renderStats();
+
   const grid = document.getElementById('ach-grid');
   grid.innerHTML = '';
   ACHIEVEMENTS.forEach(a => {
@@ -5252,6 +5695,68 @@ function refreshSammlung() {
       <div class="ach-desc">${t('ach.' + a.id + '.d')}</div>`;
     grid.appendChild(el);
   });
+}
+
+function renderStats() {
+  const h = state.history || [];
+  const total = h.length;
+  // Win-Rate: alles in history ist gewonnen (nur Wins werden geloggt). Plus state.totalAttempts wäre genauer, aber:
+  // Wir nehmen errors-only-Lost dazu wenn vorhanden:
+  const losses = state.totalLosses || 0;
+  const winRate = (total + losses) > 0 ? Math.round(total * 100 / (total + losses)) : 0;
+  const avgTime = total ? Math.round(h.reduce((s, x) => s + x.time, 0) / total) : 0;
+  const perfect = h.filter(x => x.perfect).length;
+  const avgErr  = total ? (h.reduce((s, x) => s + x.errors, 0) / total).toFixed(1) : '0';
+  const avgHint = total ? (h.reduce((s, x) => s + (x.hints || 0), 0) / total).toFixed(1) : '0';
+  document.getElementById('st-winrate').textContent = winRate + '%';
+  document.getElementById('st-avgtime').textContent = avgTime ? formatTime(avgTime) : '—';
+  document.getElementById('st-perfect').textContent = perfect;
+  document.getElementById('st-errors').textContent  = avgErr;
+  document.getElementById('st-hints').textContent   = avgHint;
+  document.getElementById('st-total').textContent   = total;
+
+  // Pro-Schwierigkeit-Tabelle
+  const diffs = ['leicht','mittel','schwer','experte'];
+  let rows = `<div class="sd-row head"><div class="sd-name">Modus</div><div class="sd-val">Spiele</div><div class="sd-val">Ø Zeit</div><div class="sd-val">Best</div></div>`;
+  diffs.forEach(d => {
+    const games = h.filter(x => x.difficulty === d);
+    const cnt = games.length;
+    const avg = cnt ? Math.round(games.reduce((s, x) => s + x.time, 0) / cnt) : 0;
+    const best = state.bestOverall?.[d];
+    rows += `<div class="sd-row">
+      <div class="sd-name">${t('diff.' + d)}</div>
+      <div class="sd-val">${cnt}</div>
+      <div class="sd-val">${avg ? formatTime(avg) : '–'}</div>
+      <div class="sd-val">${best ? formatTime(best) : '–'}</div>
+    </div>`;
+  });
+  document.getElementById('stats-diff-table').innerHTML = rows;
+
+  // 30-Tage-Aktivitäts-Heatmap
+  const cal = document.getElementById('stats-cal');
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const buckets = {};
+  h.forEach(x => {
+    const d = new Date(x.date);
+    d.setHours(0,0,0,0);
+    const key = d.toISOString().slice(0,10);
+    buckets[key] = (buckets[key] || 0) + 1;
+  });
+  let cells = '';
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    const n = buckets[key] || 0;
+    let lvl = '';
+    if (n >= 1) lvl = 'lvl1';
+    if (n >= 3) lvl = 'lvl2';
+    if (n >= 5) lvl = 'lvl3';
+    if (n >= 8) lvl = 'lvl4';
+    cells += `<div class="${lvl}" title="${key}: ${n}"></div>`;
+  }
+  cal.innerHTML = cells;
 }
 
 /* =========================================================
