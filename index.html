@@ -728,6 +728,9 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   .hidden { display: none !important; }
+  .dev-only { display: none !important; }
+  body.dev-mode .dev-only { display: inline-flex !important; }
+  body.dev-mode .dev-only.btn-block { display: flex !important; }
   .pop { animation: pop .25s ease; }
 
   /* ---------- WIN STATS ---------- */
@@ -2611,6 +2614,10 @@
         <svg viewBox="0 0 24 24"><path d="M4 5h12a2 2 0 012 2v3l4-2v8l-4-2v3a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2z"/></svg>
         <span data-i18n="game.tipp">Tipp</span>
       </button>
+      <button class="tipp-btn dev-only" id="btn-dev-solve" title="Dev: Auto-Solve">
+        <svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>
+        <span data-i18n="dev.solve">Lösen</span>
+      </button>
     </div>
     <div class="progress"><div id="progress-fill"></div></div>
     <div class="board-wrap">
@@ -3121,7 +3128,7 @@ const LANG = {
     'auth.legal':'Mit dem Anmelden akzeptierst du unsere <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Nutzungsbedingungen</a> und die <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Datenschutzerklärung</a>.','auth.welcome':'Angemeldet',
     'email.title':'E-Mail-Anmeldung','email.text':'Wir senden dir einen Login-Link per E-Mail.','email.placeholder':'deine@email.de','email.send':'Link senden','email.cancel':'Abbrechen','email.sent':'E-Mail unterwegs','email.sentSub':'Klick den Link in deinem Postfach.','email.invalid':'Ungültige E-Mail','email.invalidSub':'Bitte eine gültige Adresse eingeben.','email.fail':'Login fehlgeschlagen',
     'settings.title':'Einstellungen','settings.lang':'Sprache','settings.vibrate':'Vibrationen','settings.sound':'Geräusche','settings.dark':'Dunkelmodus','settings.tutorial':'Anleitung anzeigen','settings.kleinkind':'Kleinkind-Modus','settings.kleinkindDesc':'Übungsmodus: ohne Zeit, ohne Leben, kleine Belohnung.','settings.devmode':'Entwicklermodus','settings.devmodeDesc':'Unendlich Münzen, Leben & Tipps. Keine Werbung, alle Designs frei.',
-    'dev.unlocked.title':'🛠 Entwicklermodus freigeschaltet','dev.unlocked.sub':'Schalter in den Einstellungen.','dev.toggle.title':'Entwicklermodus','dev.toggle.on':'Aktiv — God Mode.','dev.toggle.off':'Deaktiviert.',
+    'dev.unlocked.title':'🛠 Entwicklermodus freigeschaltet','dev.unlocked.sub':'Schalter in den Einstellungen.','dev.toggle.title':'Entwicklermodus','dev.toggle.on':'Aktiv — God Mode.','dev.toggle.off':'Deaktiviert.','dev.solve':'Lösen',
     'settings.reminder':'Tägliche Erinnerung','settings.reminderTime':'Erinnerungszeit',
     'settings.removeAds':'Werbung entfernen','settings.adFreeOn':'Aktiv ✓','settings.adFreePrice':'4,99 € ›','settings.restore':'Käufe wiederherstellen','settings.restoreOk':'Werbefrei aktiv.','settings.restoreNone':'Keine Käufe gefunden.',
     'settings.rate':'Bewerte uns','settings.contact':'Schreib uns','settings.privacy':'Datenschutz','settings.imprint':'Impressum',
@@ -3215,7 +3222,7 @@ const LANG = {
     'auth.legal':'By signing in you accept our <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Terms of Service</a> and <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Privacy Policy</a>.','auth.welcome':'Signed in',
     'email.title':'Email sign-in','email.text':"We'll send you a login link by email.",'email.placeholder':'your@email.com','email.send':'Send link','email.cancel':'Cancel','email.sent':'Email on the way','email.sentSub':'Tap the link in your inbox.','email.invalid':'Invalid email','email.invalidSub':'Please enter a valid address.','email.fail':'Sign-in failed',
     'settings.title':'Settings','settings.lang':'Language','settings.vibrate':'Vibrations','settings.sound':'Sounds','settings.dark':'Dark mode','settings.tutorial':'Show tutorial','settings.kleinkind':'Toddler mode','settings.kleinkindDesc':'Practice mode: no timer, no lives, small reward.','settings.devmode':'Developer mode','settings.devmodeDesc':'Unlimited coins, lives & hints. No ads, all designs free.',
-    'dev.unlocked.title':'🛠 Developer mode unlocked','dev.unlocked.sub':'Toggle in settings.','dev.toggle.title':'Developer mode','dev.toggle.on':'Active — God mode.','dev.toggle.off':'Disabled.',
+    'dev.unlocked.title':'🛠 Developer mode unlocked','dev.unlocked.sub':'Toggle in settings.','dev.toggle.title':'Developer mode','dev.toggle.on':'Active — God mode.','dev.toggle.off':'Disabled.','dev.solve':'Solve',
     'settings.reminder':'Daily reminder','settings.reminderTime':'Reminder time',
     'settings.removeAds':'Remove ads','settings.adFreeOn':'Active ✓','settings.adFreePrice':'€4.99 ›','settings.restore':'Restore purchases','settings.restoreOk':'Ad-free is active.','settings.restoreNone':'No purchases found.',
     'settings.rate':'Rate us','settings.contact':'Contact us','settings.privacy':'Privacy','settings.imprint':'Imprint',
@@ -3299,7 +3306,7 @@ const LANG = {
     'auth.legal':'Входя, ты принимаешь <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Условия</a> и <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Политику конфиденциальности</a>.','auth.welcome':'Вход выполнен',
     'email.title':'Вход по E-Mail','email.text':'Мы пришлём тебе ссылку для входа.','email.placeholder':'твой@email.com','email.send':'Отправить ссылку','email.cancel':'Отмена','email.sent':'Письмо отправлено','email.sentSub':'Открой ссылку из письма.','email.invalid':'Неверный E-Mail','email.invalidSub':'Введи корректный адрес.','email.fail':'Не удалось войти',
     'settings.title':'Настройки','settings.lang':'Язык','settings.vibrate':'Вибрация','settings.sound':'Звуки','settings.dark':'Тёмная тема','settings.tutorial':'Показать обучение','settings.kleinkind':'Режим новичка','settings.kleinkindDesc':'Тренировка: без времени и жизней, малая награда.','settings.devmode':'Режим разработчика','settings.devmodeDesc':'Бесконечные монеты, жизни и подсказки. Без рекламы, все темы открыты.',
-    'dev.unlocked.title':'🛠 Режим разработчика открыт','dev.unlocked.sub':'Переключатель в настройках.','dev.toggle.title':'Режим разработчика','dev.toggle.on':'Активен — God mode.','dev.toggle.off':'Отключён.',
+    'dev.unlocked.title':'🛠 Режим разработчика открыт','dev.unlocked.sub':'Переключатель в настройках.','dev.toggle.title':'Режим разработчика','dev.toggle.on':'Активен — God mode.','dev.toggle.off':'Отключён.','dev.solve':'Решить',
     'settings.reminder':'Ежедневное напоминание','settings.reminderTime':'Время напоминания',
     'settings.removeAds':'Убрать рекламу','settings.adFreeOn':'Активно ✓','settings.adFreePrice':'4,99 € ›','settings.restore':'Восстановить покупки','settings.restoreOk':'Без рекламы активно.','settings.restoreNone':'Покупки не найдены.',
     'settings.rate':'Оцените нас','settings.contact':'Связаться','settings.privacy':'Конфиденциальность','settings.imprint':'Выходные данные',
@@ -3383,7 +3390,7 @@ const LANG = {
     'auth.legal':'Giriş yaparak <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Kullanım Şartları</a> ve <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Gizlilik Politikası</a> kabul edilir.','auth.welcome':'Giriş yapıldı',
     'email.title':'E-posta ile giriş','email.text':'Sana bir giriş bağlantısı göndereceğiz.','email.placeholder':'senin@eposta.com','email.send':'Bağlantı gönder','email.cancel':'İptal','email.sent':'E-posta yolda','email.sentSub':'Gelen kutusundaki bağlantıya tıkla.','email.invalid':'Geçersiz e-posta','email.invalidSub':'Geçerli bir adres gir.','email.fail':'Giriş başarısız',
     'settings.title':'Ayarlar','settings.lang':'Dil','settings.vibrate':'Titreşim','settings.sound':'Sesler','settings.dark':'Karanlık mod','settings.tutorial':'Eğitimi göster','settings.kleinkind':'Çocuk modu','settings.kleinkindDesc':'Antrenman modu: süresiz ve cansız, küçük ödül.','settings.devmode':'Geliştirici modu','settings.devmodeDesc':'Sınırsız coin, can ve ipucu. Reklamsız, tüm tasarımlar açık.',
-    'dev.unlocked.title':'🛠 Geliştirici modu açıldı','dev.unlocked.sub':'Ayarlardan aç/kapat.','dev.toggle.title':'Geliştirici modu','dev.toggle.on':'Aktif — God mode.','dev.toggle.off':'Devre dışı.',
+    'dev.unlocked.title':'🛠 Geliştirici modu açıldı','dev.unlocked.sub':'Ayarlardan aç/kapat.','dev.toggle.title':'Geliştirici modu','dev.toggle.on':'Aktif — God mode.','dev.toggle.off':'Devre dışı.','dev.solve':'Çöz',
     'settings.reminder':'Günlük hatırlatıcı','settings.reminderTime':'Hatırlatma saati',
     'settings.removeAds':'Reklamları kaldır','settings.adFreeOn':'Aktif ✓','settings.adFreePrice':'4,99 € ›','settings.restore':'Satın alımları geri yükle','settings.restoreOk':'Reklamsız aktif.','settings.restoreNone':'Satın alma bulunamadı.',
     'settings.rate':'Bizi puanla','settings.contact':'İletişim','settings.privacy':'Gizlilik','settings.imprint':'Künye',
@@ -3467,7 +3474,7 @@ const LANG = {
     'auth.legal':'サインインすると、<a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">利用規約</a>と<a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">プライバシーポリシー</a>に同意したものとみなされます。','auth.welcome':'サインインしました',
     'email.title':'メールでサインイン','email.text':'ログインリンクをメールでお送りします。','email.placeholder':'your@email.com','email.send':'リンク送信','email.cancel':'キャンセル','email.sent':'メール送信済み','email.sentSub':'受信ボックスのリンクをタップしてください。','email.invalid':'無効なメールアドレス','email.invalidSub':'正しいアドレスを入力してください。','email.fail':'サインイン失敗',
     'settings.title':'設定','settings.lang':'言語','settings.vibrate':'バイブレーション','settings.sound':'サウンド','settings.dark':'ダークモード','settings.tutorial':'チュートリアルを表示','settings.kleinkind':'初心者モード','settings.kleinkindDesc':'練習モード：タイマー・ライフなし、少量の報酬。','settings.devmode':'開発者モード','settings.devmodeDesc':'コイン・ライフ・ヒント無制限。広告なし、すべてのデザイン解放。',
-    'dev.unlocked.title':'🛠 開発者モード解放','dev.unlocked.sub':'設定からオン／オフできます。','dev.toggle.title':'開発者モード','dev.toggle.on':'有効 — God mode。','dev.toggle.off':'無効。',
+    'dev.unlocked.title':'🛠 開発者モード解放','dev.unlocked.sub':'設定からオン／オフできます。','dev.toggle.title':'開発者モード','dev.toggle.on':'有効 — God mode。','dev.toggle.off':'無効。','dev.solve':'解く',
     'settings.reminder':'毎日のリマインダー','settings.reminderTime':'リマインダー時刻',
     'settings.removeAds':'広告を削除','settings.adFreeOn':'有効 ✓','settings.adFreePrice':'4.99€ ›','settings.restore':'購入を復元','settings.restoreOk':'広告非表示が有効。','settings.restoreNone':'購入は見つかりませんでした。',
     'settings.rate':'評価する','settings.contact':'お問い合わせ','settings.privacy':'プライバシー','settings.imprint':'運営者情報',
@@ -3854,6 +3861,8 @@ function mergeCloudIntoLocal(local, cloud) {
    DAILY LEADERBOARD (Cloud)
 ========================================================= */
 async function submitDailyScore(dateKey, timeSeconds, perfect, errors, hints) {
+  // Entwicklermodus: keine Cloud-Eintraege fuer Cheat-Scores
+  if (state.devMode) return;
   const sb = await loadSupabase();
   if (!sb || !state.account?.id) return;
   // Nur den eigenen Score upserten — Server-Constraint sorgt dafür dass
@@ -4936,6 +4945,20 @@ document.getElementById('btn-lose-home').addEventListener('click', () => {
    ACTION BAR
 ========================================================= */
 document.getElementById('act-undo').addEventListener('click', undo);
+
+function devSolveBoard() {
+  if (!state.devMode) return;
+  if (game.finished) return;
+  if (!game.solved) return;
+  for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++) {
+    game.board[r][c] = game.solved[r][c];
+    game.notes[r][c].clear();
+  }
+  renderBoard();
+  updateProgress();
+  winGame();
+}
+document.getElementById('btn-dev-solve').addEventListener('click', devSolveBoard);
 document.getElementById('btn-restart').addEventListener('click', () => {
   if (!confirm(t('game.restartConfirm'))) return;
   startGame(game.difficulty, game.levelNum);
