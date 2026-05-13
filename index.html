@@ -1270,6 +1270,20 @@
     font-size: 36px;
     margin-bottom: 10px;
   }
+  .starter-countdown {
+    font-variant-numeric: tabular-nums;
+    color: var(--primary);
+    font-weight: 700;
+  }
+  .starter-countdown-big {
+    font-variant-numeric: tabular-nums;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--primary);
+    text-align: center;
+    margin: 8px 0 14px;
+    letter-spacing: 1px;
+  }
 
   /* SHOP */
   .shop-balance {
@@ -2488,6 +2502,18 @@
     <h1 class="settings-title sammlung-title" data-i18n="shop.title">Shop</h1>
     <div class="shop-balance"><span class="coin-emoji">🪙</span> <span id="shop-coins">0</span> <span data-i18n="shop.coins">Coins</span></div>
 
+    <div class="shop-section hidden" id="shop-starter-section">
+      <h2 class="shop-section-title" data-i18n="starter.section">💎 Starter-Angebot</h2>
+      <div class="booster-grid" style="grid-template-columns: 1fr;">
+        <button class="booster-card" id="shop-starter">
+          <div class="booster-icon">🪙×1000</div>
+          <div class="booster-name" data-i18n="starter.name">Starter-Pack · 1000 Coins</div>
+          <div class="booster-desc"><span data-i18n="starter.desc">Sofort 1000 Coins, einmalig pro Spieler.</span> · <span id="starter-countdown" class="starter-countdown">24:00:00</span></div>
+          <span class="booster-buy">0,99 €</span>
+        </button>
+      </div>
+    </div>
+
     <div class="shop-section">
       <h2 class="shop-section-title" data-i18n="bundle.section">🎁 Themen-Pakete</h2>
       <div class="bundle-grid" id="shop-bundle-grid"></div>
@@ -2523,7 +2549,7 @@
           <div class="booster-icon">🚫</div>
           <div class="booster-name" data-i18n="shop.adFreeName">Werbung entfernen</div>
           <div class="booster-desc" data-i18n="shop.adFreeDesc">Keine Werbung mehr — dauerhaft, einmalige Zahlung.</div>
-          <span class="booster-buy">9,99 €</span>
+          <span class="booster-buy">4,99 €</span>
         </button>
       </div>
     </div>
@@ -2540,6 +2566,20 @@
       </div>
     </div>
   </section>
+
+  <!-- Starter-Pack Modal -->
+  <div class="overlay" id="overlay-starter">
+    <div class="modal">
+      <div class="revive-icon">💎</div>
+      <h2 data-i18n="starter.modalTitle">Starter-Pack</h2>
+      <p data-i18n="starter.modalText">Sichere dir 1000 Coins für nur 0,99 € — einmaliges Angebot, gilt 24 Stunden ab erstem Öffnen.</p>
+      <div class="starter-countdown-big" id="starter-countdown-modal">24:00:00</div>
+      <div class="modal-buttons">
+        <button class="btn-primary" id="btn-starter-buy" data-i18n="starter.buy">Jetzt für 0,99 € holen</button>
+        <button class="btn-secondary" id="btn-starter-cancel" data-i18n="starter.cancel">Vielleicht später</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Coin-Doubler Kauf-Bestätigung -->
   <div class="overlay" id="overlay-doubler-buy">
@@ -2660,7 +2700,7 @@
         <div class="settings-row">
           <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/></svg></div>
           <div class="label" data-i18n="settings.removeAds">Werbung entfernen</div>
-          <div id="adfree-status" class="val">9,99 € ›</div>
+          <div id="adfree-status" class="val">4,99 € ›</div>
         </div>
         <div class="settings-row" id="restore-purchase">
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6a6 6 0 11-6 6H4a8 8 0 108-8z"/></svg></div>
@@ -2739,7 +2779,7 @@
   <div class="overlay" id="overlay-lose">
     <div class="modal">
       <h2 data-i18n="lose.title">Schade!</h2>
-      <p data-i18n="lose.text">Keine Leben mehr. Magst du es nochmal versuchen?</p>
+      <p id="lose-text" data-i18n="lose.text">Keine Leben mehr. Magst du es nochmal versuchen?</p>
       <div class="modal-buttons">
         <button class="btn-primary" id="btn-lose-retry" data-i18n="lose.retry">Nochmal</button>
         <button class="btn-secondary" id="btn-lose-home" data-i18n="lose.home">Zur Startseite</button>
@@ -2802,7 +2842,7 @@
 
   <div class="overlay" id="overlay-purchase">
     <div class="modal">
-      <h2 data-i18n="purchase.title">Werbefrei für 9,99 €</h2>
+      <h2 data-i18n="purchase.title">Werbefrei für 4,99 €</h2>
       <p data-i18n="purchase.text">Keine Werbung mehr — dauerhaft. Einmal zahlen, ungestört knobeln.</p>
       <div class="modal-buttons">
         <button class="btn-primary" id="btn-buy-confirm" data-i18n="purchase.buy">Jetzt kaufen</button>
@@ -2915,6 +2955,18 @@
     </div>
   </div>
 
+  <div class="overlay" id="overlay-extra-life">
+    <div class="modal">
+      <div class="revive-icon">❤️‍🔥</div>
+      <h2 data-i18n="extralife.title">Noch ein Leben kaufen?</h2>
+      <p id="extralife-text" data-i18n="extralife.text">Letzte Chance — sichere dir ein weiteres Leben und spiel weiter.</p>
+      <div class="modal-buttons">
+        <button class="btn-primary btn-with-cost" id="btn-extralife-buy"><span data-i18n="extralife.buy">Für</span> <span id="extralife-price" class="cost-tag">0,49 €</span></button>
+        <button class="btn-secondary" id="btn-extralife-cancel" data-i18n="extralife.cancel">Aufgeben</button>
+      </div>
+    </div>
+  </div>
+
   <div class="overlay" id="overlay-email-auth">
     <div class="modal">
       <h2 data-i18n="email.title">E-Mail-Anmeldung</h2>
@@ -3014,6 +3066,8 @@ function loadState() {
       reminderEnabled: false,
       reminderTime: '19:00',
       lastReminderSent: null,
+      starterPackOfferStart: null,
+      starterPackBought: false,
     }, s);
   } catch { return { streak:0, longestStreak:0, lastPlayedDate:null, completed:0, currentWinStreak:0, longestWinStreak:0, perfectGames:0, xp:0, coins:0, streakFreezes:0, lastLoginBonusDate:null, loginBonusDay:0, savedGame:null, adFree:false, sound:true, vibrate:true, dark:false, tutorialSeen:false, lastDifficulty:'mittel', kleinkindMode:false, achievements:{}, reminderEnabled:false, reminderTime:'19:00', lastReminderSent:null }; }
 }
@@ -3040,28 +3094,30 @@ const LANG = {
     'win.title':'Geschafft! 🎉','win.next':'Nächstes Level','win.home':'Zur Startseite','win.retry':'Wiederholen',
     'win.lblTime':'Zeit','win.lblErrors':'Fehler','win.lblHints':'Tipps','win.newRecord':'⭐ Neue Bestzeit!',
     'win.solved':'Spiel {n} gelöst.','win.streakAdd':' Tagesserie: {n} {label}.','win.adNext':' Kurze Werbung folgt.','win.training':'Übungs-Sudoku gelöst — gut gemacht!','win.trainingReward':'+{xp} XP · +{coins} 🪙.',
-    'lose.title':'Schade!','lose.text':'Keine Leben mehr. Magst du es nochmal versuchen?','lose.retry':'Nochmal','lose.home':'Zur Startseite',
+    'lose.title':'Schade!','lose.text':'Keine Leben mehr. Magst du es nochmal versuchen?','lose.textXp':'Keine Leben mehr — du hast {xp} XP verloren. Magst du es nochmal versuchen?','lose.retry':'Nochmal','lose.home':'Zur Startseite',
     'revive.title':'Noch ein Leben?','revive.text':'Schau ein kurzes Video oder zahle <strong>150 🪙</strong> für ein zusätzliches Leben und spiel weiter.',
     'revive.watch':'Video ansehen','revive.coins':'Mit Coins zahlen','revive.cancel':'Aufgeben',
     'revive.ok.title':'Wiederbelebt','revive.ok.sub':'Du hast wieder ein Leben.',
+    'extralife.title':'Noch ein Leben kaufen?','extralife.text':'Letzte Chance — sichere dir ein weiteres Leben und spiel weiter.','extralife.buy':'Für','extralife.cancel':'Aufgeben','extralife.toast.title':'Leben gekauft','extralife.toast.sub':'Du hast wieder ein Leben.',
     'shield.title':'Streak-Schild','shield.text':'Verpasst du einen Tag, schützt dich ein Schild davor, deine Streak zu verlieren. Maximal 3 Schilde gleichzeitig.',
     'shield.watch':'Video ansehen','shield.coins':'Mit Coins zahlen','shield.close':'Schließen',
     'shield.bought':'Schild gekauft','shield.have':'Du hast jetzt {n} Schild{s}.','shield.max':'Maximum erreicht','shield.maxSub':'Du hast schon 3 Schilde.','shield.used.title':'Schild verbraucht','shield.used.sub':'Deine Streak ist gerettet.',
     'login.title':'Tägliches Geschenk 🎁','login.text':'Komm jeden Tag wieder und sammle Bonus-Coins.','login.day':'Tag','login.claim':'Abholen','login.close':'Schließen',
     'tipp.title':'Tipp gegen Werbung','tipp.text':'Schau dir ein kurzes Video an und du bekommst einen Tipp geschenkt.','tipp.watch':'Video ansehen','tipp.later':'Vielleicht später',
     'tipp.pack':'Pack-Tipp','tipp.packLeft':'{n} übrig.',
-    'purchase.title':'Werbefrei für 9,99 €','purchase.text':'Keine Werbung mehr — dauerhaft. Einmal zahlen, ungestört knobeln.','purchase.buy':'Jetzt kaufen','purchase.later':'Später',
+    'purchase.title':'Werbefrei für 4,99 €','purchase.text':'Keine Werbung mehr — dauerhaft. Einmal zahlen, ungestört knobeln.','purchase.buy':'Jetzt kaufen','purchase.later':'Später',
     'rate.title':'Gefällt dir Brainoku?','rate.text':'Eine Bewertung im App Store hilft uns enorm — und kostet nur einen Moment.','rate.go':'Im App Store bewerten','rate.later':'Später','rate.thanks':'Danke!','rate.toAppStore':'Du wirst zum App Store geleitet.',
     'auth.google':'Mit Google fortfahren','auth.apple':'Mit Apple fortfahren','auth.facebook':'Mit Facebook fortfahren','auth.email':'Mit E-Mail fortfahren','auth.or':'oder','auth.skip':'Ohne Konto fortfahren',
     'auth.legal':'Mit dem Anmelden akzeptierst du unsere <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Nutzungsbedingungen</a> und die <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Datenschutzerklärung</a>.','auth.welcome':'Angemeldet',
     'email.title':'E-Mail-Anmeldung','email.text':'Wir senden dir einen Login-Link per E-Mail.','email.placeholder':'deine@email.de','email.send':'Link senden','email.cancel':'Abbrechen','email.sent':'E-Mail unterwegs','email.sentSub':'Klick den Link in deinem Postfach.','email.invalid':'Ungültige E-Mail','email.invalidSub':'Bitte eine gültige Adresse eingeben.','email.fail':'Login fehlgeschlagen',
     'settings.title':'Einstellungen','settings.lang':'Sprache','settings.vibrate':'Vibrationen','settings.sound':'Geräusche','settings.dark':'Dunkelmodus','settings.tutorial':'Anleitung anzeigen','settings.kleinkind':'Kleinkind-Modus','settings.kleinkindDesc':'Übungsmodus: ohne Zeit, ohne Leben, kleine Belohnung.',
     'settings.reminder':'Tägliche Erinnerung','settings.reminderTime':'Erinnerungszeit',
-    'settings.removeAds':'Werbung entfernen','settings.adFreeOn':'Aktiv ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Käufe wiederherstellen','settings.restoreOk':'Werbefrei aktiv.','settings.restoreNone':'Keine Käufe gefunden.',
+    'settings.removeAds':'Werbung entfernen','settings.adFreeOn':'Aktiv ✓','settings.adFreePrice':'4,99 € ›','settings.restore':'Käufe wiederherstellen','settings.restoreOk':'Werbefrei aktiv.','settings.restoreNone':'Keine Käufe gefunden.',
     'settings.rate':'Bewerte uns','settings.contact':'Schreib uns','settings.privacy':'Datenschutz','settings.imprint':'Impressum',
     'settings.langPick':'Sprache wählen',
     'sammlung.title':'Sammlung','sammlung.records':'Rekorde','sammlung.streak':'Tagesserie','sammlung.winStreak':'Siegesserie','sammlung.wins':'Siege','sammlung.achievements':'Auszeichnungen','sammlung.bestTimes':'Bestzeiten','sammlung.challenges':'Challenges',
     'shop.title':'Shop','shop.coins':'Coins','shop.designs':'🎨 Designs','shop.bundles':'🎁 Themen-Pakete','shop.boosters':'⚡ Booster','shop.premium':'⭐ Premium',
+    'starter.section':'💎 Starter-Angebot','starter.name':'Starter-Pack · 1000 Coins','starter.desc':'Sofort 1000 Coins, einmalig pro Spieler.','starter.modalTitle':'Starter-Pack','starter.modalText':'Sichere dir 1000 Coins für nur 0,99 € — einmaliges Angebot, gilt 24 Stunden ab erstem Öffnen.','starter.buy':'Jetzt für 0,99 € holen','starter.cancel':'Vielleicht später','starter.toast.title':'Starter-Pack gekauft','starter.toast.sub':'+{n} Coins gutgeschrieben.',
     'shop.shieldName':'Streak-Schild','shop.shieldDesc':'Schützt deine Streak bei einem verpassten Tag.',
     'shop.hintPackName':'Tipp-Paket','shop.hintPackDesc':'3 Tipps fürs nächste Spiel direkt einsetzbar.','shop.hintBought':'Tipp-Paket gekauft','shop.hintAdded':'+{n} Tipps verfügbar.',
     'shop.adFreeName':'Werbung entfernen','shop.adFreeDesc':'Keine Werbung mehr — dauerhaft, einmalige Zahlung.',
@@ -3076,7 +3132,7 @@ const LANG = {
     'tut.s4.t':'Notizen-Modus','tut.s4.h':'Nicht sicher? Aktiviere <strong>Notizen</strong> und merke dir mögliche Zahlen klein in einer Zelle. Nochmal tippen wechselt zurück in den Eingabe-Modus.',
     'tut.s5.t':'Löschen & Rückgängig','tut.s5.h':'Vertippt? Mit <strong>Löschen</strong> entfernst du deinen Eintrag, mit <strong>Rückgängig</strong> (oben links) machst du den letzten Zug ungeschehen.',
     'tut.s6.t':'Tipp-Hilfe','tut.s6.h':'Wenn du <strong>10 Sekunden</strong> nicht weiter weißt, erscheint oben rechts die <strong>Tipp-Pille</strong>. Schau dir ein kurzes Video an und eine Zelle wird für dich gelöst.',
-    'tut.s7.t':'Werbefrei spielen','tut.s7.h':'Das Spiel ist <strong>kostenlos</strong>. Alle 20 Runden kommt eine kurze Werbung. Für <strong>9,99 €</strong> (einmalig) kannst du Werbung dauerhaft entfernen — Einstellungen → <em>Werbung entfernen</em>.',
+    'tut.s7.t':'Werbefrei spielen','tut.s7.h':'Das Spiel ist <strong>kostenlos</strong>. Nach jeder gelösten Runde kommt eine kurze Werbung. Für <strong>4,99 €</strong> (einmalig) kannst du Werbung dauerhaft entfernen — Einstellungen → <em>Werbung entfernen</em>.',
     'ach.first_win.t':'Erstes Spiel','ach.first_win.d':'Löse dein erstes Sudoku.',
     'ach.wins_10.t':'Geübter Spieler','ach.wins_10.d':'10 Sudokus gewonnen.',
     'ach.wins_50.t':'Sudoku-Profi','ach.wins_50.d':'50 Sudokus gewonnen.',
@@ -3131,28 +3187,30 @@ const LANG = {
     'win.title':'Solved! 🎉','win.next':'Next level','win.home':'Home','win.retry':'Retry',
     'win.lblTime':'Time','win.lblErrors':'Errors','win.lblHints':'Hints','win.newRecord':'⭐ New best time!',
     'win.solved':'Game {n} solved.','win.streakAdd':' Daily streak: {n} {label}.','win.adNext':' A short ad will follow.','win.training':'Practice Sudoku solved — nice work!','win.trainingReward':'+{xp} XP · +{coins} 🪙.',
-    'lose.title':'Oh no!','lose.text':'No lives left. Want to try again?','lose.retry':'Retry','lose.home':'Home',
+    'lose.title':'Oh no!','lose.text':'No lives left. Want to try again?','lose.textXp':'No lives left — you lost {xp} XP. Want to try again?','lose.retry':'Retry','lose.home':'Home',
     'revive.title':'One more life?','revive.text':'Watch a short video or pay <strong>150 🪙</strong> for an extra life and keep playing.',
     'revive.watch':'Watch video','revive.coins':'Pay with coins','revive.cancel':'Give up',
     'revive.ok.title':'Revived','revive.ok.sub':'You have a life again.',
+    'extralife.title':'Buy another life?','extralife.text':'Last chance — grab one more life and keep going.','extralife.buy':'For','extralife.cancel':'Give up','extralife.toast.title':'Life purchased','extralife.toast.sub':'You have a life again.',
     'shield.title':'Streak shield','shield.text':"Miss a day? A shield protects your streak. Up to 3 shields at once.",
     'shield.watch':'Watch video','shield.coins':'Pay with coins','shield.close':'Close',
     'shield.bought':'Shield bought','shield.have':'You now have {n} shield{s}.','shield.max':'Maximum reached','shield.maxSub':'You already have 3 shields.','shield.used.title':'Shield used','shield.used.sub':'Your streak is safe.',
     'login.title':'Daily gift 🎁','login.text':'Come back every day and collect bonus coins.','login.day':'Day','login.claim':'Claim','login.close':'Close',
     'tipp.title':'Hint via ad','tipp.text':'Watch a short video and get a hint.','tipp.watch':'Watch video','tipp.later':'Maybe later',
     'tipp.pack':'Pack hint','tipp.packLeft':'{n} left.',
-    'purchase.title':'Ad-free for €9.99','purchase.text':'No more ads — forever. One-time purchase, undisturbed puzzling.','purchase.buy':'Buy now','purchase.later':'Later',
+    'purchase.title':'Ad-free for €4.99','purchase.text':'No more ads — forever. One-time purchase, undisturbed puzzling.','purchase.buy':'Buy now','purchase.later':'Later',
     'rate.title':'Enjoying Brainoku?','rate.text':'A review in the App Store helps a lot — and only takes a moment.','rate.go':'Rate on App Store','rate.later':'Later','rate.thanks':'Thanks!','rate.toAppStore':'Sending you to the App Store.',
     'auth.google':'Continue with Google','auth.apple':'Continue with Apple','auth.facebook':'Continue with Facebook','auth.email':'Continue with Email','auth.or':'or','auth.skip':'Continue without account',
     'auth.legal':'By signing in you accept our <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Terms of Service</a> and <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Privacy Policy</a>.','auth.welcome':'Signed in',
     'email.title':'Email sign-in','email.text':"We'll send you a login link by email.",'email.placeholder':'your@email.com','email.send':'Send link','email.cancel':'Cancel','email.sent':'Email on the way','email.sentSub':'Tap the link in your inbox.','email.invalid':'Invalid email','email.invalidSub':'Please enter a valid address.','email.fail':'Sign-in failed',
     'settings.title':'Settings','settings.lang':'Language','settings.vibrate':'Vibrations','settings.sound':'Sounds','settings.dark':'Dark mode','settings.tutorial':'Show tutorial','settings.kleinkind':'Toddler mode','settings.kleinkindDesc':'Practice mode: no timer, no lives, small reward.',
     'settings.reminder':'Daily reminder','settings.reminderTime':'Reminder time',
-    'settings.removeAds':'Remove ads','settings.adFreeOn':'Active ✓','settings.adFreePrice':'€9.99 ›','settings.restore':'Restore purchases','settings.restoreOk':'Ad-free is active.','settings.restoreNone':'No purchases found.',
+    'settings.removeAds':'Remove ads','settings.adFreeOn':'Active ✓','settings.adFreePrice':'€4.99 ›','settings.restore':'Restore purchases','settings.restoreOk':'Ad-free is active.','settings.restoreNone':'No purchases found.',
     'settings.rate':'Rate us','settings.contact':'Contact us','settings.privacy':'Privacy','settings.imprint':'Imprint',
     'settings.langPick':'Choose language',
     'sammlung.title':'Collection','sammlung.records':'Records','sammlung.streak':'Daily streak','sammlung.winStreak':'Win streak','sammlung.wins':'Wins','sammlung.achievements':'Achievements','sammlung.bestTimes':'Best times','sammlung.challenges':'Challenges',
     'shop.title':'Shop','shop.coins':'Coins','shop.designs':'🎨 Designs','shop.bundles':'🎁 Theme Packs','shop.boosters':'⚡ Boosters','shop.premium':'⭐ Premium',
+    'starter.section':'💎 Starter Offer','starter.name':'Starter Pack · 1000 Coins','starter.desc':'Instant 1000 coins, one per player.','starter.modalTitle':'Starter Pack','starter.modalText':'Grab 1000 coins for just €0.99 — one-time offer, valid 24 hours from first launch.','starter.buy':'Get it for €0.99','starter.cancel':'Maybe later','starter.toast.title':'Starter pack purchased','starter.toast.sub':'+{n} coins added.',
     'shop.shieldName':'Streak shield','shop.shieldDesc':'Protects your streak if you miss a day.',
     'shop.hintPackName':'Hint pack','shop.hintPackDesc':'3 hints ready to use in your next game.','shop.hintBought':'Hint pack purchased','shop.hintAdded':'+{n} hints available.',
     'shop.adFreeName':'Remove ads','shop.adFreeDesc':'No more ads — forever, one-time payment.',
@@ -3167,7 +3225,7 @@ const LANG = {
     'tut.s4.t':'Notes mode','tut.s4.h':'Not sure? Activate <strong>Notes</strong> and jot possible numbers small in a cell. Tap again to switch back to entry mode.',
     'tut.s5.t':'Erase & Undo','tut.s5.h':'Wrong tap? <strong>Erase</strong> removes your entry, <strong>Undo</strong> (top left) reverts the last move.',
     'tut.s6.t':'Hint help','tut.s6.h':'After <strong>10 seconds</strong> idle the <strong>Hint pill</strong> appears top-right. Watch a short video and a cell gets solved for you.',
-    'tut.s7.t':'Ad-free play','tut.s7.h':'The game is <strong>free</strong>. Every 20 rounds a short ad appears. For <strong>€9.99</strong> (one-time) you can remove ads forever — Settings → <em>Remove ads</em>.',
+    'tut.s7.t':'Ad-free play','tut.s7.h':'The game is <strong>free</strong>. A short ad appears after every solved round. For <strong>€4.99</strong> (one-time) you can remove ads forever — Settings → <em>Remove ads</em>.',
     'ach.first_win.t':'First win','ach.first_win.d':'Solve your first Sudoku.',
     'ach.wins_10.t':'Practiced player','ach.wins_10.d':'Win 10 Sudokus.',
     'ach.wins_50.t':'Sudoku pro','ach.wins_50.d':'Win 50 Sudokus.',
@@ -3212,28 +3270,30 @@ const LANG = {
     'win.title':'Решено! 🎉','win.next':'Следующий уровень','win.home':'На главную','win.retry':'Повторить',
     'win.lblTime':'Время','win.lblErrors':'Ошибки','win.lblHints':'Подсказки','win.newRecord':'⭐ Новый рекорд!',
     'win.solved':'Игра {n} решена.','win.streakAdd':' Серия: {n} {label}.','win.adNext':' Сейчас будет реклама.','win.training':'Тренировочное судоку решено — молодец!','win.trainingReward':'+{xp} XP · +{coins} 🪙.',
-    'lose.title':'Жаль!','lose.text':'Жизни закончились. Попробовать ещё раз?','lose.retry':'Ещё раз','lose.home':'На главную',
+    'lose.title':'Жаль!','lose.text':'Жизни закончились. Попробовать ещё раз?','lose.textXp':'Жизни закончились — потеряно {xp} XP. Попробовать ещё раз?','lose.retry':'Ещё раз','lose.home':'На главную',
     'revive.title':'Ещё одну жизнь?','revive.text':'Посмотри короткое видео или заплати <strong>150 🪙</strong> за дополнительную жизнь.',
     'revive.watch':'Смотреть видео','revive.coins':'Заплатить монетами','revive.cancel':'Сдаться',
     'revive.ok.title':'Возрождение','revive.ok.sub':'У тебя снова есть жизнь.',
+    'extralife.title':'Купить ещё одну жизнь?','extralife.text':'Последний шанс — возьми ещё одну жизнь и продолжай.','extralife.buy':'За','extralife.cancel':'Сдаться','extralife.toast.title':'Жизнь куплена','extralife.toast.sub':'У тебя снова есть жизнь.',
     'shield.title':'Щит серии','shield.text':'Пропустил день? Щит спасёт твою серию. До 3 щитов одновременно.',
     'shield.watch':'Смотреть видео','shield.coins':'Заплатить монетами','shield.close':'Закрыть',
     'shield.bought':'Щит куплен','shield.have':'Теперь у тебя {n} щит{s}.','shield.max':'Максимум','shield.maxSub':'У тебя уже 3 щита.','shield.used.title':'Щит использован','shield.used.sub':'Серия спасена.',
     'login.title':'Ежедневный подарок 🎁','login.text':'Возвращайся каждый день и собирай бонусные монеты.','login.day':'День','login.claim':'Забрать','login.close':'Закрыть',
     'tipp.title':'Подсказка за рекламу','tipp.text':'Посмотри короткое видео и получи подсказку.','tipp.watch':'Смотреть видео','tipp.later':'Позже',
     'tipp.pack':'Подсказка из набора','tipp.packLeft':'Осталось: {n}.',
-    'purchase.title':'Без рекламы за 9,99 €','purchase.text':'Никакой рекламы — навсегда. Один раз заплатил, играй спокойно.','purchase.buy':'Купить','purchase.later':'Позже',
+    'purchase.title':'Без рекламы за 4,99 €','purchase.text':'Никакой рекламы — навсегда. Один раз заплатил, играй спокойно.','purchase.buy':'Купить','purchase.later':'Позже',
     'rate.title':'Нравится Brainoku?','rate.text':'Оценка в App Store очень помогает — и займёт всего минуту.','rate.go':'Оценить в App Store','rate.later':'Позже','rate.thanks':'Спасибо!','rate.toAppStore':'Открываем App Store.',
     'auth.google':'Войти через Google','auth.apple':'Войти через Apple','auth.facebook':'Войти через Facebook','auth.email':'Войти по E-Mail','auth.or':'или','auth.skip':'Продолжить без аккаунта',
     'auth.legal':'Входя, ты принимаешь <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Условия</a> и <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Политику конфиденциальности</a>.','auth.welcome':'Вход выполнен',
     'email.title':'Вход по E-Mail','email.text':'Мы пришлём тебе ссылку для входа.','email.placeholder':'твой@email.com','email.send':'Отправить ссылку','email.cancel':'Отмена','email.sent':'Письмо отправлено','email.sentSub':'Открой ссылку из письма.','email.invalid':'Неверный E-Mail','email.invalidSub':'Введи корректный адрес.','email.fail':'Не удалось войти',
     'settings.title':'Настройки','settings.lang':'Язык','settings.vibrate':'Вибрация','settings.sound':'Звуки','settings.dark':'Тёмная тема','settings.tutorial':'Показать обучение','settings.kleinkind':'Режим новичка','settings.kleinkindDesc':'Тренировка: без времени и жизней, малая награда.',
     'settings.reminder':'Ежедневное напоминание','settings.reminderTime':'Время напоминания',
-    'settings.removeAds':'Убрать рекламу','settings.adFreeOn':'Активно ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Восстановить покупки','settings.restoreOk':'Без рекламы активно.','settings.restoreNone':'Покупки не найдены.',
+    'settings.removeAds':'Убрать рекламу','settings.adFreeOn':'Активно ✓','settings.adFreePrice':'4,99 € ›','settings.restore':'Восстановить покупки','settings.restoreOk':'Без рекламы активно.','settings.restoreNone':'Покупки не найдены.',
     'settings.rate':'Оцените нас','settings.contact':'Связаться','settings.privacy':'Конфиденциальность','settings.imprint':'Выходные данные',
     'settings.langPick':'Выбери язык',
     'sammlung.title':'Коллекция','sammlung.records':'Рекорды','sammlung.streak':'Серия дней','sammlung.winStreak':'Серия побед','sammlung.wins':'Победы','sammlung.achievements':'Достижения','sammlung.bestTimes':'Лучшие времена','sammlung.challenges':'Челленджи',
     'shop.title':'Магазин','shop.coins':'Монеты','shop.designs':'🎨 Темы','shop.bundles':'🎁 Тематические наборы','shop.boosters':'⚡ Бустеры','shop.premium':'⭐ Премиум',
+    'starter.section':'💎 Стартовое предложение','starter.name':'Starter-Pack · 1000 монет','starter.desc':'Сразу 1000 монет, один раз на игрока.','starter.modalTitle':'Стартовый набор','starter.modalText':'Получи 1000 монет всего за 0,99 € — разовое предложение, действует 24 часа с момента первого запуска.','starter.buy':'Купить за 0,99 €','starter.cancel':'Позже','starter.toast.title':'Стартовый набор куплен','starter.toast.sub':'+{n} монет начислено.',
     'shop.shieldName':'Щит серии','shop.shieldDesc':'Защитит серию при пропуске дня.',
     'shop.hintPackName':'Набор подсказок','shop.hintPackDesc':'3 подсказки для следующей игры.','shop.hintBought':'Набор куплен','shop.hintAdded':'+{n} подсказок.',
     'shop.adFreeName':'Убрать рекламу','shop.adFreeDesc':'Больше никакой рекламы — навсегда.',
@@ -3248,7 +3308,7 @@ const LANG = {
     'tut.s4.t':'Заметки','tut.s4.h':'Не уверен? Включи <strong>Заметки</strong> и помечай возможные числа мелким шрифтом.',
     'tut.s5.t':'Стереть и Отмена','tut.s5.h':'Промахнулся? <strong>Стереть</strong> уберёт ввод, <strong>Отмена</strong> отменит последний ход.',
     'tut.s6.t':'Подсказки','tut.s6.h':'Через <strong>10 секунд</strong> бездействия справа сверху появится <strong>Подсказка</strong>. Видео — и одна клетка решена.',
-    'tut.s7.t':'Без рекламы','tut.s7.h':'Игра <strong>бесплатная</strong>. Раз в 20 раундов — короткая реклама. За <strong>9,99 €</strong> можно убрать её навсегда.',
+    'tut.s7.t':'Без рекламы','tut.s7.h':'Игра <strong>бесплатная</strong>. После каждой решённой партии — короткая реклама. За <strong>4,99 €</strong> можно убрать её навсегда.',
     'ach.first_win.t':'Первая победа','ach.first_win.d':'Реши первое судоку.',
     'ach.wins_10.t':'Опытный игрок','ach.wins_10.d':'10 побед.',
     'ach.wins_50.t':'Профи судоку','ach.wins_50.d':'50 побед.',
@@ -3293,28 +3353,30 @@ const LANG = {
     'win.title':'Tamamlandı! 🎉','win.next':'Sonraki seviye','win.home':'Ana sayfa','win.retry':'Tekrar',
     'win.lblTime':'Süre','win.lblErrors':'Hata','win.lblHints':'İpucu','win.newRecord':'⭐ Yeni rekor!',
     'win.solved':'Oyun {n} çözüldü.','win.streakAdd':' Günlük seri: {n} {label}.','win.adNext':' Kısa bir reklam gelecek.','win.training':'Antrenman sudokusu çözüldü — aferin!','win.trainingReward':'+{xp} XP · +{coins} 🪙.',
-    'lose.title':'Vah!','lose.text':'Can kalmadı. Tekrar denemek ister misin?','lose.retry':'Tekrar','lose.home':'Ana sayfa',
+    'lose.title':'Vah!','lose.text':'Can kalmadı. Tekrar denemek ister misin?','lose.textXp':'Can kalmadı — {xp} XP kaybettin. Tekrar denemek ister misin?','lose.retry':'Tekrar','lose.home':'Ana sayfa',
     'revive.title':'Bir can daha?','revive.text':'Kısa bir video izle ya da <strong>150 🪙</strong> öde, ekstra canla devam et.',
     'revive.watch':'Video izle','revive.coins':'Coin ile öde','revive.cancel':'Vazgeç',
     'revive.ok.title':'Diriltildin','revive.ok.sub':'Yeniden bir canın var.',
+    'extralife.title':'Bir can daha al?','extralife.text':'Son şans — bir can daha al ve devam et.','extralife.buy':'Şu fiyata:','extralife.cancel':'Vazgeç','extralife.toast.title':'Can satın alındı','extralife.toast.sub':'Yeniden bir canın var.',
     'shield.title':'Seri kalkanı','shield.text':'Bir gün kaçırırsan kalkan serini korur. En fazla 3 kalkan.',
     'shield.watch':'Video izle','shield.coins':'Coin ile öde','shield.close':'Kapat',
     'shield.bought':'Kalkan alındı','shield.have':'Artık {n} kalkanın var.','shield.max':'Maks. ulaşıldı','shield.maxSub':'Zaten 3 kalkanın var.','shield.used.title':'Kalkan kullanıldı','shield.used.sub':'Serin kurtuldu.',
     'login.title':'Günlük hediye 🎁','login.text':'Her gün gel ve bonus coin topla.','login.day':'Gün','login.claim':'Al','login.close':'Kapat',
     'tipp.title':'Reklam karşılığı ipucu','tipp.text':'Kısa bir video izle, ipucu kazan.','tipp.watch':'Video izle','tipp.later':'Belki sonra',
     'tipp.pack':'Paket ipucu','tipp.packLeft':'{n} kaldı.',
-    'purchase.title':'Reklamsız 9,99 €','purchase.text':'Reklamsız — sonsuza dek. Tek seferlik ödeme.','purchase.buy':'Şimdi al','purchase.later':'Sonra',
+    'purchase.title':'Reklamsız 4,99 €','purchase.text':'Reklamsız — sonsuza dek. Tek seferlik ödeme.','purchase.buy':'Şimdi al','purchase.later':'Sonra',
     'rate.title':'Brainoku hoşuna gitti mi?','rate.text':"App Store'da puan vermek bize çok yardımcı olur — sadece bir saniye sürer.",'rate.go':"App Store'da puan ver",'rate.later':'Sonra','rate.thanks':'Teşekkürler!','rate.toAppStore':"App Store'a yönlendiriliyorsun.",
     'auth.google':'Google ile devam et','auth.apple':'Apple ile devam et','auth.facebook':'Facebook ile devam et','auth.email':'E-posta ile devam et','auth.or':'veya','auth.skip':'Hesapsız devam et',
     'auth.legal':'Giriş yaparak <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Kullanım Şartları</a> ve <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Gizlilik Politikası</a> kabul edilir.','auth.welcome':'Giriş yapıldı',
     'email.title':'E-posta ile giriş','email.text':'Sana bir giriş bağlantısı göndereceğiz.','email.placeholder':'senin@eposta.com','email.send':'Bağlantı gönder','email.cancel':'İptal','email.sent':'E-posta yolda','email.sentSub':'Gelen kutusundaki bağlantıya tıkla.','email.invalid':'Geçersiz e-posta','email.invalidSub':'Geçerli bir adres gir.','email.fail':'Giriş başarısız',
     'settings.title':'Ayarlar','settings.lang':'Dil','settings.vibrate':'Titreşim','settings.sound':'Sesler','settings.dark':'Karanlık mod','settings.tutorial':'Eğitimi göster','settings.kleinkind':'Çocuk modu','settings.kleinkindDesc':'Antrenman modu: süresiz ve cansız, küçük ödül.',
     'settings.reminder':'Günlük hatırlatıcı','settings.reminderTime':'Hatırlatma saati',
-    'settings.removeAds':'Reklamları kaldır','settings.adFreeOn':'Aktif ✓','settings.adFreePrice':'9,99 € ›','settings.restore':'Satın alımları geri yükle','settings.restoreOk':'Reklamsız aktif.','settings.restoreNone':'Satın alma bulunamadı.',
+    'settings.removeAds':'Reklamları kaldır','settings.adFreeOn':'Aktif ✓','settings.adFreePrice':'4,99 € ›','settings.restore':'Satın alımları geri yükle','settings.restoreOk':'Reklamsız aktif.','settings.restoreNone':'Satın alma bulunamadı.',
     'settings.rate':'Bizi puanla','settings.contact':'İletişim','settings.privacy':'Gizlilik','settings.imprint':'Künye',
     'settings.langPick':'Dil seç',
     'sammlung.title':'Koleksiyon','sammlung.records':'Rekorlar','sammlung.streak':'Günlük seri','sammlung.winStreak':'Galibiyet serisi','sammlung.wins':'Galibiyetler','sammlung.achievements':'Başarılar','sammlung.bestTimes':'En iyi süreler','sammlung.challenges':'Mücadeleler',
     'shop.title':'Mağaza','shop.coins':'Coin','shop.designs':'🎨 Tasarımlar','shop.bundles':'🎁 Tema Paketleri','shop.boosters':'⚡ Güçlendirici','shop.premium':'⭐ Premium',
+    'starter.section':'💎 Başlangıç Teklifi','starter.name':'Başlangıç Paketi · 1000 Coin','starter.desc':'Anında 1000 coin, oyuncu başına bir kez.','starter.modalTitle':'Başlangıç Paketi','starter.modalText':'Sadece 0,99 € karşılığında 1000 coin al — tek seferlik teklif, ilk açılıştan itibaren 24 saat geçerli.','starter.buy':'0,99 € ile al','starter.cancel':'Belki sonra','starter.toast.title':'Başlangıç paketi alındı','starter.toast.sub':'+{n} coin eklendi.',
     'shop.shieldName':'Seri kalkanı','shop.shieldDesc':'Bir gün kaçırınca serini korur.',
     'shop.hintPackName':'İpucu paketi','shop.hintPackDesc':'Sonraki oyunda 3 ipucu kullanıma hazır.','shop.hintBought':'İpucu paketi alındı','shop.hintAdded':'+{n} ipucu mevcut.',
     'shop.adFreeName':'Reklamları kaldır','shop.adFreeDesc':'Reklamsız — sonsuza dek, tek seferlik ödeme.',
@@ -3329,7 +3391,7 @@ const LANG = {
     'tut.s4.t':'Notlar modu','tut.s4.h':'Emin değilsen <strong>Notlar</strong> modunu aç ve olası sayıları küçük yaz.',
     'tut.s5.t':'Sil ve Geri al','tut.s5.h':'<strong>Sil</strong> girdiyi kaldırır, <strong>Geri al</strong> son hamleyi geri alır.',
     'tut.s6.t':'İpucu yardımı','tut.s6.h':'<strong>10 saniye</strong> hareketsiz kalırsan sağ üstte <strong>İpucu</strong> belirir. Kısa videoyla bir hücre çözülür.',
-    'tut.s7.t':'Reklamsız oyna','tut.s7.h':'Oyun <strong>ücretsiz</strong>. 20 turda bir kısa reklam. <strong>9,99 €</strong> ile reklamları kaldırabilirsin.',
+    'tut.s7.t':'Reklamsız oyna','tut.s7.h':'Oyun <strong>ücretsiz</strong>. Her çözülen turdan sonra kısa bir reklam çıkar. <strong>4,99 €</strong> ile reklamları kalıcı olarak kaldırabilirsin.',
     'ach.first_win.t':'İlk galibiyet','ach.first_win.d':'İlk Sudoku\'yu çöz.',
     'ach.wins_10.t':'Antrenmanlı','ach.wins_10.d':'10 galibiyet.',
     'ach.wins_50.t':'Sudoku ustası','ach.wins_50.d':'50 galibiyet.',
@@ -3374,28 +3436,30 @@ const LANG = {
     'win.title':'クリア！🎉','win.next':'次のレベル','win.home':'ホームへ','win.retry':'もう一度',
     'win.lblTime':'タイム','win.lblErrors':'ミス','win.lblHints':'ヒント','win.newRecord':'⭐ ベスト記録！',
     'win.solved':'ゲーム {n} クリア。','win.streakAdd':' 連続: {n}{label}。','win.adNext':' 短い広告が流れます。','win.training':'練習スドクをクリア — お見事！','win.trainingReward':'+{xp} XP · +{coins} 🪙。',
-    'lose.title':'残念！','lose.text':'ライフがありません。もう一度挑戦しますか？','lose.retry':'もう一度','lose.home':'ホームへ',
+    'lose.title':'残念！','lose.text':'ライフがありません。もう一度挑戦しますか？','lose.textXp':'ライフがありません — {xp} XP を失いました。もう一度挑戦しますか？','lose.retry':'もう一度','lose.home':'ホームへ',
     'revive.title':'もう1つライフ？','revive.text':'短い動画を見るか、<strong>150 🪙</strong> を払って追加ライフを獲得してください。',
     'revive.watch':'動画を見る','revive.coins':'コインで支払う','revive.cancel':'あきらめる',
     'revive.ok.title':'復活','revive.ok.sub':'ライフが回復しました。',
+    'extralife.title':'もう1つライフを購入？','extralife.text':'最後のチャンス — もう1つライフを獲得して続行しよう。','extralife.buy':'価格：','extralife.cancel':'あきらめる','extralife.toast.title':'ライフ購入','extralife.toast.sub':'ライフが回復しました。',
     'shield.title':'ストリーク・シールド','shield.text':'日を逃してもシールドがストリークを守ります。最大3つ。',
     'shield.watch':'動画を見る','shield.coins':'コインで支払う','shield.close':'閉じる',
     'shield.bought':'シールド購入','shield.have':'現在 {n} 個のシールドがあります。','shield.max':'上限に達しました','shield.maxSub':'すでに3つ持っています。','shield.used.title':'シールド使用','shield.used.sub':'ストリークが守られました。',
     'login.title':'デイリーギフト 🎁','login.text':'毎日来てボーナスコインを集めよう。','login.day':'デー','login.claim':'受け取る','login.close':'閉じる',
     'tipp.title':'広告でヒント','tipp.text':'短い動画を見てヒントをもらおう。','tipp.watch':'動画を見る','tipp.later':'あとで',
     'tipp.pack':'パックヒント','tipp.packLeft':'残り{n}個。',
-    'purchase.title':'広告非表示 9.99€','purchase.text':'広告は永久に非表示。一度の支払いで快適にプレイ。','purchase.buy':'今すぐ購入','purchase.later':'あとで',
+    'purchase.title':'広告非表示 4.99€','purchase.text':'広告は永久に非表示。一度の支払いで快適にプレイ。','purchase.buy':'今すぐ購入','purchase.later':'あとで',
     'rate.title':'Brainokuはお気に入り？','rate.text':'App Storeでの評価が大きな励みになります — 一瞬で完了します。','rate.go':'App Storeで評価','rate.later':'あとで','rate.thanks':'ありがとう！','rate.toAppStore':'App Storeへ移動します。',
     'auth.google':'Googleで続ける','auth.apple':'Appleで続ける','auth.facebook':'Facebookで続ける','auth.email':'メールで続ける','auth.or':'または','auth.skip':'アカウントなしで続ける',
     'auth.legal':'サインインすると、<a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">利用規約</a>と<a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">プライバシーポリシー</a>に同意したものとみなされます。','auth.welcome':'サインインしました',
     'email.title':'メールでサインイン','email.text':'ログインリンクをメールでお送りします。','email.placeholder':'your@email.com','email.send':'リンク送信','email.cancel':'キャンセル','email.sent':'メール送信済み','email.sentSub':'受信ボックスのリンクをタップしてください。','email.invalid':'無効なメールアドレス','email.invalidSub':'正しいアドレスを入力してください。','email.fail':'サインイン失敗',
     'settings.title':'設定','settings.lang':'言語','settings.vibrate':'バイブレーション','settings.sound':'サウンド','settings.dark':'ダークモード','settings.tutorial':'チュートリアルを表示','settings.kleinkind':'初心者モード','settings.kleinkindDesc':'練習モード：タイマー・ライフなし、少量の報酬。',
     'settings.reminder':'毎日のリマインダー','settings.reminderTime':'リマインダー時刻',
-    'settings.removeAds':'広告を削除','settings.adFreeOn':'有効 ✓','settings.adFreePrice':'9.99€ ›','settings.restore':'購入を復元','settings.restoreOk':'広告非表示が有効。','settings.restoreNone':'購入は見つかりませんでした。',
+    'settings.removeAds':'広告を削除','settings.adFreeOn':'有効 ✓','settings.adFreePrice':'4.99€ ›','settings.restore':'購入を復元','settings.restoreOk':'広告非表示が有効。','settings.restoreNone':'購入は見つかりませんでした。',
     'settings.rate':'評価する','settings.contact':'お問い合わせ','settings.privacy':'プライバシー','settings.imprint':'運営者情報',
     'settings.langPick':'言語を選択',
     'sammlung.title':'コレクション','sammlung.records':'記録','sammlung.streak':'連続記録','sammlung.winStreak':'連勝記録','sammlung.wins':'勝利','sammlung.achievements':'実績','sammlung.bestTimes':'ベストタイム','sammlung.challenges':'チャレンジ',
     'shop.title':'ショップ','shop.coins':'コイン','shop.designs':'🎨 デザイン','shop.bundles':'🎁 テーマパック','shop.boosters':'⚡ ブースター','shop.premium':'⭐ プレミアム',
+    'starter.section':'💎 スターターオファー','starter.name':'スターターパック · 1000コイン','starter.desc':'即時 1000 コイン、プレイヤーごとに1回限り。','starter.modalTitle':'スターターパック','starter.modalText':'たった 0.99€ で 1000 コイン。初回起動から 24 時間限定の特別オファーです。','starter.buy':'0.99€ で購入','starter.cancel':'あとで','starter.toast.title':'スターターパック購入','starter.toast.sub':'+{n} コインが付与されました。',
     'shop.shieldName':'ストリーク・シールド','shop.shieldDesc':'日を逃したときストリークを守ります。',
     'shop.hintPackName':'ヒントパック','shop.hintPackDesc':'次のゲームですぐ使える3つのヒント。','shop.hintBought':'ヒントパック購入','shop.hintAdded':'+{n} ヒント獲得。',
     'shop.adFreeName':'広告を削除','shop.adFreeDesc':'広告なし — 永久、一度きりの支払い。',
@@ -3410,7 +3474,7 @@ const LANG = {
     'tut.s4.t':'メモモード','tut.s4.h':'迷ったら<strong>メモ</strong>をオンにして候補を小さく書く。もう一度タップで入力モードに戻る。',
     'tut.s5.t':'消去 & 取り消し','tut.s5.h':'<strong>消去</strong>で入力をクリア、<strong>取り消し</strong>(左上)で直前の操作を戻す。',
     'tut.s6.t':'ヒント','tut.s6.h':'<strong>10秒</strong>動かないと右上に<strong>ヒント</strong>が出る。短い動画でマスが1つ解ける。',
-    'tut.s7.t':'広告非表示でプレイ','tut.s7.h':'ゲームは<strong>無料</strong>。20ラウンドごとに短い広告が流れます。<strong>9.99€</strong>(一度限り)で永久に削除可能 — 設定 → <em>広告を削除</em>。',
+    'tut.s7.t':'広告非表示でプレイ','tut.s7.h':'ゲームは<strong>無料</strong>。クリアごとに短い広告が流れます。<strong>4.99€</strong>(一度限り)で永久に削除可能 — 設定 → <em>広告を削除</em>。',
     'ach.first_win.t':'初勝利','ach.first_win.d':'初めての数独をクリア。',
     'ach.wins_10.t':'熟練プレイヤー','ach.wins_10.d':'10回勝利。',
     'ach.wins_50.t':'数独プロ','ach.wins_50.d':'50回勝利。',
@@ -4129,6 +4193,8 @@ const game = {
   timerInt: null,
   finished: false,
   isTraining: false,   // Kleinkind-/Übungsmodus: ohne Zeit, Leben, Wertung
+  reviveUsed: false,
+  paidLivesBought: 0,
 };
 
 function formatTime(s) {
@@ -4180,6 +4246,7 @@ function startGame(diff, levelNum) {
   game.startTime = Date.now();
   game.timer = 0;
   game.reviveUsed = false;
+  game.paidLivesBought = 0;
   game.finished = false;
   game.isTraining = !!state.kleinkindMode;
   document.body.classList.toggle('training-mode', game.isTraining);
@@ -4567,11 +4634,11 @@ function playTippVideo() {
 }
 
 /* =========================================================
-   AD INTERSTITIAL  (every 20 completed rounds)
+   AD INTERSTITIAL  (after every solved round)
 ========================================================= */
 function maybeShowInterstitial(after) {
   if (state.adFree) { after(); return; }
-  if (state.completed > 0 && state.completed % 20 === 0) {
+  if (state.completed > 0) {
     showInterstitial(after);
   } else {
     after();
@@ -4773,7 +4840,7 @@ function winGame() {
 
   let msg = t('win.solved', { n: state.completed });
   if (newDay) msg += t('win.streakAdd', { n: state.streak, label: state.streak === 1 ? t('home.day') : t('home.days') });
-  if (state.completed % 20 === 0 && !state.adFree) msg += t('win.adNext');
+  if (!state.adFree) msg += t('win.adNext');
   document.getElementById('win-text').textContent = msg;
   document.getElementById('overlay-win').classList.add('active');
   playSfx('win');
@@ -4785,6 +4852,12 @@ function actuallyLoseGame() {
   game.finished = true;
   state.currentWinStreak = 0;
   state.totalLosses = (state.totalLosses || 0) + 1;
+  // XP-Strafe: halber Gewinn-Wert, Floor am Level-Start (kein Level-Drop)
+  const penalty = XP_PENALTY_PER_LOSS[game.difficulty] || 5;
+  const levelStart = (levelOf(state.xp) - 1) * XP_PER_LEVEL;
+  const xpBefore = state.xp || 0;
+  state.xp = Math.max(levelStart, xpBefore - penalty);
+  const xpLost = xpBefore - state.xp;
   // Loss in History für Statistik (perfect/win=false)
   state.history = state.history || [];
   state.history.push({
@@ -4803,6 +4876,13 @@ function actuallyLoseGame() {
   saveState();
   stopIdleTimer();
   stopTimer();
+  const loseTextEl = document.getElementById('lose-text');
+  if (loseTextEl) {
+    loseTextEl.textContent = xpLost > 0
+      ? t('lose.textXp', { xp: xpLost })
+      : t('lose.text');
+  }
+  refreshHome();
   document.getElementById('overlay-lose').classList.add('active');
   playSfx('lose');
 }
@@ -5153,58 +5233,58 @@ const PATTERN_SUMMER = "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.
 
 const THEMES = {
   classic:        { name: 'Classic',       price: 0,    primary: '#5C5CF0', primarySoft: '#EAEAFD', primaryLight: '#A5A8E8', cellBg: '#fff',    cellPeer: '#EEF0FA', cellSelected: '#C8C9FA', cellSame: '#DEDFFB', cellUser: '#5C5CF0' },
-  sakura_photo:   { name: 'Sakura Foto',   price: 50,   primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4', cellBg: 'rgba(255,248,251,0.92)', cellPeer: 'rgba(252,224,236,0.85)', cellSelected: 'rgba(249,168,212,0.85)', cellSame: 'rgba(251,207,232,0.85)', cellUser: '#DB2777', wallpaper: { light: 'sakura.jpeg', dark: 'sakuradark.jpeg' } },
-  sakura:         { name: 'Sakura',        price: 500,  primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4', cellBg: '#FFF8FB', cellPeer: '#FCE0EC', cellSelected: '#F9A8D4', cellSame: '#FBCFE8', cellUser: '#DB2777' },
-  ozean:        { name: 'Ozean',       price: 500,  primary: '#0EA5E9', primarySoft: '#E0F2FE', primaryLight: '#7DD3FC', cellBg: '#F8FCFF', cellPeer: '#D5EEFA', cellSelected: '#7DD3FC', cellSame: '#BAE6FD', cellUser: '#0284C7' },
-  wald:         { name: 'Wald',        price: 500,  primary: '#16A34A', primarySoft: '#DCFCE7', primaryLight: '#86EFAC', cellBg: '#F8FCF9', cellPeer: '#D2F0DA', cellSelected: '#86EFAC', cellSame: '#BBF7D0', cellUser: '#15803D' },
-  sunset:       { name: 'Sunset',      price: 700,  primary: '#F97316', primarySoft: '#FFEDD5', primaryLight: '#FDBA74', cellBg: '#FFFBF6', cellPeer: '#FFE0C2', cellSelected: '#FDBA74', cellSame: '#FED7AA', cellUser: '#EA580C' },
-  neon:         { name: 'Neon',        price: 1000, primary: '#A855F7', primarySoft: '#F3E8FF', primaryLight: '#D8B4FE', cellBg: '#FFFBFF', cellPeer: '#EDD5FE', cellSelected: '#D8B4FE', cellSame: '#E9D5FF', cellUser: '#9333EA' },
+  sakura_photo:   { name: 'Sakura Foto',   price: 150,  primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4', cellBg: 'rgba(255,248,251,0.92)', cellPeer: 'rgba(252,224,236,0.85)', cellSelected: 'rgba(249,168,212,0.85)', cellSame: 'rgba(251,207,232,0.85)', cellUser: '#DB2777', wallpaper: { light: 'sakura.jpeg', dark: 'sakuradark.jpeg' } },
+  sakura:         { name: 'Sakura',        price: 1500, primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4', cellBg: '#FFF8FB', cellPeer: '#FCE0EC', cellSelected: '#F9A8D4', cellSame: '#FBCFE8', cellUser: '#DB2777' },
+  ozean:        { name: 'Ozean',       price: 1500, primary: '#0EA5E9', primarySoft: '#E0F2FE', primaryLight: '#7DD3FC', cellBg: '#F8FCFF', cellPeer: '#D5EEFA', cellSelected: '#7DD3FC', cellSame: '#BAE6FD', cellUser: '#0284C7' },
+  wald:         { name: 'Wald',        price: 1500, primary: '#16A34A', primarySoft: '#DCFCE7', primaryLight: '#86EFAC', cellBg: '#F8FCF9', cellPeer: '#D2F0DA', cellSelected: '#86EFAC', cellSame: '#BBF7D0', cellUser: '#15803D' },
+  sunset:       { name: 'Sunset',      price: 2100, primary: '#F97316', primarySoft: '#FFEDD5', primaryLight: '#FDBA74', cellBg: '#FFFBF6', cellPeer: '#FFE0C2', cellSelected: '#FDBA74', cellSame: '#FED7AA', cellUser: '#EA580C' },
+  neon:         { name: 'Neon',        price: 3000, primary: '#A855F7', primarySoft: '#F3E8FF', primaryLight: '#D8B4FE', cellBg: '#FFFBFF', cellPeer: '#EDD5FE', cellSelected: '#D8B4FE', cellSame: '#E9D5FF', cellUser: '#9333EA' },
   // Premium-Patterns
-  bluetenwiese: { name: 'Blütenwiese', price: 1500, primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4', cellBg: '#FFF8FB', cellPeer: '#FCE0EC', cellSelected: '#F9A8D4', cellSame: '#FBCFE8', cellUser: '#DB2777', bgPattern: PATTERN_FLOWERS, bgColor: '#FFF1F7' },
-  sternennacht: { name: 'Sternennacht',price: 1500, primary: '#FFB400', primarySoft: '#312E81', primaryLight: '#6366F1', cellBg: '#1E1B4B', cellPeer: '#312E81', cellSelected: '#4338CA', cellSame: '#3730A3', cellUser: '#FCD34D', cellGiven: '#F1F5F9', bgPattern: PATTERN_STARS,   bgColor: '#0F0E2C', dark: true },
-  geometrie:    { name: 'Geometrie',   price: 1800, primary: '#8B5CF6', primarySoft: '#EDE9FE', primaryLight: '#C4B5FD', cellBg: '#FBFAFF', cellPeer: '#EDE9FE', cellSelected: '#C4B5FD', cellSame: '#DDD6FE', cellUser: '#7C3AED', bgPattern: PATTERN_HEX,    bgColor: '#F5F3FF' },
-  marmor:       { name: 'Marmor',      price: 2000, primary: '#475569', primarySoft: '#E2E8F0', primaryLight: '#94A3B8', cellBg: '#FAFAFA', cellPeer: '#E2E8F0', cellSelected: '#CBD5E1', cellSame: '#E2E8F0', cellUser: '#1E293B', bgPattern: PATTERN_MARBLE, bgColor: '#F1F5F9' },
-  goldrausch:   { name: 'Gold',        price: 2500, primary: '#D4AF37', primarySoft: '#1A1A1A', primaryLight: '#FCD34D', cellBg: '#1C1C1C', cellPeer: '#262626', cellSelected: '#404040', cellSame: '#333333', cellUser: '#FCD34D', cellGiven: '#F5F5F4', bgPattern: PATTERN_GOLD,   bgColor: '#0A0A0A', dark: true },
+  bluetenwiese: { name: 'Blütenwiese', price: 4500, primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4', cellBg: '#FFF8FB', cellPeer: '#FCE0EC', cellSelected: '#F9A8D4', cellSame: '#FBCFE8', cellUser: '#DB2777', bgPattern: PATTERN_FLOWERS, bgColor: '#FFF1F7' },
+  sternennacht: { name: 'Sternennacht',price: 4500, primary: '#FFB400', primarySoft: '#312E81', primaryLight: '#6366F1', cellBg: '#1E1B4B', cellPeer: '#312E81', cellSelected: '#4338CA', cellSame: '#3730A3', cellUser: '#FCD34D', cellGiven: '#F1F5F9', bgPattern: PATTERN_STARS,   bgColor: '#0F0E2C', dark: true },
+  geometrie:    { name: 'Geometrie',   price: 5400, primary: '#8B5CF6', primarySoft: '#EDE9FE', primaryLight: '#C4B5FD', cellBg: '#FBFAFF', cellPeer: '#EDE9FE', cellSelected: '#C4B5FD', cellSame: '#DDD6FE', cellUser: '#7C3AED', bgPattern: PATTERN_HEX,    bgColor: '#F5F3FF' },
+  marmor:       { name: 'Marmor',      price: 6000, primary: '#475569', primarySoft: '#E2E8F0', primaryLight: '#94A3B8', cellBg: '#FAFAFA', cellPeer: '#E2E8F0', cellSelected: '#CBD5E1', cellSame: '#E2E8F0', cellUser: '#1E293B', bgPattern: PATTERN_MARBLE, bgColor: '#F1F5F9' },
+  goldrausch:   { name: 'Gold',        price: 7500, primary: '#D4AF37', primarySoft: '#1A1A1A', primaryLight: '#FCD34D', cellBg: '#1C1C1C', cellPeer: '#262626', cellSelected: '#404040', cellSame: '#333333', cellUser: '#FCD34D', cellGiven: '#F5F5F4', bgPattern: PATTERN_GOLD,   bgColor: '#0A0A0A', dark: true },
 
   // ===== Japan-Paket (Bundle: 'japan') ====================================
   // Wallpaper: Aquarell-Hintergründe mit Light + Dark Variante.
   // sfxProfile + fx werden von SFX-/Animations-Layer gelesen.
-  japan_sakura_moon: { name: 'Sakura & Mond', price: 600, pkg: 'japan', sfxProfile: 'koto', fx: 'sakura',
+  japan_sakura_moon: { name: 'Sakura & Mond', price: 1800, pkg: 'japan', sfxProfile: 'koto', fx: 'sakura',
     primary: '#EC4899', primarySoft: '#FCE7F3', primaryLight: '#F9A8D4',
     cellBg: 'rgba(255,250,253,0.92)', cellPeer: 'rgba(252,224,236,0.85)', cellSelected: 'rgba(249,168,212,0.85)', cellSame: 'rgba(251,207,232,0.85)', cellUser: '#BE185D',
     wallpaper: { light: 'japan_sakura_moon.jpeg', dark: 'japan_sakura_moon_dark.jpeg' } },
-  japan_bamboo: { name: 'Bambus-Hain', price: 600, pkg: 'japan', sfxProfile: 'bamboo', fx: 'bamboo',
+  japan_bamboo: { name: 'Bambus-Hain', price: 1800, pkg: 'japan', sfxProfile: 'bamboo', fx: 'bamboo',
     primary: '#3F8060', primarySoft: '#E5F0E9', primaryLight: '#9EC4AE',
     cellBg: 'rgba(252,250,242,0.92)', cellPeer: 'rgba(225,234,224,0.88)', cellSelected: 'rgba(158,196,174,0.85)', cellSame: 'rgba(207,224,212,0.85)', cellUser: '#2C6048',
     wallpaper: { light: 'japan_bamboo.jpeg', dark: 'japan_bamboo_dark.jpeg' } },
-  japan_koi: { name: 'Koi-Teich', price: 700, pkg: 'japan', sfxProfile: 'water', fx: 'koi',
+  japan_koi: { name: 'Koi-Teich', price: 2100, pkg: 'japan', sfxProfile: 'water', fx: 'koi',
     primary: '#0F8A8D', primarySoft: '#D8F0F0', primaryLight: '#7FD0D2',
     cellBg: 'rgba(250,253,252,0.92)', cellPeer: 'rgba(214,238,236,0.88)', cellSelected: 'rgba(127,208,210,0.82)', cellSame: 'rgba(189,228,226,0.85)', cellUser: '#0B6E70',
     wallpaper: { light: 'japan_koi.jpeg', dark: 'japan_koi_dark.jpeg' } },
-  japan_momiji: { name: 'Momiji-Herbst', price: 700, pkg: 'japan', sfxProfile: 'taiko', fx: 'momiji',
+  japan_momiji: { name: 'Momiji-Herbst', price: 2100, pkg: 'japan', sfxProfile: 'taiko', fx: 'momiji',
     primary: '#C04A2B', primarySoft: '#FCE5DC', primaryLight: '#F0A687',
     cellBg: 'rgba(255,250,244,0.92)', cellPeer: 'rgba(252,225,210,0.88)', cellSelected: 'rgba(240,166,135,0.82)', cellSame: 'rgba(252,210,193,0.85)', cellUser: '#9A3A22',
     wallpaper: { light: 'japan_momiji.jpeg', dark: 'japan_momiji_dark.jpeg' } },
-  japan_yonkisetsu: { name: 'Vier Jahreszeiten', price: 900, pkg: 'japan', sfxProfile: 'shaku', fx: 'yonkisetsu',
+  japan_yonkisetsu: { name: 'Vier Jahreszeiten', price: 2700, pkg: 'japan', sfxProfile: 'shaku', fx: 'yonkisetsu',
     primary: '#7E57C2', primarySoft: '#EDE3F8', primaryLight: '#B89BD9',
     cellBg: 'rgba(253,251,247,0.92)', cellPeer: 'rgba(232,222,242,0.88)', cellSelected: 'rgba(184,155,217,0.82)', cellSame: 'rgba(216,200,235,0.85)', cellUser: '#5E3B96',
     wallpaper: { light: 'japan_yonkisetsu.jpeg', dark: 'japan_yonkisetsu_dark.jpeg' } },
 
   // ===== Saison-Themes — nur in ihrem Monat sichtbar (außer für Owner) =====
   // FOMO-Mechanik: Theme verschwindet nach Saison wieder aus dem Shop.
-  halloween: { name: 'Halloween', price: 800, season: 'halloween', months: [10],
+  halloween: { name: 'Halloween', price: 2400, season: 'halloween', months: [10],
     primary: '#FF7B1A', primarySoft: '#3A1F2C', primaryLight: '#FFB36B',
     cellBg: '#2A1A35', cellPeer: '#3A2548', cellSelected: '#5C2E80', cellSame: '#4A2A66', cellUser: '#FFB36B', cellGiven: '#F5E6D3',
     bgPattern: PATTERN_HALLOWEEN, bgColor: '#1A0F1F', dark: true },
-  weihnachten: { name: 'Weihnachten', price: 800, season: 'xmas', months: [12],
+  weihnachten: { name: 'Weihnachten', price: 2400, season: 'xmas', months: [12],
     primary: '#C8102E', primarySoft: '#FCE4E7', primaryLight: '#F08A99',
     cellBg: '#FFFDF8', cellPeer: '#F5EAEB', cellSelected: '#F08A99', cellSame: '#FAD0D5', cellUser: '#0F5132',
     bgPattern: PATTERN_SNOWFLAKE, bgColor: '#FBF5EE' },
-  ostern: { name: 'Ostern', price: 700, season: 'easter', months: [3, 4],
+  ostern: { name: 'Ostern', price: 2100, season: 'easter', months: [3, 4],
     primary: '#FF8FA3', primarySoft: '#FFF0F5', primaryLight: '#FFC2CD',
     cellBg: '#FFFAFC', cellPeer: '#FCE9EE', cellSelected: '#FFC2CD', cellSame: '#FCDCE3', cellUser: '#D63B5C',
     bgPattern: PATTERN_EASTER, bgColor: '#FFF8FB' },
-  sommer: { name: 'Sommer', price: 700, season: 'summer', months: [6, 7, 8],
+  sommer: { name: 'Sommer', price: 2100, season: 'summer', months: [6, 7, 8],
     primary: '#00B8D4', primarySoft: '#E0F7FA', primaryLight: '#80DEEA',
     cellBg: '#FFFEF6', cellPeer: '#E5F6F8', cellSelected: '#80DEEA', cellSame: '#B2EBF2', cellUser: '#00838F',
     bgPattern: PATTERN_SUMMER, bgColor: '#FFFCE8' },
@@ -5215,7 +5295,7 @@ const THEME_BUNDLES = {
   japan: {
     nameKey: 'bundle.japan.name',
     descKey: 'bundle.japan.desc',
-    price: 1999,
+    price: 5999,
     icon: '⛩️',
     accent: '#EC4899',
   },
@@ -5592,10 +5672,85 @@ function refreshShop() {
   document.getElementById('hintpack-cost').textContent = HINT_PACK_COST;
   // ad-free hidden if already bought
   document.getElementById('shop-premium-section').classList.toggle('hidden', !!state.adFree);
+  // starter pack
+  const starterSec = document.getElementById('shop-starter-section');
+  if (starterSec) starterSec.classList.toggle('hidden', !starterPackActive());
+  updateStarterCountdown();
   refreshDoublerUI();
   buildBundleGrid();
   buildThemeGrid();
 }
+
+/* =========================================================
+   STARTER PACK  (1000 Coins / 0,99 € / 24h-Angebot)
+========================================================= */
+const STARTER_PACK_DURATION_MS = 24 * 60 * 60 * 1000;
+const STARTER_PACK_COINS = 1000;
+
+function starterPackActive() {
+  if (state.starterPackBought) return false;
+  if (!state.starterPackOfferStart) return false;
+  return (Date.now() - state.starterPackOfferStart) < STARTER_PACK_DURATION_MS;
+}
+function starterPackRemainingMs() {
+  if (!state.starterPackOfferStart) return STARTER_PACK_DURATION_MS;
+  const left = (state.starterPackOfferStart + STARTER_PACK_DURATION_MS) - Date.now();
+  return Math.max(0, left);
+}
+function formatCountdown(ms) {
+  const s = Math.floor(ms / 1000);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  const pad = n => n < 10 ? '0' + n : '' + n;
+  return pad(h) + ':' + pad(m) + ':' + pad(sec);
+}
+function updateStarterCountdown() {
+  if (!starterPackActive()) return;
+  const txt = formatCountdown(starterPackRemainingMs());
+  const a = document.getElementById('starter-countdown');
+  const b = document.getElementById('starter-countdown-modal');
+  if (a) a.textContent = txt;
+  if (b) b.textContent = txt;
+}
+// Init: beim ersten App-Start Timer scharfschalten
+if (!state.starterPackBought && !state.starterPackOfferStart) {
+  state.starterPackOfferStart = Date.now();
+  saveState();
+}
+// Live-Countdown
+setInterval(() => {
+  if (!starterPackActive()) {
+    const starterSec = document.getElementById('shop-starter-section');
+    if (starterSec && !starterSec.classList.contains('hidden')) starterSec.classList.add('hidden');
+    const overlay = document.getElementById('overlay-starter');
+    if (overlay && overlay.classList.contains('active')) overlay.classList.remove('active');
+    return;
+  }
+  updateStarterCountdown();
+}, 1000);
+
+function buyStarterPack() {
+  if (!starterPackActive()) return;
+  // TODO: echte IAP-Integration via Capacitor-Plugin; aktuell Mock → direkt einlösen.
+  state.starterPackBought = true;
+  state.coins = (state.coins || 0) + STARTER_PACK_COINS;
+  saveState();
+  document.getElementById('overlay-starter').classList.remove('active');
+  refreshShop();
+  refreshHome();
+  showToast('💎', t('starter.toast.title'), t('starter.toast.sub', { n: STARTER_PACK_COINS }));
+  playSfx('achieve');
+}
+document.getElementById('shop-starter').addEventListener('click', () => {
+  if (!starterPackActive()) return;
+  updateStarterCountdown();
+  document.getElementById('overlay-starter').classList.add('active');
+});
+document.getElementById('btn-starter-buy').addEventListener('click', buyStarterPack);
+document.getElementById('btn-starter-cancel').addEventListener('click', () => {
+  document.getElementById('overlay-starter').classList.remove('active');
+});
 
 function buildBundleGrid() {
   const grid = document.getElementById('shop-bundle-grid');
@@ -5938,6 +6093,7 @@ function saveCurrentGame() {
     startTime: game.startTime,
     timer: game.timer,
     reviveUsed: game.reviveUsed || false,
+    paidLivesBought: game.paidLivesBought || 0,
     isDailyChallenge: !!game.isDailyChallenge,
     dailyKey: game.dailyKey || null,
     challengeKind: game.challengeKind || null,
@@ -5971,6 +6127,7 @@ function loadSavedGame() {
   game.startTime = g.startTime || Date.now();
   game.timer = g.timer || 0;
   game.reviveUsed = g.reviveUsed || false;
+  game.paidLivesBought = g.paidLivesBought || 0;
   game.isDailyChallenge = !!g.isDailyChallenge;
   game.dailyKey = g.dailyKey || null;
   game.challengeKind = g.challengeKind || (g.isDailyChallenge ? 'daily' : null);
@@ -6008,12 +6165,26 @@ document.getElementById('resume-card').addEventListener('click', loadSavedGame);
 /* =========================================================
    REVIVE
 ========================================================= */
+// Eskalierende Preise für bezahlte Extra-Leben NACH dem kostenlosen Video-Revive.
+// Bis zu 4 weitere Leben kaufbar → insgesamt max. 5 Refills pro Spiel.
+const EXTRA_LIFE_PRICES = ['0,49 €', '0,99 €', '1,49 €', '2,99 €'];
+
 function offerRevive() {
-  if (game.reviveUsed) { actuallyLoseGame(); return; }
-  const coinBtn = document.getElementById('btn-revive-coins');
-  coinBtn.disabled = (state.coins || 0) < COSTS.revive;
-  coinBtn.style.opacity = coinBtn.disabled ? 0.5 : 1;
-  document.getElementById('overlay-revive').classList.add('active');
+  // Schritt 1: kostenloses Video-Revive (oder Coin-Revive)
+  if (!game.reviveUsed) {
+    const coinBtn = document.getElementById('btn-revive-coins');
+    coinBtn.disabled = (state.coins || 0) < COSTS.revive;
+    coinBtn.style.opacity = coinBtn.disabled ? 0.5 : 1;
+    document.getElementById('overlay-revive').classList.add('active');
+    return;
+  }
+  // Schritt 2–5: bezahltes Extra-Leben mit eskalierendem Preis
+  const idx = game.paidLivesBought || 0;
+  if (idx < EXTRA_LIFE_PRICES.length) {
+    offerExtraLife(idx);
+    return;
+  }
+  actuallyLoseGame();
 }
 function performRevive() {
   game.reviveUsed = true;
@@ -6022,6 +6193,20 @@ function performRevive() {
   saveCurrentGame();
   document.getElementById('overlay-revive').classList.remove('active');
   showToast('❤️', 'Wiederbelebt', 'Du hast wieder ein Leben.');
+  playSfx('achieve');
+  resetIdleTimer();
+}
+function offerExtraLife(idx) {
+  document.getElementById('extralife-price').textContent = EXTRA_LIFE_PRICES[idx];
+  document.getElementById('overlay-extra-life').classList.add('active');
+}
+function performPaidLife() {
+  game.paidLivesBought = (game.paidLivesBought || 0) + 1;
+  game.lives = 1;
+  renderHearts();
+  saveCurrentGame();
+  document.getElementById('overlay-extra-life').classList.remove('active');
+  showToast('❤️‍🔥', t('extralife.toast.title'), t('extralife.toast.sub'));
   playSfx('achieve');
   resetIdleTimer();
 }
@@ -6035,6 +6220,14 @@ document.getElementById('btn-revive-coins').addEventListener('click', () => {
 });
 document.getElementById('btn-revive-cancel').addEventListener('click', () => {
   document.getElementById('overlay-revive').classList.remove('active');
+  actuallyLoseGame();
+});
+document.getElementById('btn-extralife-buy').addEventListener('click', () => {
+  // TODO: echte IAP-Integration via Capacitor-Plugin; aktuell Mock → direkt einlösen.
+  performPaidLife();
+});
+document.getElementById('btn-extralife-cancel').addEventListener('click', () => {
+  document.getElementById('overlay-extra-life').classList.remove('active');
   actuallyLoseGame();
 });
 
@@ -6056,6 +6249,7 @@ function initSplash() {
    LEVEL / XP
 ========================================================= */
 const XP_PER_WIN = { leicht: 10, mittel: 20, schwer: 35, experte: 50 };
+const XP_PENALTY_PER_LOSS = { leicht: 5, mittel: 10, schwer: 17, experte: 25 };
 const XP_PER_LEVEL = 100;
 function levelOf(xp)        { return Math.floor(xp / XP_PER_LEVEL) + 1; }
 function levelProgress(xp)  {
@@ -7037,6 +7231,16 @@ refreshHome();
 checkAchievements();
 checkReminder();
 setInterval(checkReminder, 60 * 1000);
+// Starter-Pack-Pop-Up nur einmal pro Spieler, nur wenn Angebot aktiv ist
+if (starterPackActive() && !state.starterPackPromoShown) {
+  state.starterPackPromoShown = true;
+  saveState();
+  setTimeout(() => {
+    if (!starterPackActive()) return;
+    updateStarterCountdown();
+    document.getElementById('overlay-starter').classList.add('active');
+  }, 1200);
+}
 // Native Reminder beim App-Start synchronisieren (idempotent — überschreibt vorhandenen Schedule)
 if (state.reminderEnabled) { scheduleNativeReminder().catch(() => {}); }
 
