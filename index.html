@@ -2668,6 +2668,14 @@
           <div class="label" data-i18n="settings.dark">Dunkelmodus</div>
           <div class="toggle" data-setting="dark"></div>
         </div>
+        <div class="settings-row hidden" id="row-devmode">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M21 7l-9 9-4.5-4.5L6 13l6 6 10.5-10.5z"/></svg></div>
+          <div class="label">
+            <span data-i18n="settings.devmode">Entwicklermodus</span>
+            <span class="label-sub" data-i18n="settings.devmodeDesc">Unendlich Münzen, Leben & Tipps. Keine Werbung, alle Designs frei.</span>
+          </div>
+          <div class="toggle" data-setting="devMode"></div>
+        </div>
         <div class="settings-row" id="row-tutorial">
           <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 4h12a4 4 0 014 4v12H8a4 4 0 01-4-4zm2 2v10a2 2 0 002 2h10V8a2 2 0 00-2-2zm3 3h6v2H9zm0 4h6v2H9z"/></svg></div>
           <div class="label" data-i18n="settings.tutorial">Anleitung anzeigen</div>
@@ -3068,6 +3076,8 @@ function loadState() {
       lastReminderSent: null,
       starterPackOfferStart: null,
       starterPackBought: false,
+      devModeUnlocked: false,
+      devMode: false,
     }, s);
   } catch { return { streak:0, longestStreak:0, lastPlayedDate:null, completed:0, currentWinStreak:0, longestWinStreak:0, perfectGames:0, xp:0, coins:0, streakFreezes:0, lastLoginBonusDate:null, loginBonusDay:0, savedGame:null, adFree:false, sound:true, vibrate:true, dark:false, tutorialSeen:false, lastDifficulty:'mittel', kleinkindMode:false, achievements:{}, reminderEnabled:false, reminderTime:'19:00', lastReminderSent:null }; }
 }
@@ -3110,7 +3120,8 @@ const LANG = {
     'auth.google':'Mit Google fortfahren','auth.apple':'Mit Apple fortfahren','auth.facebook':'Mit Facebook fortfahren','auth.email':'Mit E-Mail fortfahren','auth.or':'oder','auth.skip':'Ohne Konto fortfahren',
     'auth.legal':'Mit dem Anmelden akzeptierst du unsere <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Nutzungsbedingungen</a> und die <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Datenschutzerklärung</a>.','auth.welcome':'Angemeldet',
     'email.title':'E-Mail-Anmeldung','email.text':'Wir senden dir einen Login-Link per E-Mail.','email.placeholder':'deine@email.de','email.send':'Link senden','email.cancel':'Abbrechen','email.sent':'E-Mail unterwegs','email.sentSub':'Klick den Link in deinem Postfach.','email.invalid':'Ungültige E-Mail','email.invalidSub':'Bitte eine gültige Adresse eingeben.','email.fail':'Login fehlgeschlagen',
-    'settings.title':'Einstellungen','settings.lang':'Sprache','settings.vibrate':'Vibrationen','settings.sound':'Geräusche','settings.dark':'Dunkelmodus','settings.tutorial':'Anleitung anzeigen','settings.kleinkind':'Kleinkind-Modus','settings.kleinkindDesc':'Übungsmodus: ohne Zeit, ohne Leben, kleine Belohnung.',
+    'settings.title':'Einstellungen','settings.lang':'Sprache','settings.vibrate':'Vibrationen','settings.sound':'Geräusche','settings.dark':'Dunkelmodus','settings.tutorial':'Anleitung anzeigen','settings.kleinkind':'Kleinkind-Modus','settings.kleinkindDesc':'Übungsmodus: ohne Zeit, ohne Leben, kleine Belohnung.','settings.devmode':'Entwicklermodus','settings.devmodeDesc':'Unendlich Münzen, Leben & Tipps. Keine Werbung, alle Designs frei.',
+    'dev.unlocked.title':'🛠 Entwicklermodus freigeschaltet','dev.unlocked.sub':'Schalter in den Einstellungen.','dev.toggle.title':'Entwicklermodus','dev.toggle.on':'Aktiv — God Mode.','dev.toggle.off':'Deaktiviert.',
     'settings.reminder':'Tägliche Erinnerung','settings.reminderTime':'Erinnerungszeit',
     'settings.removeAds':'Werbung entfernen','settings.adFreeOn':'Aktiv ✓','settings.adFreePrice':'4,99 € ›','settings.restore':'Käufe wiederherstellen','settings.restoreOk':'Werbefrei aktiv.','settings.restoreNone':'Keine Käufe gefunden.',
     'settings.rate':'Bewerte uns','settings.contact':'Schreib uns','settings.privacy':'Datenschutz','settings.imprint':'Impressum',
@@ -3203,7 +3214,8 @@ const LANG = {
     'auth.google':'Continue with Google','auth.apple':'Continue with Apple','auth.facebook':'Continue with Facebook','auth.email':'Continue with Email','auth.or':'or','auth.skip':'Continue without account',
     'auth.legal':'By signing in you accept our <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Terms of Service</a> and <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Privacy Policy</a>.','auth.welcome':'Signed in',
     'email.title':'Email sign-in','email.text':"We'll send you a login link by email.",'email.placeholder':'your@email.com','email.send':'Send link','email.cancel':'Cancel','email.sent':'Email on the way','email.sentSub':'Tap the link in your inbox.','email.invalid':'Invalid email','email.invalidSub':'Please enter a valid address.','email.fail':'Sign-in failed',
-    'settings.title':'Settings','settings.lang':'Language','settings.vibrate':'Vibrations','settings.sound':'Sounds','settings.dark':'Dark mode','settings.tutorial':'Show tutorial','settings.kleinkind':'Toddler mode','settings.kleinkindDesc':'Practice mode: no timer, no lives, small reward.',
+    'settings.title':'Settings','settings.lang':'Language','settings.vibrate':'Vibrations','settings.sound':'Sounds','settings.dark':'Dark mode','settings.tutorial':'Show tutorial','settings.kleinkind':'Toddler mode','settings.kleinkindDesc':'Practice mode: no timer, no lives, small reward.','settings.devmode':'Developer mode','settings.devmodeDesc':'Unlimited coins, lives & hints. No ads, all designs free.',
+    'dev.unlocked.title':'🛠 Developer mode unlocked','dev.unlocked.sub':'Toggle in settings.','dev.toggle.title':'Developer mode','dev.toggle.on':'Active — God mode.','dev.toggle.off':'Disabled.',
     'settings.reminder':'Daily reminder','settings.reminderTime':'Reminder time',
     'settings.removeAds':'Remove ads','settings.adFreeOn':'Active ✓','settings.adFreePrice':'€4.99 ›','settings.restore':'Restore purchases','settings.restoreOk':'Ad-free is active.','settings.restoreNone':'No purchases found.',
     'settings.rate':'Rate us','settings.contact':'Contact us','settings.privacy':'Privacy','settings.imprint':'Imprint',
@@ -3286,7 +3298,8 @@ const LANG = {
     'auth.google':'Войти через Google','auth.apple':'Войти через Apple','auth.facebook':'Войти через Facebook','auth.email':'Войти по E-Mail','auth.or':'или','auth.skip':'Продолжить без аккаунта',
     'auth.legal':'Входя, ты принимаешь <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Условия</a> и <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Политику конфиденциальности</a>.','auth.welcome':'Вход выполнен',
     'email.title':'Вход по E-Mail','email.text':'Мы пришлём тебе ссылку для входа.','email.placeholder':'твой@email.com','email.send':'Отправить ссылку','email.cancel':'Отмена','email.sent':'Письмо отправлено','email.sentSub':'Открой ссылку из письма.','email.invalid':'Неверный E-Mail','email.invalidSub':'Введи корректный адрес.','email.fail':'Не удалось войти',
-    'settings.title':'Настройки','settings.lang':'Язык','settings.vibrate':'Вибрация','settings.sound':'Звуки','settings.dark':'Тёмная тема','settings.tutorial':'Показать обучение','settings.kleinkind':'Режим новичка','settings.kleinkindDesc':'Тренировка: без времени и жизней, малая награда.',
+    'settings.title':'Настройки','settings.lang':'Язык','settings.vibrate':'Вибрация','settings.sound':'Звуки','settings.dark':'Тёмная тема','settings.tutorial':'Показать обучение','settings.kleinkind':'Режим новичка','settings.kleinkindDesc':'Тренировка: без времени и жизней, малая награда.','settings.devmode':'Режим разработчика','settings.devmodeDesc':'Бесконечные монеты, жизни и подсказки. Без рекламы, все темы открыты.',
+    'dev.unlocked.title':'🛠 Режим разработчика открыт','dev.unlocked.sub':'Переключатель в настройках.','dev.toggle.title':'Режим разработчика','dev.toggle.on':'Активен — God mode.','dev.toggle.off':'Отключён.',
     'settings.reminder':'Ежедневное напоминание','settings.reminderTime':'Время напоминания',
     'settings.removeAds':'Убрать рекламу','settings.adFreeOn':'Активно ✓','settings.adFreePrice':'4,99 € ›','settings.restore':'Восстановить покупки','settings.restoreOk':'Без рекламы активно.','settings.restoreNone':'Покупки не найдены.',
     'settings.rate':'Оцените нас','settings.contact':'Связаться','settings.privacy':'Конфиденциальность','settings.imprint':'Выходные данные',
@@ -3369,7 +3382,8 @@ const LANG = {
     'auth.google':'Google ile devam et','auth.apple':'Apple ile devam et','auth.facebook':'Facebook ile devam et','auth.email':'E-posta ile devam et','auth.or':'veya','auth.skip':'Hesapsız devam et',
     'auth.legal':'Giriş yaparak <a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">Kullanım Şartları</a> ve <a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">Gizlilik Politikası</a> kabul edilir.','auth.welcome':'Giriş yapıldı',
     'email.title':'E-posta ile giriş','email.text':'Sana bir giriş bağlantısı göndereceğiz.','email.placeholder':'senin@eposta.com','email.send':'Bağlantı gönder','email.cancel':'İptal','email.sent':'E-posta yolda','email.sentSub':'Gelen kutusundaki bağlantıya tıkla.','email.invalid':'Geçersiz e-posta','email.invalidSub':'Geçerli bir adres gir.','email.fail':'Giriş başarısız',
-    'settings.title':'Ayarlar','settings.lang':'Dil','settings.vibrate':'Titreşim','settings.sound':'Sesler','settings.dark':'Karanlık mod','settings.tutorial':'Eğitimi göster','settings.kleinkind':'Çocuk modu','settings.kleinkindDesc':'Antrenman modu: süresiz ve cansız, küçük ödül.',
+    'settings.title':'Ayarlar','settings.lang':'Dil','settings.vibrate':'Titreşim','settings.sound':'Sesler','settings.dark':'Karanlık mod','settings.tutorial':'Eğitimi göster','settings.kleinkind':'Çocuk modu','settings.kleinkindDesc':'Antrenman modu: süresiz ve cansız, küçük ödül.','settings.devmode':'Geliştirici modu','settings.devmodeDesc':'Sınırsız coin, can ve ipucu. Reklamsız, tüm tasarımlar açık.',
+    'dev.unlocked.title':'🛠 Geliştirici modu açıldı','dev.unlocked.sub':'Ayarlardan aç/kapat.','dev.toggle.title':'Geliştirici modu','dev.toggle.on':'Aktif — God mode.','dev.toggle.off':'Devre dışı.',
     'settings.reminder':'Günlük hatırlatıcı','settings.reminderTime':'Hatırlatma saati',
     'settings.removeAds':'Reklamları kaldır','settings.adFreeOn':'Aktif ✓','settings.adFreePrice':'4,99 € ›','settings.restore':'Satın alımları geri yükle','settings.restoreOk':'Reklamsız aktif.','settings.restoreNone':'Satın alma bulunamadı.',
     'settings.rate':'Bizi puanla','settings.contact':'İletişim','settings.privacy':'Gizlilik','settings.imprint':'Künye',
@@ -3452,7 +3466,8 @@ const LANG = {
     'auth.google':'Googleで続ける','auth.apple':'Appleで続ける','auth.facebook':'Facebookで続ける','auth.email':'メールで続ける','auth.or':'または','auth.skip':'アカウントなしで続ける',
     'auth.legal':'サインインすると、<a href="https://www.isukato.com/agb/" target="_blank" rel="noopener">利用規約</a>と<a href="https://www.isukato.com/datenschutz/" target="_blank" rel="noopener">プライバシーポリシー</a>に同意したものとみなされます。','auth.welcome':'サインインしました',
     'email.title':'メールでサインイン','email.text':'ログインリンクをメールでお送りします。','email.placeholder':'your@email.com','email.send':'リンク送信','email.cancel':'キャンセル','email.sent':'メール送信済み','email.sentSub':'受信ボックスのリンクをタップしてください。','email.invalid':'無効なメールアドレス','email.invalidSub':'正しいアドレスを入力してください。','email.fail':'サインイン失敗',
-    'settings.title':'設定','settings.lang':'言語','settings.vibrate':'バイブレーション','settings.sound':'サウンド','settings.dark':'ダークモード','settings.tutorial':'チュートリアルを表示','settings.kleinkind':'初心者モード','settings.kleinkindDesc':'練習モード：タイマー・ライフなし、少量の報酬。',
+    'settings.title':'設定','settings.lang':'言語','settings.vibrate':'バイブレーション','settings.sound':'サウンド','settings.dark':'ダークモード','settings.tutorial':'チュートリアルを表示','settings.kleinkind':'初心者モード','settings.kleinkindDesc':'練習モード：タイマー・ライフなし、少量の報酬。','settings.devmode':'開発者モード','settings.devmodeDesc':'コイン・ライフ・ヒント無制限。広告なし、すべてのデザイン解放。',
+    'dev.unlocked.title':'🛠 開発者モード解放','dev.unlocked.sub':'設定からオン／オフできます。','dev.toggle.title':'開発者モード','dev.toggle.on':'有効 — God mode。','dev.toggle.off':'無効。',
     'settings.reminder':'毎日のリマインダー','settings.reminderTime':'リマインダー時刻',
     'settings.removeAds':'広告を削除','settings.adFreeOn':'有効 ✓','settings.adFreePrice':'4.99€ ›','settings.restore':'購入を復元','settings.restoreOk':'広告非表示が有効。','settings.restoreNone':'購入は見つかりませんでした。',
     'settings.rate':'評価する','settings.contact':'お問い合わせ','settings.privacy':'プライバシー','settings.imprint':'運営者情報',
@@ -4389,8 +4404,9 @@ function inputDigit(n) {
       game.board[r][c] = 0;
       renderBoard();
     }, 500);
-    if (game.isTraining) {
-      // Übungsmodus: Fehler zeigen, aber kein Leben abziehen, kein Game-Over
+    if (game.isTraining || state.devMode) {
+      // Übungsmodus / Entwicklermodus: Fehler zeigen, aber kein Leben abziehen
+      if (!game.isTraining) game.errorsThisGame++;
       saveCurrentGame();
     } else {
       game.lives--;
@@ -4616,6 +4632,8 @@ document.getElementById('btn-tipp-watch').addEventListener('click', () => {
   playTippVideo();
 });
 document.getElementById('act-hint').addEventListener('click', () => {
+  // Entwicklermodus: Tipps kostenlos
+  if (state.devMode) { applyHint(); resetIdleTimer(); return; }
   // Anti-Cheat: Auch adFree-User müssen für Tipps Coins ausgeben oder
   // ein Reward-Video schauen. AdFree gilt nur für Zwangs-Interstitials.
   if ((state.hintCredits || 0) > 0) {
@@ -4637,7 +4655,7 @@ function playTippVideo() {
    AD INTERSTITIAL  (after every solved round)
 ========================================================= */
 function maybeShowInterstitial(after) {
-  if (state.adFree) { after(); return; }
+  if (state.adFree || state.devMode) { after(); return; }
   if (state.completed > 0) {
     showInterstitial(after);
   } else {
@@ -4959,6 +4977,9 @@ function applySettings() {
   });
   document.body.classList.toggle('dark', !!state.dark);
   document.documentElement.classList.toggle('dark', !!state.dark);
+  document.body.classList.toggle('dev-mode', !!state.devMode);
+  const row = document.getElementById('row-devmode');
+  if (row) row.classList.toggle('hidden', !state.devModeUnlocked);
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', state.dark ? '#10142A' : '#F2F3F9');
   applyTheme(state.theme || 'classic');
   const cur = document.getElementById('lang-current');
@@ -4972,8 +4993,50 @@ document.querySelectorAll('.toggle').forEach(t => {
     state[key] = !state[key];
     saveState();
     applySettings();
+    if (key === 'dark') registerDarkToggleForDevMode();
+    if (key === 'devMode') onDevModeToggled();
   });
 });
+
+/* =========================================================
+   ENTWICKLERMODUS (God Mode)
+   Aktivierung: 14x Dunkelmodus-Toggle innerhalb von 6 Sek
+========================================================= */
+const DEV_MODE_CLICKS_NEEDED = 14;
+const DEV_MODE_CLICK_TIMEOUT = 6000;
+let _devClickCount = 0;
+let _devClickTimer = null;
+function registerDarkToggleForDevMode() {
+  if (state.devModeUnlocked) return;
+  _devClickCount++;
+  clearTimeout(_devClickTimer);
+  _devClickTimer = setTimeout(() => { _devClickCount = 0; }, DEV_MODE_CLICK_TIMEOUT);
+  if (_devClickCount >= DEV_MODE_CLICKS_NEEDED) {
+    _devClickCount = 0;
+    clearTimeout(_devClickTimer);
+    state.devModeUnlocked = true;
+    state.devMode = true;
+    saveState();
+    revealDevModeRow();
+    applySettings();
+    refreshHome();
+    if (typeof refreshShop === 'function') refreshShop();
+    showToast('🛠', t('dev.unlocked.title'), t('dev.unlocked.sub'));
+    playSfx('achieve');
+  }
+}
+function revealDevModeRow() {
+  const row = document.getElementById('row-devmode');
+  if (row) row.classList.toggle('hidden', !state.devModeUnlocked);
+}
+function onDevModeToggled() {
+  // Sofort sichtbare Effekte
+  applySettings();
+  refreshHome();
+  if (typeof refreshShop === 'function') refreshShop();
+  showToast('🛠', t('dev.toggle.title'), state.devMode ? t('dev.toggle.on') : t('dev.toggle.off'));
+}
+function isDevMode() { return !!state.devMode; }
 document.querySelector('.settings-row .label').parentElement; // no-op
 
 document.querySelectorAll('.settings-row').forEach(row => {
@@ -5312,7 +5375,7 @@ function bundleOriginalPrice(bundleId) {
 function bundleOwned(bundleId) {
   const ids = bundleThemes(bundleId);
   if (!ids.length) return false;
-  return ids.every(id => !!state.unlockedThemes?.[id]);
+  return ids.every(id => isThemeUnlocked(id));
 }
 
 function applyTheme(id) {
@@ -5453,8 +5516,16 @@ function previewTagHtml(th) {
 function getSeasonOverride() {
   try { return new URLSearchParams(location.search).get('season') || null; } catch { return null; }
 }
+function isThemeUnlocked(id) {
+  const th = THEMES[id];
+  if (!th) return false;
+  if (th.price === 0) return true;
+  if (state.devMode) return true;
+  return !!state.unlockedThemes?.[id];
+}
 function isThemeAvailable(id, th) {
   if (!th.season) return true;
+  if (state.devMode) return true;
   if (state.unlockedThemes?.[id]) return true; // Owner sehen ihre Themes immer
   const ov = getSeasonOverride();
   if (ov === 'all' || ov === th.season) return true;
@@ -5474,7 +5545,7 @@ function buildThemeGrid() {
   Object.keys(THEMES).forEach(id => {
     const th = THEMES[id];
     if (!isThemeAvailable(id, th)) return; // Saison-Theme außerhalb seines Monats: ausblenden
-    const owned = !!state.unlockedThemes?.[id] || th.price === 0;
+    const owned = isThemeUnlocked(id);
     const active = state.theme === id;
     const card = document.createElement('button');
     card.className = 'theme-card' + (active ? ' active' : '');
@@ -5635,7 +5706,7 @@ document.getElementById('btn-tp-action').addEventListener('click', () => {
   const id = _tpCurrentId;
   if (!id) return;
   const th = THEMES[id];
-  const owned = !!state.unlockedThemes?.[id] || th.price === 0;
+  const owned = isThemeUnlocked(id);
   if (owned) {
     state.theme = id;
     saveState();
@@ -5645,7 +5716,7 @@ document.getElementById('btn-tp-action').addEventListener('click', () => {
     closeThemePreview();
     return;
   }
-  if ((state.coins || 0) < th.price) {
+  if (!state.devMode && (state.coins || 0) < th.price) {
     showToast('🪙', t('shop.notEnough'), t('shop.notEnoughSub', { n: th.price }));
     return;
   }
@@ -5662,7 +5733,7 @@ document.getElementById('btn-tp-action').addEventListener('click', () => {
 });
 
 function refreshShop() {
-  document.getElementById('shop-coins').textContent = state.coins || 0;
+  document.getElementById('shop-coins').textContent = state.devMode ? '∞' : (state.coins || 0);
   document.getElementById('shield-cost').textContent = COSTS.shield;
   // shield card disabled if max reached
   const shieldCard = document.getElementById('shop-shield');
@@ -5924,6 +5995,7 @@ function addCoins(n, label) {
   }
 }
 function spendCoins(n) {
+  if (state.devMode) return true;
   if ((state.coins || 0) < n) return false;
   state.coins -= n;
   saveState();
@@ -6049,6 +6121,8 @@ document.getElementById('btn-shield-coins').addEventListener('click', () => {
    GENERIC REWARDED AD  (5s mock)
 ========================================================= */
 function playRewardedAd(onComplete) {
+  // Entwicklermodus: kein Video, direkt einlösen
+  if (state.devMode) { onComplete(); return; }
   // Anti-Cheat: Rewarded-Videos laufen IMMER, auch bei adFree.
   // 'Werbung entfernen' gilt ausschließlich für Zwangs-Interstitials
   // zwischen Runden. Freiwillige Reward-Videos für Tipps, Wiederbelebung
@@ -6570,7 +6644,7 @@ function showToast(emoji, title, sub, ms = 3500) {
 function refreshHome() {
   document.getElementById('streak').textContent = state.streak || 0;
   document.getElementById('shields').textContent = state.streakFreezes || 0;
-  document.getElementById('coins').textContent = state.coins || 0;
+  document.getElementById('coins').textContent = state.devMode ? '∞' : (state.coins || 0);
   const lvl = levelOf(state.xp);
   const p = levelProgress(state.xp);
   document.getElementById('lvl-num').textContent = lvl;
